@@ -1,10 +1,8 @@
 export class BaseNotes {
 	_name = "";
-	_customName = "";
 	_customNotes = "";
 
 	name() {
-		if (this._customName) return this._customName;
 		return this._name;
 	}
 
@@ -604,7 +602,6 @@ function ExpandBaseNotes(root, obj) {
 		element = root.parentElement.parentElement;
 	}
 
-	obj._customName = element.getAttributeNode("customName")?.nodeValue;
 	let child = element.firstElementChild;
 	if (child && child.tagName === "customNotes") {
 		obj._customNotes = child.textContent;

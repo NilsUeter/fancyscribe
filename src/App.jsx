@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Roster } from "./Roster";
 
 function App() {
+	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
 	function handleFileSelect(event) {
 		const files = event?.target?.files;
@@ -12,7 +13,7 @@ function App() {
 			const reader = new FileReader();
 			reader.onerror = () => {
 				reader.abort();
-				console.log("Failed to read roster file.");
+				setError("Failed to read roster file.");
 			};
 			reader.onloadend = async () => {
 				const content = reader.result;
@@ -60,7 +61,7 @@ function App() {
         renderer.render(rosterTitle, rosterList, forceUnits); */
 			}
 		} else {
-			console.log("No support for game type '" + gameType + "'.");
+			setError("No support for game type '" + gameType + "'.");
 		}
 	}
 
@@ -70,9 +71,9 @@ function App() {
 				<input type="file" accept=".ros, .rosz" onChange={handleFileSelect} />
 				Select roster file (.ros, .rosz)
 			</label>
-			<div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-				<Roster roster={roster} />
-			</div>
+			<div style={{ color: "red" }}>{error}</div>
+
+			<Roster roster={roster} />
 		</div>
 	);
 }

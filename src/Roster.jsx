@@ -8,12 +8,18 @@ export const Roster = ({ roster }) => {
 	if (!roster) {
 		return null;
 	}
-	const { _name, _forces } = roster;
+	const { _name, _cost, _forces } = roster;
 	return (
-		<>
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				gap: 32,
+			}}
+		>
 			<div
 				style={{
-					backgroundColor: "#536766",
+					backgroundColor: "var(--primary-color)",
 					color: "#fff",
 					padding: "4px 16px",
 					fontSize: " 1.7em",
@@ -21,43 +27,115 @@ export const Roster = ({ roster }) => {
 					textTransform: "uppercase",
 				}}
 			>
-				{_name}
+				{_name} [{_cost._commandPoints} CP]
 			</div>
 			{_forces.map((force, index) => (
 				<Force key={index} force={force} />
 			))}
-		</>
+		</div>
 	);
 };
 
+const getPrimaryColor = (catalog) => {
+	switch (catalog) {
+		case "Adeptus Astartes":
+			return "#536766";
+		case "Adeptus Custodes":
+			return "#536766";
+		case "Adeptus Mechanicus":
+			return "#536766";
+		case "Astra Militarum":
+			return "#536766";
+		case "Chaos Daemons":
+			return "#536766";
+		case "Chaos Space Marines":
+			return "#536766";
+		case "Death Guard":
+			return "#536766";
+		case "Drukhari":
+			return "#536766";
+		case "Genestealer Cults":
+			return "#536766";
+		case "Grey Knights":
+			return "#536766";
+		case "Harlequins":
+			return "#536766";
+		case "Imperial Knights":
+			return "#536766";
+		case "Necrons":
+			return "#536766";
+		case "Orks":
+			return "#536766";
+		case "Sisters of Battle":
+			return "#536766";
+		case "Space Marines":
+			return "#536766";
+		case "Tau Empire":
+			return "#536766";
+		case "Thousand Sons":
+			return "#536766";
+		case "Tyranids":
+			return "#44264C";
+		case "Ynnari":
+			return "#536766";
+		default:
+			return "#536766";
+	}
+};
+
 const Force = ({ force }) => {
-	const { _units, rules } = force;
+	const { _units, rules, _catalog } = force;
+
+	const primaryColor = getPrimaryColor(_catalog);
 	return (
-		<>
+		<div
+			style={{
+				display: "contents",
+				"--primary-color": primaryColor,
+				"--primary-color-transparent": "#53676660",
+			}}
+		>
 			{_units.map((unit, index) => (
 				<Unit key={index} unit={unit} />
 			))}
 			<ForceRules rules={rules} />
-		</>
+		</div>
 	);
 };
 
 const Unit = ({ unit }) => {
-	const { _name, weapons, abilities, keywords, factions, rules, modelStats } =
-		unit;
+	let {
+		_name,
+		weapons,
+		abilities,
+		keywords,
+		factions,
+		rules,
+		modelStats,
+		_modelList,
+		_psykers,
+	} = unit;
 
+	const hasDifferentProfiles = weapons.some(
+		(weapon) =>
+			weapon._selectionName !== weapon._name &&
+			!weapon._name.includes("(Shooting)") &&
+			!weapon._name.includes("(Melee)")
+	);
 	const meleeWeapons = weapons
-		.filter((weapon) => weapon._range === "Melee")
+		.filter((weapon) => weapon._range === "Melee" && weapon._range !== "-")
 		.sort((a, b) => a._selectionName.localeCompare(b._selectionName));
 	const rangedWeapons = weapons
-		.filter((weapon) => weapon._range !== "Melee")
+		.filter((weapon) => weapon._range !== "Melee" && weapon._range !== "-")
 		.sort((a, b) => a._selectionName.localeCompare(b._selectionName));
+	modelStats = modelStats.sort((a, b) => b._name.length - a._name.length); // Sort by length of name, so that for example "Primaris Intercessor Sergeant" is before "Primaris Intercessor"
 	return (
 		<div
+			className="avoid-page-break"
 			style={{
 				fontSize: 13,
 				fontWeight: 500,
-				border: "2px solid #536766",
+				border: "2px solid var(--primary-color)",
 				backgroundColor: "#DFE0E2",
 			}}
 		>
@@ -65,40 +143,56 @@ const Unit = ({ unit }) => {
 				style={{
 					padding: "24px 16px",
 					paddingRight: 0,
-					paddingBottom: 24 + 50 * (modelStats.length - 1),
-					backgroundColor: "#2F2F31",
+					paddingBottom: 24,
+					background:
+						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
 					color: "#fff",
 				}}
 			>
 				<div
 					style={{
 						padding: "4px 16px",
-						backgroundColor: "#53676680",
 						color: "#fff",
 						minHeight: 85,
+						position: "relative",
 					}}
 				>
+					<div
+						style={{
+							position: "absolute",
+							left: 0,
+							top: 0,
+							backgroundColor: "var(--primary-color-transparent)",
+							minHeight: 85,
+							width: "100%",
+						}}
+					></div>
 					<div
 						style={{
 							fontSize: "1.7em",
 							fontWeight: 800,
 							textTransform: "uppercase",
+							zIndex: 1,
+							position: "relative",
 						}}
 					>
 						{_name}
 					</div>
 					<div
 						style={{
-							position: "absolute",
+							width: "calc(100% - 32px)",
 							display: "flex",
 							flexDirection: "column",
 							gap: 6,
+							zIndex: 1,
+							position: "relative",
 						}}
 					>
 						{modelStats.map((model, index) => (
 							<ModelStats
 								key={index}
 								modelStats={model}
+								modelList={_modelList}
 								index={index}
 								showName={modelStats.length > 1}
 							/>
@@ -110,9 +204,11 @@ const Unit = ({ unit }) => {
 				<div
 					style={{
 						flex: "1",
-						borderRight: "2px solid #536766",
+						borderRight: "2px solid var(--primary-color)",
 						position: "relative",
 						paddingBottom: 40,
+						display: "flex",
+						flexDirection: "column",
 					}}
 				>
 					<table
@@ -129,9 +225,10 @@ const Unit = ({ unit }) => {
 							weapons={meleeWeapons}
 							modelStats={modelStats}
 						/>
+						<Psykers title="PSYKER" psykers={_psykers} />
 					</table>
 					<div style={{ flex: "1" }}></div>
-					{
+					{hasDifferentProfiles && (
 						<table className="weapons-table" style={{ width: "100%" }}>
 							<tr className="emptyRow">
 								<td style={{ width: 37 }}>{Arrow}</td>
@@ -148,15 +245,15 @@ const Unit = ({ unit }) => {
 								</td>
 							</tr>
 						</table>
-					}
+					)}
 					<Keywords keywords={keywords} />
 				</div>
 				<div
 					style={{
 						padding: 20,
-						paddingBottom: 80,
+						paddingBottom: 50,
 						flex: "1",
-						maxWidth: 375,
+						maxWidth: 400,
 						position: "relative",
 					}}
 				>
@@ -164,7 +261,7 @@ const Unit = ({ unit }) => {
 						style={{
 							fontSize: "1.1em",
 							padding: "1px 8px",
-							backgroundColor: "#536766",
+							backgroundColor: "var(--primary-color)",
 							color: "#fff",
 							fontWeight: 600,
 							minHeight: 27,
@@ -184,11 +281,14 @@ const Unit = ({ unit }) => {
 	);
 };
 
-const ModelStats = ({ modelStats, index, showName }) => {
+const ModelStats = ({ modelStats, index, showName, modelList }) => {
 	let { move, toughness, save, wounds, leadership, _name } = modelStats;
 	if (!wounds) {
 		wounds = "/";
 	}
+	const modelListMatches = modelList
+		.filter((model) => model.includes(_name))
+		.map((model) => "(" + model.split("(")[1]);
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
@@ -197,9 +297,28 @@ const ModelStats = ({ modelStats, index, showName }) => {
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			{showName && (
-				<div style={{ marginTop: index === 0 ? 16 : 0, marginLeft: -10 }}>
-					{_name}
-				</div>
+				<>
+					<div
+						style={{
+							marginTop: index === 0 ? 16 : 0,
+							marginLeft: -10,
+							whiteSpace: "nowrap",
+						}}
+					>
+						{_name}
+					</div>
+					<div
+						style={{
+							marginTop: index === 0 ? 16 : 0,
+							marginLeft: -10,
+							fontSize: "0.7em",
+						}}
+					>
+						{modelListMatches.map((model, index) => (
+							<div>{model}</div>
+						))}
+					</div>
+				</>
 			)}
 		</div>
 	);
@@ -215,7 +334,7 @@ const FactionIcon = () => {
 				width: 54,
 				height: 54,
 				transform: "rotate(-45deg)",
-				border: "2px solid #536766",
+				border: "2px solid var(--primary-color)",
 				overflow: "hidden",
 				display: "flex",
 				alignItems: "center",
@@ -236,6 +355,9 @@ const FactionIcon = () => {
 };
 
 const Keywords = ({ keywords }) => {
+	keywords = Array.from(keywords).filter(
+		(keyword) => keyword !== "Configuration"
+	);
 	return (
 		<div
 			style={{
@@ -247,12 +369,11 @@ const Keywords = ({ keywords }) => {
 				display: "flex",
 				alignItems: "center",
 				backgroundColor: "#BCBCBE",
-				border: "2px solid #536766",
+				border: "2px solid var(--primary-color)",
 				width: "calc(100% - 18px)",
 				backgroundSize: "contain",
 				minHeight: 54,
 				gap: 3,
-				color: "#101010",
 			}}
 		>
 			<span style={{ fontSize: "1.1em" }}>KEYWORDS:</span>
@@ -277,7 +398,7 @@ const Factions = ({ factions }) => {
 				flexDirection: "column",
 				background: `url(${factionBackground})`,
 				color: "#fff",
-				border: "2px solid #536766",
+				border: "2px solid var(--primary-color)",
 				borderLeft: "none",
 				width: "calc(100% - 18px)",
 				backgroundSize: "contain",
@@ -295,14 +416,14 @@ const Factions = ({ factions }) => {
 };
 
 const Rules = ({ rules }) => {
+	if (!rules || rules.size === 0) return null;
 	return (
 		<div
 			style={{
 				padding: "5px 2px",
-				display: "flex",
-				alignItems: "center",
 				gap: 3,
 				borderBottom: "1px dotted #9e9fa1",
+				lineHeight: 1.3,
 			}}
 		>
 			<span style={{ fontSize: ".8em" }}>RULES: </span>
@@ -314,29 +435,30 @@ const Rules = ({ rules }) => {
 };
 
 const Abilities = ({ abilities }) => {
+	if (!abilities) return null;
 	return (
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "column",
 				gap: 8,
-				color: "#213547",
 				padding: "4px 2px",
 				borderBottom: "1px dotted rgb(158, 159, 161)",
 			}}
 		>
-			{[...abilities.keys()].map((ability) => (
-				<div
-					key={ability}
-					style={{
-						fontSize: ".8em",
-						lineHeight: 1.4,
-					}}
-				>
-					<span style={{ fontWeight: 700 }}>{ability}:</span>{" "}
-					{abilities.get(ability)}
-				</div>
-			))}
+			{abilities &&
+				[...abilities.keys()].map((ability) => (
+					<div
+						key={ability}
+						style={{
+							fontSize: ".8em",
+							lineHeight: 1.4,
+						}}
+					>
+						<span style={{ fontWeight: 700 }}>{ability}:</span>{" "}
+						{abilities.get(ability)}
+					</div>
+				))}
 		</div>
 	);
 };
@@ -358,9 +480,10 @@ const FancyBox = ({ children }) => {
 	return (
 		<div
 			style={{
-				color: "#536766",
+				color: "var(--primary-color)",
 				padding: 2,
-				background: "linear-gradient(-45deg, transparent 4px, #536766 0)",
+				background:
+					"linear-gradient(-45deg, transparent 4px, var(--primary-color) 0)",
 			}}
 		>
 			<div
@@ -387,7 +510,7 @@ const Weapons = ({ title, weapons, modelStats }) => {
 				<thead>
 					<tr
 						style={{
-							backgroundColor: "#536766",
+							backgroundColor: "var(--primary-color)",
 							color: "#fff",
 						}}
 					>
@@ -396,7 +519,7 @@ const Weapons = ({ title, weapons, modelStats }) => {
 								<img src={isMelee ? meleeIcon : rangedIcon} />
 							</div>
 						</th>
-						<th style={{ textAlign: "left" }}>{title}</th>
+						<th style={{ textAlign: "left", width: "44%" }}>{title}</th>
 						<th>RANGE</th>
 						<th>A</th>
 						<th>{isMelee ? "WS" : "BS"}</th>
@@ -428,16 +551,30 @@ const Weapons = ({ title, weapons, modelStats }) => {
 
 const Weapon = ({ weapon, modelStats, isMelee, index }) => {
 	let { _name, _selectionName, _range, _type, str, _ap, _damage } = weapon;
-	const [type, attacks] = _type.split(" ");
+	var lastWhiteSpace = _type.lastIndexOf(" ");
+	const type = _type.substring(0, lastWhiteSpace);
+	const attacks = _type.substring(lastWhiteSpace + 1);
 	const bs = modelStats[0]._bs;
 	const ws = modelStats[0]._ws;
 	const strModel = modelStats[0].str;
 	const meleeAttacks = modelStats[0]._attacks;
 
-	const differentProfiles = _selectionName !== _name;
-	const interestingType = type !== "Melee";
+	if (_name === "Krak grenades") {
+		_name = "Krak grenade";
+	}
+	const differentProfiles =
+		_selectionName !== _name &&
+		!_name.includes("(Shooting)") &&
+		!_name.includes("(Melee)");
+	const interestingType = type && type !== "Melee";
 	if (differentProfiles && _name.endsWith(" grenades")) {
 		_name = _name.replace(" grenades", "");
+	}
+	if (differentProfiles && _name.endsWith(" grenade")) {
+		_name = _name.replace(" grenade", "");
+	}
+	if (differentProfiles && _name.includes(" - ")) {
+		_name = _name.split(" - ")[1];
 	}
 	return (
 		<tr
@@ -463,7 +600,11 @@ const Weapon = ({ weapon, modelStats, isMelee, index }) => {
 					{_name}
 					{interestingType && (
 						<span
-							style={{ fontSize: ".8em", fontWeight: 700, color: "#536766" }}
+							style={{
+								fontSize: ".8em",
+								fontWeight: 700,
+								color: "var(--primary-color)",
+							}}
 						>
 							[{type}]
 						</span>
@@ -481,22 +622,89 @@ const Weapon = ({ weapon, modelStats, isMelee, index }) => {
 };
 
 const calculateWeaponStrength = (strModel, strWeapon) => {
+	if (strWeapon.startsWith("User")) return strModel;
 	if (strWeapon.startsWith("x"))
 		return strModel * parseInt(strWeapon.replace("x", ""));
 	return strModel + parseInt(strWeapon, 10);
 };
 
+const Psykers = ({ title, psykers }) => {
+	return (
+		<>
+			{psykers.length > 0 && (
+				<thead>
+					<tr
+						style={{
+							backgroundColor: "var(--primary-color)",
+							color: "#fff",
+						}}
+					>
+						<th style={{ width: 37 }}>
+							<div style={{ display: "flex" }}>
+								<img src={rangedIcon} />
+							</div>
+						</th>
+						<th style={{ textAlign: "left" }}>{title}</th>
+						<th>Cast</th>
+						<th>Deny</th>
+						<th style={{ textAlign: "left" }} colSpan="4">
+							Powers Known
+						</th>
+					</tr>
+				</thead>
+			)}
+			<tbody>
+				{psykers.map((psyker, index) => (
+					<Psyker key={psyker._name} psyker={psyker} index={index} />
+				))}
+				{psykers.length > 0 && (
+					<tr className="emptyRow">
+						<td colSpan={8}></td>
+					</tr>
+				)}
+			</tbody>
+		</>
+	);
+};
+
+const Psyker = ({ psyker, index }) => {
+	let { _name, _cast, _deny, _powers } = psyker;
+
+	return (
+		<tr className={index % 2 ? "rowOtherColor" : ""}>
+			<td style={{ borderBottom: "none", backgroundColor: "#dfe0e2" }}></td>
+			<td style={{ textAlign: "left" }}>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						flexWrap: "wrap",
+						gap: "0 4px",
+					}}
+				>
+					{_name}
+				</div>
+			</td>
+			<td>{_cast}</td>
+			<td>{_deny}</td>
+			<td style={{ textAlign: "left" }} colSpan="4">
+				{_powers}
+			</td>
+		</tr>
+	);
+};
+
 const ForceRules = ({ rules }) => {
 	return (
 		<div
+			className="avoid-page-break"
 			style={{
 				display: "flex",
 				flexDirection: "column",
 				gap: 8,
-				color: "#213547",
 				padding: "20px 20px",
 				backgroundColor: "#dfe0e2",
-				border: "2px solid #536766",
+				border: "2px solid var(--primary-color)",
 			}}
 		>
 			{[...rules.keys()]
