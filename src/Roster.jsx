@@ -1,8 +1,8 @@
 import factionBackground from "./assets/factionBackground.png";
 import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
-import meleeIcon from "./assets/meleeIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
 import { Arrow } from "./assets/icons";
+import { Weapons } from "./Weapons";
 
 export const Roster = ({ roster }) => {
 	if (!roster) {
@@ -230,8 +230,8 @@ const Unit = ({ unit }) => {
 					<div style={{ flex: "1" }}></div>
 					{hasDifferentProfiles && (
 						<table className="weapons-table" style={{ width: "100%" }}>
-							<tr className="emptyRow">
-								<td style={{ width: 37 }}>{Arrow}</td>
+							<tr className="emptyRow noBorderTop">
+								<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
 								<td
 									colSpan={7}
 									style={{
@@ -502,132 +502,6 @@ const FancyBox = ({ children }) => {
 	);
 };
 
-const Weapons = ({ title, weapons, modelStats }) => {
-	const isMelee = title === "MELEE WEAPONS";
-	return (
-		<>
-			{weapons.length > 0 && (
-				<thead>
-					<tr
-						style={{
-							backgroundColor: "var(--primary-color)",
-							color: "#fff",
-						}}
-					>
-						<th style={{ width: 37 }}>
-							<div style={{ display: "flex" }}>
-								<img src={isMelee ? meleeIcon : rangedIcon} />
-							</div>
-						</th>
-						<th style={{ textAlign: "left", width: "44%" }}>{title}</th>
-						<th>RANGE</th>
-						<th>A</th>
-						<th>{isMelee ? "WS" : "BS"}</th>
-						<th>S</th>
-						<th>AP</th>
-						<th>D</th>
-					</tr>
-				</thead>
-			)}
-			<tbody>
-				{weapons.map((weapon, index) => (
-					<Weapon
-						key={weapon._name}
-						weapon={weapon}
-						modelStats={modelStats}
-						isMelee={isMelee}
-						index={index}
-					/>
-				))}
-				{weapons.length > 0 && (
-					<tr className="emptyRow">
-						<td colSpan={8}></td>
-					</tr>
-				)}
-			</tbody>
-		</>
-	);
-};
-
-const Weapon = ({ weapon, modelStats, isMelee, index }) => {
-	let { _name, _selectionName, _range, _type, str, _ap, _damage } = weapon;
-	var lastWhiteSpace = _type.lastIndexOf(" ");
-	const type = _type.substring(0, lastWhiteSpace);
-	const attacks = _type.substring(lastWhiteSpace + 1);
-	const bs = modelStats[0]._bs;
-	const ws = modelStats[0]._ws;
-	const strModel = modelStats[0].str;
-	const meleeAttacks = modelStats[0]._attacks;
-
-	if (_name === "Krak grenades") {
-		_name = "Krak grenade";
-	}
-	const differentProfiles =
-		_selectionName !== _name &&
-		!_name.includes("(Shooting)") &&
-		!_name.includes("(Melee)");
-	const interestingType = type && type !== "Melee";
-	if (differentProfiles && _name.endsWith(" grenades")) {
-		_name = _name.replace(" grenades", "");
-	}
-	if (differentProfiles && _name.endsWith(" grenade")) {
-		_name = _name.replace(" grenade", "");
-	}
-	if (differentProfiles && _name.includes(" - ")) {
-		_name = _name.split(" - ")[1];
-	}
-	return (
-		<tr
-			className={
-				(differentProfiles ? "differentProfiles" : "") +
-				" " +
-				(index % 2 ? "rowOtherColor" : "")
-			}
-		>
-			<td style={{ borderBottom: "none", backgroundColor: "#dfe0e2" }}>
-				{differentProfiles && Arrow}
-			</td>
-			<td style={{ textAlign: "left" }}>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						flexWrap: "wrap",
-						gap: "0 4px",
-					}}
-				>
-					{differentProfiles && _selectionName + " - "}
-					{_name}
-					{interestingType && (
-						<span
-							style={{
-								fontSize: ".8em",
-								fontWeight: 700,
-								color: "var(--primary-color)",
-							}}
-						>
-							[{type}]
-						</span>
-					)}
-				</div>
-			</td>
-			<td>{_range}</td>
-			<td>{isMelee ? meleeAttacks : attacks}</td>
-			<td>{isMelee ? ws : bs}</td>
-			<td>{isMelee ? calculateWeaponStrength(strModel, str) : str}</td>
-			<td>{_ap}</td>
-			<td>{_damage}</td>
-		</tr>
-	);
-};
-
-const calculateWeaponStrength = (strModel, strWeapon) => {
-	if (strWeapon.startsWith("User")) return strModel;
-	if (strWeapon.startsWith("x"))
-		return strModel * parseInt(strWeapon.replace("x", ""));
-	return strModel + parseInt(strWeapon, 10);
-};
-
 const Psykers = ({ title, psykers }) => {
 	return (
 		<>
@@ -659,7 +533,8 @@ const Psykers = ({ title, psykers }) => {
 				))}
 				{psykers.length > 0 && (
 					<tr className="emptyRow">
-						<td colSpan={8}></td>
+						<td style={{ width: 37, borderTop: "none" }}></td>
+						<td colSpan={7}></td>
 					</tr>
 				)}
 			</tbody>
@@ -672,7 +547,7 @@ const Psyker = ({ psyker, index }) => {
 
 	return (
 		<tr className={index % 2 ? "rowOtherColor" : ""}>
-			<td style={{ borderBottom: "none", backgroundColor: "#dfe0e2" }}></td>
+			<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}></td>
 			<td style={{ textAlign: "left" }}>
 				<div
 					style={{
