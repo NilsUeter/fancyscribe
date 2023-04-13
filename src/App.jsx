@@ -106,17 +106,17 @@ function App() {
 				>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>About</div>
 					<div style={{ fontSize: "1.2rem" }}>
-						PrettyScribe is a website that renders{" "}
+						FancyScribe is a website that renders{" "}
 						<a href="https://www.battlescribe.net/" target="_blank">
 							BattleScribe
 						</a>{" "}
 						roster files in an opinionated format inspired by the new 10th
-						edition datacards. Inspiration and large parts of the parsing logic
-						come from the{" "}
+						edition datacards. Additional inspiration and large parts of the
+						parsing logic come from the{" "}
 						<a href="https://rweyrauch.github.io/PrettyScribe" target="_blank">
 							PrettyScribe
 						</a>{" "}
-						application.
+						website.
 					</div>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
