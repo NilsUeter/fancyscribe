@@ -16,6 +16,16 @@
 	-webkit-text-size-adjust: 100%;
 }
 
+@media (prefers-color-scheme: light) {
+	:root {
+		color: #111113;
+		background-color: #ffffff;
+	}
+	a:hover {
+		color: #747bff;
+	}
+}
+
 * {
 	box-sizing: border-box;
 	print-color-adjust: exact;
@@ -33,7 +43,7 @@ a:hover {
 
 body {
 	margin: 0;
-	min-width: 320px;
+	min-width: 700px;
 	min-height: 100vh;
 }
 
@@ -59,23 +69,6 @@ button:hover {
 button:focus,
 button:focus-visible {
 	outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
-	}
-	a:hover {
-		color: #747bff;
-	}
-	button {
-		background-color: #f9f9f9;
-	}
-}
-
-#root {
-	color: #111113;
 }
 
 .body {

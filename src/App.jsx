@@ -121,8 +121,8 @@ function App() {
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
 					</div>
-					<img src={Demo0} />
-					<img src={Demo1} />
+					<img src={Demo0} style={{ width: "100%" }} />
+					<img src={Demo1} style={{ width: "100%" }} />
 				</div>
 			</div>
 		</div>
