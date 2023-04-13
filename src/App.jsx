@@ -85,7 +85,7 @@ function App() {
 					style={{ display: "none" }}
 				/>
 				<label
-					for="rosterUpload"
+					htmlFor="rosterUpload"
 					className={
 						"print-display-none rosterUpload" +
 						" " +
