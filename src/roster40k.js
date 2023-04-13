@@ -1,48 +1,39 @@
 export class BaseNotes {
-	_name = "";
-	_customNotes = "";
-
-	name() {
-		return this._name;
-	}
-
-	notes() {
-		return this._customNotes;
-	}
+	name = "";
 
 	equal(other) {
 		if (other == null) return false;
 		// Weapons in 40k have unique names
-		return this._name === other._name;
+		return this.name === other.name;
 	}
 }
 
 /** A `selection` attached to a unit or model. */
 export class Upgrade extends BaseNotes {
-	_cost = new Costs();
-	_count = 1;
+	cost = new Costs();
+	count = 1;
 
-	selectionName() {
-		return this.name();
+	getSelectionName() {
+		return this.name;
 	}
 
 	toString() {
-		let string = this.selectionName();
-		if (this._count > 1) string = `${this._count}x ${string}`;
-		if (this._cost.hasValues()) string += ` ${this._cost.toString()}`;
+		let string = this.getSelectionName();
+		if (this.count > 1) string = `${this.count}x ${string}`;
+		if (this.cost.hasValues()) string += ` ${this.cost.toString()}`;
 		return string;
 	}
 }
 
 /** A weapon `profile` that is under a `selection`. */
 export class Weapon extends Upgrade {
-	_selectionName = "";
+	selectionName = "";
 
-	_range = "Melee";
-	_type = "Melee";
+	range = "Melee";
+	type = "Melee";
 	str = "user";
-	_ap = "";
-	_damage = "";
+	ap = "";
+	damage = "";
 
 	abilities = "";
 
@@ -50,35 +41,35 @@ export class Weapon extends Upgrade {
 	 * Name of this weapon's `selection`. This is different from name() because
 	 * name() is used for sorting and deduping weapon profiles.
 	 */
-	selectionName() {
-		return this._selectionName || this.name();
+	getSelectionName() {
+		return this.selectionName || this.name;
 	}
 }
 
 export class WoundTracker extends BaseNotes {
-	_name = "";
-	_table = new Map();
+	name = "";
+	table = new Map();
 }
 
 export class Explosion extends BaseNotes {
-	_name = "";
-	_diceRoll = "";
-	_distance = "";
-	_mortalWounds = "";
+	name = "";
+	diceRoll = "";
+	distance = "";
+	mortalWounds = "";
 }
 
 export class Psyker extends BaseNotes {
-	_cast = "";
-	_deny = "";
-	_powers = "";
-	_other = "";
+	cast = "";
+	deny = "";
+	powers = "";
+	other = "";
 }
 
 export class PsychicPower extends BaseNotes {
-	_name = "";
-	_manifest = 0;
-	_range = "";
-	_details = "";
+	name = "";
+	manifest = 0;
+	range = "";
+	details = "";
 }
 
 export const UnitRole = {
@@ -118,48 +109,48 @@ export const UnitRoleToString = [
 ];
 
 export class Model extends BaseNotes {
-	_count = 0;
+	count = 0;
 
 	// Characteristics
 	move = '0"';
-	_ws = "";
-	_bs = "";
+	ws = "";
+	bs = "";
 	str = 4;
 	toughness = 4;
 	wounds = 1;
-	_attacks = "";
+	attacks = "";
 	leadership = 7;
 	save = "";
 
 	weapons = [];
-	_upgrades = [];
+	upgrades = [];
 	// TODO model upgrades (i.e. tau support systems)
-	_psyker = null;
-	_psychicPowers = [];
-	_explosions = [];
+	psyker = null;
+	psychicPowers = [];
+	explosions = [];
 
 	equal(model) {
 		if (model == null) return false;
 
 		if (
-			this._name === model._name &&
-			this._count === model._count &&
+			this.name === model.name &&
+			this.count === model.count &&
 			this.weapons.length === model.weapons.length &&
-			this._upgrades.length === model._upgrades.length
+			this.upgrades.length === model.upgrades.length
 		) {
 			for (let wi = 0; wi < this.weapons.length; wi++) {
 				if (!this.weapons[wi].equal(model.weapons[wi])) {
 					return false;
 				}
 			}
-			for (let wi = 0; wi < this._upgrades.length; wi++) {
-				if (!this._upgrades[wi].equal(model._upgrades[wi])) {
+			for (let wi = 0; wi < this.upgrades.length; wi++) {
+				if (!this.upgrades[wi].equal(model.upgrades[wi])) {
 					return false;
 				}
 			}
 
 			// TODO: check for the same psychic powers
-			if (this._psyker != null || model._psyker != null) return false;
+			if (this.psyker != null || model.psyker != null) return false;
 
 			return true;
 		}
@@ -167,9 +158,9 @@ export class Model extends BaseNotes {
 	}
 
 	nameAndGear() {
-		let name = super.name();
+		let name = super.name;
 
-		if (this.weapons.length > 0 || this._upgrades.length > 0) {
+		if (this.weapons.length > 0 || this.upgrades.length > 0) {
 			const gear = this.getDedupedWeaponsAndUpgrades();
 			name += ` (${gear.map((u) => u.toString()).join(", ")})`;
 		}
@@ -178,8 +169,12 @@ export class Model extends BaseNotes {
 
 	getDedupedWeaponsAndUpgrades() {
 		const deduped = [];
-		for (const upgrade of [...this.weapons, ...this._upgrades]) {
-			if (!deduped.some((e) => upgrade.selectionName() === e.selectionName())) {
+		for (const upgrade of [...this.weapons, ...this.upgrades]) {
+			if (
+				!deduped.some(
+					(e) => upgrade.getSelectionName() === e.getSelectionName()
+				)
+			) {
 				deduped.push(upgrade);
 			}
 		}
@@ -188,75 +183,75 @@ export class Model extends BaseNotes {
 
 	normalize() {
 		this.weapons.sort(CompareWeapon);
-		this._upgrades.sort(CompareObj);
+		this.upgrades.sort(CompareObj);
 
 		this.normalizeUpgrades(this.weapons);
-		this.normalizeUpgrades(this._upgrades);
+		this.normalizeUpgrades(this.upgrades);
 	}
 
 	normalizeUpgrades(upgrades) {
 		for (let i = 0; i < upgrades.length - 1; i++) {
 			const upgrade = upgrades[i];
-			if (upgrade._name === upgrades[i + 1]._name) {
-				upgrade._count += upgrades[i + 1]._count;
-				upgrade._cost.add(upgrades[i + 1]._cost);
+			if (upgrade.name === upgrades[i + 1].name) {
+				upgrade.count += upgrades[i + 1].count;
+				upgrade.cost.add(upgrades[i + 1].cost);
 				upgrades.splice(i + 1, 1);
 				i--;
 			}
 		}
 		for (let upgrade of upgrades) {
-			if (upgrade._count % this._count == 0) {
-				upgrade._count /= this._count;
-				upgrade._cost._points /= this._count;
+			if (upgrade.count % this.count == 0) {
+				upgrade.count /= this.count;
+				upgrade.cost.points /= this.count;
 			}
 		}
 	}
 }
 
 export class Unit extends BaseNotes {
-	_roleRole = UnitRole.NONE;
+	roleRole = UnitRole.NONE;
 	factions = new Set();
 	keywords = new Set();
 
 	abilities = {};
 	rules = new Map();
 
-	_models = [];
+	models = [];
 	modelStats = [];
-	_modelList = [];
+	modelList = [];
 	weapons = [];
-	_spells = [];
-	_psykers = [];
-	_explosions = [];
+	spells = [];
+	psykers = [];
+	explosions = [];
 
-	_cost = new Costs();
+	cost = new Costs();
 
-	_woundTracker = [];
+	woundTracker = [];
 
 	nameWithExtraCosts() {
 		const extraCosts = []; // Track extra costs like cabal points.
-		for (const freeformCostType in this._cost._freeformValues) {
-			if (this._cost._freeformValues[freeformCostType] === 0) continue;
+		for (const freeformCostType in this.cost.freeformValues) {
+			if (this.cost.freeformValues[freeformCostType] === 0) continue;
 			extraCosts.push(
-				`${this._cost._freeformValues[freeformCostType]}${freeformCostType}`
+				`${this.cost.freeformValues[freeformCostType]}${freeformCostType}`
 			);
 		}
 		return extraCosts.length
-			? `${this.name()} [${extraCosts.join(", ")}]`
-			: this.name();
+			? `${this.name} [${extraCosts.join(", ")}]`
+			: this.name;
 	}
 
 	equal(unit) {
 		if (unit == null) return false;
 
 		if (
-			unit._name === this._name &&
-			unit._role === this._role &&
-			unit._models.length === this._models.length &&
+			unit.name === this.name &&
+			unit.role === this.role &&
+			unit.models.length === this.models.length &&
 			unit.modelStats.length === this.modelStats.length
 		) {
-			for (let mi = 0; mi < this._models.length; mi++) {
-				if (!this._models[mi].equal(unit._models[mi])) {
+			for (let mi = 0; mi < this.models.length; mi++) {
+				if (!this.models[mi].equal(unit.models[mi])) {
 					return false;
 				}
 			}
@@ -268,9 +263,9 @@ export class Unit extends BaseNotes {
 			}
 
 			// Check how to replace without lodash
-			/* if (!_.isEqual(this.abilities, unit.abilities)) {
+			/* if (!.isEqual(this.abilities, unit.abilities)) {
         return false;
-      } else if (!_.isEqual(this.rules, unit.rules)) {
+      } else if (!.isEqual(this.rules, unit.rules)) {
         return false;
       } */
 
@@ -281,19 +276,19 @@ export class Unit extends BaseNotes {
 
 	normalize() {
 		// Sort force units by role and name
-		this._models.sort(CompareModel);
+		this.models.sort(CompareModel);
 		this.modelStats.sort(CompareObj);
 
-		for (let model of this._models) {
+		for (let model of this.models) {
 			model.normalize();
 		}
 
-		for (let i = 0; i < this._models.length - 1; i++) {
-			const model = this._models[i];
+		for (let i = 0; i < this.models.length - 1; i++) {
+			const model = this.models[i];
 
-			if (model.nameAndGear() === this._models[i + 1].nameAndGear()) {
-				model._count++;
-				this._models.splice(i + 1, 1);
+			if (model.nameAndGear() === this.models[i + 1].nameAndGear()) {
+				model.count++;
+				this.models.splice(i + 1, 1);
 				i--;
 			}
 		}
@@ -307,77 +302,72 @@ export class Unit extends BaseNotes {
 			}
 		}
 
-		this._modelList = this._models.map(
+		this.modelList = this.models.map(
 			(model) =>
-				(model._count > 1 ? `${model._count}x ` : "") + model.nameAndGear()
+				(model.count > 1 ? `${model.count}x ` : "") + model.nameAndGear()
 		);
-		this.weapons = this._models
+		this.weapons = this.models
 			.map((m) => m.weapons)
 			.reduce((acc, val) => acc.concat(val), [])
 			.sort(CompareWeapon)
-			.filter((weap, i, array) => weap.name() !== array[i - 1]?.name());
+			.filter((weap, i, array) => weap.name !== array[i - 1]?.name);
 
-		this._spells.push(
-			...this._models
-				.map((m) => m._psychicPowers)
+		this.spells.push(
+			...this.models
+				.map((m) => m.psychicPowers)
 				.reduce((acc, val) => acc.concat(val), [])
 		);
-		this._psykers.push(...this._models.map((m) => m._psyker).filter((p) => p));
-		this._explosions.push(
-			...this._models
-				.map((m) => m._explosions)
+		this.psykers.push(...this.models.map((m) => m.psyker).filter((p) => p));
+		this.explosions.push(
+			...this.models
+				.map((m) => m.explosions)
 				.reduce((acc, val) => acc.concat(val), [])
 		);
 	}
 }
 
 export class Force extends BaseNotes {
-	_catalog = "";
-	_faction = "Unknown";
-	_factionRules = new Map();
-	_configurations = [];
+	catalog = "";
+	faction = "Unknown";
+	factionRules = new Map();
+	configurations = [];
 	rules = new Map();
-	_units = [];
+	units = [];
 }
 
 export class Roster40k extends BaseNotes {
-	_cost = new Costs();
-	_forces = [];
+	cost = new Costs();
+	forces = [];
 }
 
 export class Costs {
-	_powerLevel = 0;
-	_commandPoints = 0;
-	_points = 0;
-	_freeformValues;
+	commandPoints = 0;
+	points = 0;
+	freeformValues;
 
 	hasValues() {
-		return (
-			this._powerLevel !== 0 || this._commandPoints !== 0 || this._points !== 0
-		);
+		return this.commandPoints !== 0 || this.points !== 0;
 	}
 
 	toString() {
 		const values = [];
-		if (this._points !== 0) values.push(`${this._points} pts`);
-		if (this._powerLevel !== 0) values.push(`${this._powerLevel} PL`);
-		if (this._commandPoints !== 0) values.push(`${this._commandPoints} CP`);
+		if (this.points !== 0) values.push(`${this.points} pts`);
+		if (this.commandPoints !== 0) values.push(`${this.commandPoints} CP`);
 		return `[${values.join(" / ")}]`;
 	}
 
 	add(other) {
-		this._powerLevel += other._powerLevel;
-		this._commandPoints += other._commandPoints;
-		this._points += other._points;
-		for (const name in other._freeformValues) {
-			this.addFreeformValue(name, other._freeformValues[name]);
+		this.commandPoints += other.commandPoints;
+		this.points += other.points;
+		for (const name in other.freeformValues) {
+			this.addFreeformValue(name, other.freeformValues[name]);
 		}
 	}
 
 	addFreeformValue(name, value) {
-		if (!this._freeformValues) this._freeformValues = {};
-		const oldValue = this._freeformValues[name] || 0;
-		this._freeformValues[name] = oldValue + value;
+		if (!this.freeformValues) this.freeformValues = {};
+		const oldValue = this.freeformValues[name] || 0;
+		this.freeformValues[name] = oldValue + value;
 	}
 }
 
@@ -389,9 +379,9 @@ export function Create40kRoster(doc) {
 
 		const name = info.getAttributeNode("name")?.nodeValue;
 		if (name) {
-			roster._name = name;
+			roster.name = name;
 		} else {
-			roster._name = "40k Army Roster";
+			roster.name = "40k Army Roster";
 		}
 
 		ParseRosterPoints(doc, roster);
@@ -404,7 +394,7 @@ export function Create40kRoster(doc) {
 function ParseRosterPoints(doc, roster) {
 	let costs = doc.querySelectorAll("roster>costs>cost");
 	for (let cost of costs) {
-		roster._cost.add(ParseCost(cost));
+		roster.cost.add(ParseCost(cost));
 	}
 }
 
@@ -418,10 +408,10 @@ function ParseForces(doc, roster) {
 			let value = root.getAttributeNode("catalogueName")?.nodeValue;
 
 			if (which) {
-				f._name = which;
+				f.name = which;
 			}
 			if (value) {
-				f._catalog = value;
+				f.catalog = value;
 			}
 
 			// TODO: Determine force faction and faction specific rules.
@@ -436,7 +426,7 @@ function ParseForces(doc, roster) {
 
 			ParseSelections(root, f);
 
-			roster._forces.push(f);
+			roster.forces.push(f);
 		}
 	}
 }
@@ -458,7 +448,7 @@ function ParseSelections(root, force) {
 			ParseConfiguration(selection, force);
 		} else if (selection.querySelector('profile[typeName="Unit"]')) {
 			const unit = ParseUnit(selection);
-			force._units.push(unit);
+			force.units.push(unit);
 			for (const entry of unit.rules.entries()) {
 				force.rules.set(entry[0], entry[1]);
 			}
@@ -470,11 +460,11 @@ function ParseSelections(root, force) {
 				// sub-faction
 				const name = prop.getAttribute("name");
 				if (name && prop.getAttribute("type") === "upgrade") {
-					if (force._faction === "Unknown") {
+					if (force.faction === "Unknown") {
 						// pick the first upgrade we see
-						force._faction = name;
+						force.faction = name;
 					}
-					ExtractRuleFromSelection(prop, force._factionRules);
+					ExtractRuleFromSelection(prop, force.factionRules);
 				}
 			}
 		} else {
@@ -482,16 +472,16 @@ function ParseSelections(root, force) {
 		}
 	}
 
-	for (const key of force._factionRules.keys()) {
+	for (const key of force.factionRules.keys()) {
 		force.rules.delete(key);
 	}
 
 	// Sort force units by role and name
-	force._units.sort((a, b) => {
-		if (a._role > b._role) return 1;
-		else if (a._role == b._role) {
-			if (a._name > b._name) return 1;
-			else if (a._name == b._name) return 0;
+	force.units.sort((a, b) => {
+		if (a.role > b.role) return 1;
+		else if (a.role == b.role) {
+			if (a.name > b.name) return 1;
+			else if (a.name == b.name) return 0;
 			return -1;
 		}
 		return -1;
@@ -517,14 +507,14 @@ function ParseConfiguration(selection, force) {
 	if (details.length > 0) configuration += `: ${details.join(", ")}`;
 	if (costs.hasValues()) configuration += ` ${costs.toString()}`;
 
-	force._configurations.push(configuration);
+	force.configurations.push(configuration);
 }
 
 function DuplicateForce(force, roster) {
 	if (!roster || !force) return false;
 
-	for (let f of roster._forces) {
-		if (f._catalog === force._catalog) return true;
+	for (let f of roster.forces) {
+		if (f.catalog === force.catalog) return true;
 	}
 	return false;
 }
@@ -591,22 +581,8 @@ function LookupRole(roleText) {
 }
 
 function ExpandBaseNotes(root, obj) {
-	obj._name = root.getAttributeNode("name")?.nodeValue;
-
-	let element = root;
-	if (
-		root.tagName === "profile" &&
-		root.parentElement &&
-		root.parentElement.parentElement
-	) {
-		element = root.parentElement.parentElement;
-	}
-
-	let child = element.firstElementChild;
-	if (child && child.tagName === "customNotes") {
-		obj._customNotes = child.textContent;
-	}
-	return obj._name;
+	obj.name = root.getAttributeNode("name")?.nodeValue;
+	return obj.name;
 }
 
 function ExtractNumberFromParent(root) {
@@ -676,12 +652,10 @@ function ParseCost(cost) {
 	const which = cost.getAttribute("name");
 	const value = cost.getAttribute("value");
 	if (which && value) {
-		if (which === " PL") {
-			costs._powerLevel += +value;
-		} else if (which === "pts") {
-			costs._points += +value;
+		if (which === "pts") {
+			costs.points += +value;
 		} else if (which === "CP") {
-			costs._commandPoints += +value;
+			costs.commandPoints += +value;
 		} else {
 			costs.addFreeformValue(which, +value);
 		}
@@ -706,7 +680,7 @@ function ParseUnit(root) {
 				const roleText = catName.trim();
 				let unitRole = LookupRole(roleText);
 				if (unitRole != UnitRole.NONE) {
-					unit._role = unitRole;
+					unit.role = unitRole;
 				} else {
 					// Keyword
 					unit.keywords.add(catName);
@@ -763,9 +737,9 @@ function ParseUnit(root) {
 		seenProfiles.push(...unseenProfiles);
 
 		const model = new Model();
-		model._name = modelSelection.getAttribute("name") || "Unknown Model";
-		model._count = Number(modelSelection.getAttribute("number") || 1);
-		unit._models.push(model);
+		model.name = modelSelection.getAttribute("name") || "Unknown Model";
+		model.count = Number(modelSelection.getAttribute("number") || 1);
+		unit.models.push(model);
 
 		// Find stats for all profiles (weapons, powers, abilities, etc).
 		ParseModelProfiles(profiles, model, unit);
@@ -788,10 +762,10 @@ function ParseUnit(root) {
 			let upgradeName = upgradeSelection.getAttribute("name");
 			if (upgradeName) {
 				const upgrade = new Upgrade();
-				upgrade._name = upgradeName;
-				upgrade._cost = GetSelectionCosts(upgradeSelection);
-				upgrade._count = Number(upgradeSelection.getAttribute("number"));
-				model._upgrades.push(upgrade);
+				upgrade.name = upgradeName;
+				upgrade.cost = GetSelectionCosts(upgradeSelection);
+				upgrade.count = Number(upgradeSelection.getAttribute("number"));
+				model.upgrades.push(upgrade);
 			}
 		}
 	}
@@ -805,28 +779,28 @@ function ParseUnit(root) {
 	seenProfiles.push(...unseenProfiles);
 	if (unseenProfiles.length > 0) {
 		const unitUpgradesModel = new Model();
-		unitUpgradesModel._name = "Unit Upgrades";
+		unitUpgradesModel.name = "Unit Upgrades";
 		ParseModelProfiles(unseenProfiles, unitUpgradesModel, unit);
-		if (unitUpgradesModel.weapons.length > 0 && unit._models.length > 0) {
+		if (unitUpgradesModel.weapons.length > 0 && unit.models.length > 0) {
 			// Apply weapons at the unit level to all models in the unit.
-			for (const model of unit._models) {
+			for (const model of unit.models) {
 				model.weapons.push(...unitUpgradesModel.weapons);
 			}
 			unitUpgradesModel.weapons.length = 0; // Clear the array.
 		}
-		if (unitUpgradesModel._psychicPowers.length > 0) {
+		if (unitUpgradesModel.psychicPowers.length > 0) {
 			// Add spells to the unit's spell list. However, we'll still need
 			// to add spell upgrade selections to the upgrade list, below.
-			unit._spells.push(...unitUpgradesModel._psychicPowers);
-			unitUpgradesModel._psychicPowers.length = 0;
+			unit.spells.push(...unitUpgradesModel.psychicPowers);
+			unitUpgradesModel.psychicPowers.length = 0;
 		}
-		if (unitUpgradesModel._psyker) {
-			unit._psykers.push(unitUpgradesModel._psyker);
-			unitUpgradesModel._psyker = null;
+		if (unitUpgradesModel.psyker) {
+			unit.psykers.push(unitUpgradesModel.psyker);
+			unitUpgradesModel.psyker = null;
 		}
-		if (unitUpgradesModel._explosions.length > 0) {
-			unit._explosions.push(...unitUpgradesModel._explosions);
-			unitUpgradesModel._explosions.length = 0;
+		if (unitUpgradesModel.explosions.length > 0) {
+			unit.explosions.push(...unitUpgradesModel.explosions);
+			unitUpgradesModel.explosions.length = 0;
 		}
 
 		// Look for any unit-level upgrade selections that we didn't catch
@@ -843,24 +817,24 @@ function ParseUnit(root) {
 			if (!name) continue;
 
 			const upgrade = new Upgrade();
-			upgrade._name = name;
-			upgrade._cost = GetSelectionCosts(selection);
-			upgrade._count = Number(selection.getAttribute("number"));
-			unitUpgradesModel._upgrades.push(upgrade);
+			upgrade.name = name;
+			upgrade.cost = GetSelectionCosts(selection);
+			upgrade.count = Number(selection.getAttribute("number"));
+			unitUpgradesModel.upgrades.push(upgrade);
 		}
 
 		if (
 			unitUpgradesModel.weapons.length > 0 ||
-			unitUpgradesModel._upgrades.length > 0
+			unitUpgradesModel.upgrades.length > 0
 		) {
-			unit._models.push(unitUpgradesModel);
+			unit.models.push(unitUpgradesModel);
 		}
 	}
 
 	// Only match costs->costs associated with the unit and not its children (model and weapon) costs.
 	let costs = root.querySelectorAll("costs>cost");
 	for (let cost of costs) {
-		unit._cost.add(ParseCost(cost));
+		unit.cost.add(ParseCost(cost));
 	}
 
 	let rules = root.querySelectorAll("rules > rule");
@@ -879,7 +853,7 @@ function ParseModelStatsProfiles(profiles, unit, unitName) {
 		if (!profileName || !profileType) return;
 
 		const model = new Model();
-		model._name = profileName;
+		model.name = profileName;
 		unit.modelStats.push(model);
 
 		ExpandBaseNotes(profile, model);
@@ -895,10 +869,10 @@ function ParseModelStatsProfiles(profiles, unit, unitName) {
 						model.move = char.textContent;
 						break;
 					case "WS":
-						model._ws = char.textContent;
+						model.ws = char.textContent;
 						break;
 					case "BS":
-						model._bs = char.textContent;
+						model.bs = char.textContent;
 						break;
 					case "S":
 						model.str = +char.textContent;
@@ -910,7 +884,7 @@ function ParseModelStatsProfiles(profiles, unit, unitName) {
 						model.wounds = +char.textContent;
 						break;
 					case "A":
-						model._attacks = char.textContent;
+						model.attacks = char.textContent;
 						break;
 					case "Ld":
 						model.leadership = +char.textContent;
@@ -945,15 +919,15 @@ function ParseModelProfiles(profiles, model, unit) {
 			typeName.includes(" Wounds")
 		) {
 			const tracker = ParseWoundTrackerProfile(profile);
-			unit._woundTracker.push(tracker);
+			unit.woundTracker.push(tracker);
 		} else if (typeName == "Psychic Power") {
 			const power = ParsePsychicPowerProfile(profile);
-			model._psychicPowers.push(power);
+			model.psychicPowers.push(power);
 		} else if (typeName.includes("Explosion")) {
 			const explosion = ParseExplosionProfile(profile);
-			model._explosions.push(explosion);
+			model.explosions.push(explosion);
 		} else if (typeName == "Psyker") {
-			model._psyker = ParsePsykerProfile(profile);
+			model.psyker = ParsePsykerProfile(profile);
 		} else {
 			// Everything else, like Prayers and Warlord Traits.
 			if (!unit.abilities[typeName]) unit.abilities[typeName] = new Map();
@@ -986,7 +960,7 @@ function ParseProfileCharacteristics(profile, profileName, typeName, map) {
 function ParseWeaponProfile(profile) {
 	const weapon = new Weapon();
 	ExpandBaseNotes(profile, weapon);
-	weapon._count = ExtractNumberFromParent(profile);
+	weapon.count = ExtractNumberFromParent(profile);
 
 	let chars = profile.querySelectorAll("characteristics>characteristic");
 	for (let char of chars) {
@@ -995,19 +969,19 @@ function ParseWeaponProfile(profile) {
 			if (char.textContent) {
 				switch (charName) {
 					case "Range":
-						weapon._range = char.textContent;
+						weapon.range = char.textContent;
 						break;
 					case "Type":
-						weapon._type = char.textContent;
+						weapon.type = char.textContent;
 						break;
 					case "S":
 						weapon.str = char.textContent;
 						break;
 					case "AP":
-						weapon._ap = char.textContent;
+						weapon.ap = char.textContent;
 						break;
 					case "D":
-						weapon._damage = char.textContent;
+						weapon.damage = char.textContent;
 						break;
 					case "Abilities":
 						weapon.abilities = char.textContent;
@@ -1021,8 +995,8 @@ function ParseWeaponProfile(profile) {
 	const selection = profile.parentElement?.parentElement;
 	const selectionName = selection?.getAttribute("name");
 	if (selection?.getAttribute("type") === "upgrade" && selectionName) {
-		weapon._selectionName = selectionName;
-		weapon._cost = GetSelectionCosts(selection);
+		weapon.selectionName = selectionName;
+		weapon.cost = GetSelectionCosts(selection);
 	}
 	return weapon;
 }
@@ -1035,9 +1009,9 @@ function ParseWoundTrackerProfile(profile) {
 		const charName = char.getAttribute("name");
 		if (charName) {
 			if (char.textContent) {
-				tracker._table.set(charName, char.textContent);
+				tracker.table.set(charName, char.textContent);
 			} else {
-				tracker._table.set(charName, "-");
+				tracker.table.set(charName, "-");
 			}
 		}
 	}
@@ -1054,13 +1028,13 @@ function ParsePsychicPowerProfile(profile) {
 		if (charName && char.textContent) {
 			switch (charName) {
 				case "Range":
-					power._range = char.textContent;
+					power.range = char.textContent;
 					break;
 				case "Warp Charge":
-					power._manifest = +char.textContent;
+					power.manifest = +char.textContent;
 					break;
 				case "Details":
-					power._details = char.textContent;
+					power.details = char.textContent;
 					break;
 			}
 		}
@@ -1078,13 +1052,13 @@ function ParseExplosionProfile(profile) {
 		if (charName && char.textContent) {
 			switch (charName) {
 				case "Dice Roll":
-					explosion._diceRoll = char.textContent;
+					explosion.diceRoll = char.textContent;
 					break;
 				case "Distance":
-					explosion._distance = char.textContent;
+					explosion.distance = char.textContent;
 					break;
 				case "Mortal Wounds":
-					explosion._mortalWounds = char.textContent;
+					explosion.mortalWounds = char.textContent;
 					break;
 			}
 		}
@@ -1102,16 +1076,16 @@ function ParsePsykerProfile(profile) {
 		if (charName && char.textContent) {
 			switch (charName) {
 				case "Cast":
-					psyker._cast = char.textContent;
+					psyker.cast = char.textContent;
 					break;
 				case "Deny":
-					psyker._deny = char.textContent;
+					psyker.deny = char.textContent;
 					break;
 				case "Powers Known":
-					psyker._powers = char.textContent;
+					psyker.powers = char.textContent;
 					break;
 				case "Other":
-					psyker._other = char.textContent;
+					psyker.other = char.textContent;
 					break;
 			}
 		}
@@ -1120,35 +1094,35 @@ function ParsePsykerProfile(profile) {
 }
 
 function CompareObj(a, b) {
-	return Compare(a._name, b._name);
+	return Compare(a.name, b.name);
 }
 
 function CompareModel(a, b) {
-	if (a._name === b._name) {
+	if (a.name === b.name) {
 		return Compare(a.nameAndGear(), b.nameAndGear());
-	} else if (a._name === "Unit Upgrades") {
+	} else if (a.name === "Unit Upgrades") {
 		// "Unit Upgrades", a special model name, is always sorted last.
 		return 1;
-	} else if (b._name === "Unit Upgrades") {
+	} else if (b.name === "Unit Upgrades") {
 		// "Unit Upgrades", a special model name, is always sorted last.
 		return -1;
 	} else {
-		return Compare(a._name, b._name);
+		return Compare(a.name, b.name);
 	}
 }
 
 export function CompareWeapon(a, b) {
-	const aType = a._type.startsWith("Grenade")
+	const aType = a.type.startsWith("Grenade")
 		? 2
-		: a._type.startsWith("Melee")
+		: a.type.startsWith("Melee")
 		? 1
 		: 0;
-	const bType = b._type.startsWith("Grenade")
+	const bType = b.type.startsWith("Grenade")
 		? 2
-		: b._type.startsWith("Melee")
+		: b.type.startsWith("Melee")
 		? 1
 		: 0;
-	return aType - bType || a.name().localeCompare(b.name());
+	return aType - bType || a.name.localeCompare(b.name);
 }
 
 export function Compare(a, b) {

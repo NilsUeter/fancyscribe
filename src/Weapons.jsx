@@ -32,12 +32,11 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 			<tbody>
 				{weapons.map((weapon, index) => (
 					<Weapon
-						key={weapon._name}
+						key={weapon.name}
 						weapon={weapon}
 						modelStats={modelStats}
 						isMelee={isMelee}
 						className={getWeaponClassNames(weapons, index)}
-						index={index}
 					/>
 				))}
 				{weapons.length > 0 && (
@@ -51,77 +50,102 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 	);
 };
 
-const Weapon = ({ weapon, modelStats, isMelee, className, index }) => {
-	let { _name, _selectionName, _range, _type, str, _ap, _damage } = weapon;
-	var lastWhiteSpace = _type.lastIndexOf(" ");
-	const type = _type.substring(0, lastWhiteSpace);
-	const attacks = _type.substring(lastWhiteSpace + 1);
-	const bs = modelStats[0]._bs;
-	const ws = modelStats[0]._ws;
+const Weapon = ({ weapon, modelStats, isMelee, className }) => {
+	let { name, selectionName, range, type, str, ap, damage, abilities } = weapon;
+	var lastWhiteSpace = type.lastIndexOf(" ");
+	type = type.substring(0, lastWhiteSpace);
+	const attacks = type.substring(lastWhiteSpace + 1);
+	const bs = modelStats[0].bs;
+	const ws = modelStats[0].ws;
 	const strModel = modelStats[0].str;
-	const meleeAttacks = modelStats[0]._attacks;
+	const meleeAttacks = modelStats[0].attacks;
 
-	if (_name === "Krak grenades") {
-		_name = "Krak grenade";
+	if (name === "Krak grenades") {
+		name = "Krak grenade";
 	}
 	const differentProfiles =
-		_selectionName !== _name &&
-		!_name.includes("(Shooting)") &&
-		!_name.includes("(Melee)");
+		selectionName !== name &&
+		!name.includes("(Shooting)") &&
+		!name.includes("(Melee)");
 	const interestingType = type && type !== "Melee";
-	if (differentProfiles && _name.endsWith(" grenades")) {
-		_name = _name.replace(" grenades", "");
+	if (differentProfiles && name.endsWith(" grenades")) {
+		name = name.replace(" grenades", "");
 	}
-	if (differentProfiles && _name.endsWith(" grenade")) {
-		_name = _name.replace(" grenade", "");
+	if (differentProfiles && name.endsWith(" grenade")) {
+		name = name.replace(" grenade", "");
 	}
-	if (differentProfiles && _name.includes(" - ")) {
-		_name = _name.split(" - ")[1];
+	if (differentProfiles && name.includes(" - ")) {
+		name = name.split(" - ")[1];
 	}
+
+	if (abilities === "Blast") {
+		abilities = abilities.replaceAll("Blast", "");
+		type += ", Blast";
+	}
+
 	return (
-		<tr className={className}>
-			<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}>
-				{differentProfiles && Arrow}
-			</td>
-			<td style={{ textAlign: "left" }}>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						flexWrap: "wrap",
-						gap: "0 4px",
-					}}
-				>
-					{differentProfiles && _selectionName + " - "}
-					{_name}
-					{interestingType && (
-						<span
-							style={{
-								fontSize: ".8em",
-								fontWeight: 700,
-								color: "var(--primary-color)",
-							}}
-						>
-							[{type}]
-						</span>
-					)}
-				</div>
-			</td>
-			<td>{_range}</td>
-			<td>{isMelee ? meleeAttacks : attacks}</td>
-			<td>{isMelee ? ws : bs}</td>
-			<td>{isMelee ? calculateWeaponStrength(strModel, str) : str}</td>
-			<td>{_ap}</td>
-			<td>{_damage}</td>
-		</tr>
+		<>
+			<tr className={className}>
+				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}>
+					{differentProfiles && Arrow}
+				</td>
+				<td style={{ textAlign: "left" }}>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							flexWrap: "wrap",
+							gap: "0 4px",
+						}}
+					>
+						{differentProfiles && selectionName + " - "}
+						{name}
+						{interestingType && (
+							<span
+								style={{
+									fontSize: ".8em",
+									fontWeight: 700,
+									color: "var(--primary-color)",
+								}}
+							>
+								[{type}]
+							</span>
+						)}
+					</div>
+				</td>
+				<td>{range}</td>
+				<td>{isMelee ? meleeAttacks : attacks}</td>
+				<td>{isMelee ? ws : bs}</td>
+				<td>{isMelee ? calculateWeaponStrength(strModel, str) : str}</td>
+				<td>{ap}</td>
+				<td>{damage}</td>
+			</tr>
+			{abilities && abilities !== "-" && (
+				<tr className={className + " " + "noBorderTop"}>
+					<td style={{ backgroundColor: "#dfe0e2" }}></td>
+					<td
+						colSpan="7"
+						style={{
+							textAlign: "left",
+							fontSize: "0.9em",
+							paddingTop: 0,
+							paddingBottom: 1,
+							lineHeight: 1.4,
+						}}
+					>
+						{abilities}
+					</td>
+				</tr>
+			)}
+		</>
 	);
 };
 
 const getWeaponClassNames = (weapons, index) => {
 	let differentColor = false;
 	for (let i = 1; i <= index; i++) {
-		let { _selectionName } = weapons[i];
-		if (_selectionName !== weapons[i - 1]._selectionName) {
+		let { selectionName } = weapons[i];
+		if (selectionName !== weapons[i - 1].selectionName) {
 			differentColor = !differentColor;
 		}
 	}
@@ -130,7 +154,7 @@ const getWeaponClassNames = (weapons, index) => {
 	if (index === 0) classes.push("noBorderTop");
 	if (
 		index > 0 &&
-		weapons[index]._selectionName === weapons[index - 1]._selectionName
+		weapons[index].selectionName === weapons[index - 1].selectionName
 	)
 		classes.push("noBorderTop");
 	return classes.join(" ");

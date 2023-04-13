@@ -1,14 +1,14 @@
 import factionBackground from "./assets/factionBackground.png";
 import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
-import { Arrow } from "./assets/icons";
+import { Arrow, wavyLine } from "./assets/icons";
 import { Weapons } from "./Weapons";
 
 export const Roster = ({ roster }) => {
 	if (!roster) {
 		return null;
 	}
-	const { _name, _cost, _forces } = roster;
+	const { name, cost, forces } = roster;
 	return (
 		<div
 			style={{
@@ -19,17 +19,18 @@ export const Roster = ({ roster }) => {
 		>
 			<div
 				style={{
-					backgroundColor: "var(--primary-color)",
+					backgroundColor: "#536766",
 					color: "#fff",
 					padding: "4px 16px",
 					fontSize: " 1.7em",
 					fontWeight: "800",
 					textTransform: "uppercase",
+					marginBottom: -16,
 				}}
 			>
-				{_name} [{_cost._commandPoints} CP]
+				{name} [{cost.commandPoints} CP]
 			</div>
-			{_forces.map((force, index) => (
+			{forces.map((force, index) => (
 				<Force key={index} force={force} />
 			))}
 		</div>
@@ -84,9 +85,9 @@ const getPrimaryColor = (catalog) => {
 };
 
 const Force = ({ force }) => {
-	const { _units, rules, _catalog } = force;
+	const { units, rules, catalog } = force;
 
-	const primaryColor = getPrimaryColor(_catalog);
+	const primaryColor = getPrimaryColor(catalog);
 	return (
 		<div
 			style={{
@@ -95,7 +96,7 @@ const Force = ({ force }) => {
 				"--primary-color-transparent": "#53676660",
 			}}
 		>
-			{_units.map((unit, index) => (
+			{units.map((unit, index) => (
 				<Unit key={index} unit={unit} />
 			))}
 			<ForceRules rules={rules} />
@@ -105,35 +106,47 @@ const Force = ({ force }) => {
 
 const Unit = ({ unit }) => {
 	let {
-		_name,
+		name,
 		weapons,
 		abilities,
 		keywords,
 		factions,
 		rules,
 		modelStats,
-		_modelList,
-		_psykers,
+		modelList,
+		psykers,
 	} = unit;
 
 	const hasDifferentProfiles = weapons.some(
 		(weapon) =>
-			weapon._selectionName !== weapon._name &&
-			!weapon._name.includes("(Shooting)") &&
-			!weapon._name.includes("(Melee)")
+			weapon.selectionName !== weapon.name &&
+			!weapon.name.includes("(Shooting)") &&
+			!weapon.name.includes("(Melee)")
 	);
 	const meleeWeapons = weapons
-		.filter((weapon) => weapon._range === "Melee" && weapon._range !== "-")
-		.sort((a, b) => a._selectionName.localeCompare(b._selectionName));
+		.filter((weapon) => weapon.range === "Melee" && weapon.range !== "-")
+		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
+	if (meleeWeapons.length === 0) {
+		meleeWeapons.push({
+			name: "Close combat weapon",
+			selectionName: "Close combat weapon",
+			range: "Melee",
+			damage: "1",
+			type: "Melee",
+			str: "0",
+			ap: "0",
+		});
+	}
 	const rangedWeapons = weapons
-		.filter((weapon) => weapon._range !== "Melee" && weapon._range !== "-")
-		.sort((a, b) => a._selectionName.localeCompare(b._selectionName));
-	modelStats = modelStats.sort((a, b) => b._name.length - a._name.length); // Sort by length of name, so that for example "Primaris Intercessor Sergeant" is before "Primaris Intercessor"
+		.filter((weapon) => weapon.range !== "Melee" && weapon.range !== "-")
+		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
+	if (!modelStats.some((model) => model.name.includes("wounds remaining)"))) {
+		modelStats = modelStats.sort((a, b) => b.name.length - a.name.length); // Sort by length of name, so that for example "Primaris Intercessor Sergeant" is before "Primaris Intercessor"
+	}
 	return (
 		<div
 			className="avoid-page-break"
 			style={{
-				fontSize: 13,
 				fontWeight: 500,
 				border: "2px solid var(--primary-color)",
 				backgroundColor: "#DFE0E2",
@@ -141,8 +154,7 @@ const Unit = ({ unit }) => {
 		>
 			<div
 				style={{
-					padding: "24px 16px",
-					paddingRight: 0,
+					padding: "24px 0",
 					paddingBottom: 24,
 					background:
 						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
@@ -153,7 +165,6 @@ const Unit = ({ unit }) => {
 					style={{
 						padding: "4px 16px",
 						color: "#fff",
-						minHeight: 85,
 						position: "relative",
 					}}
 				>
@@ -162,11 +173,40 @@ const Unit = ({ unit }) => {
 							position: "absolute",
 							left: 0,
 							top: 0,
-							backgroundColor: "var(--primary-color-transparent)",
-							minHeight: 85,
 							width: "100%",
+							display: "flex",
 						}}
-					></div>
+					>
+						<div
+							style={{
+								backgroundColor: "var(--primary-color-transparent)",
+								height: 80,
+								minWidth: 340,
+							}}
+						></div>
+						<div
+							style={{
+								height: 80,
+								display: "flex",
+								flexDirection: "column",
+							}}
+						>
+							<div
+								style={{
+									backgroundColor: "var(--primary-color-transparent)",
+									height: 40,
+								}}
+							></div>
+							{wavyLine}
+						</div>
+						<div
+							style={{
+								flex: "10",
+								backgroundColor: "var(--primary-color-transparent)",
+								height: 40,
+							}}
+						></div>
+					</div>
 					<div
 						style={{
 							fontSize: "1.7em",
@@ -176,7 +216,7 @@ const Unit = ({ unit }) => {
 							position: "relative",
 						}}
 					>
-						{_name}
+						{name}
 					</div>
 					<div
 						style={{
@@ -192,7 +232,7 @@ const Unit = ({ unit }) => {
 							<ModelStats
 								key={index}
 								modelStats={model}
-								modelList={_modelList}
+								modelList={modelList}
 								index={index}
 								showName={modelStats.length > 1}
 							/>
@@ -225,7 +265,7 @@ const Unit = ({ unit }) => {
 							weapons={meleeWeapons}
 							modelStats={modelStats}
 						/>
-						<Psykers title="PSYKER" psykers={_psykers} />
+						<Psykers title="PSYKER" psykers={psykers} />
 					</table>
 					<div style={{ flex: "1" }}></div>
 					{hasDifferentProfiles && (
@@ -282,12 +322,12 @@ const Unit = ({ unit }) => {
 };
 
 const ModelStats = ({ modelStats, index, showName, modelList }) => {
-	let { move, toughness, save, wounds, leadership, _name } = modelStats;
+	let { move, toughness, save, wounds, leadership, name } = modelStats;
 	if (!wounds) {
 		wounds = "/";
 	}
 	const modelListMatches = modelList
-		.filter((model) => model.includes(_name))
+		.filter((model) => model.includes(name))
 		.map((model) => "(" + model.split("(")[1]);
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
@@ -305,7 +345,7 @@ const ModelStats = ({ modelStats, index, showName, modelList }) => {
 							whiteSpace: "nowrap",
 						}}
 					>
-						{_name}
+						{name}
 					</div>
 					<div
 						style={{
@@ -529,7 +569,7 @@ const Psykers = ({ title, psykers }) => {
 			)}
 			<tbody>
 				{psykers.map((psyker, index) => (
-					<Psyker key={psyker._name} psyker={psyker} index={index} />
+					<Psyker key={psyker.name} psyker={psyker} index={index} />
 				))}
 				{psykers.length > 0 && (
 					<tr className="emptyRow">
@@ -543,7 +583,7 @@ const Psykers = ({ title, psykers }) => {
 };
 
 const Psyker = ({ psyker, index }) => {
-	let { _name, _cast, _deny, _powers } = psyker;
+	let { name, cast, deny, powers } = psyker;
 
 	return (
 		<tr className={index % 2 ? "rowOtherColor" : ""}>
@@ -557,13 +597,13 @@ const Psyker = ({ psyker, index }) => {
 						gap: "0 4px",
 					}}
 				>
-					{_name}
+					{name}
 				</div>
 			</td>
-			<td>{_cast}</td>
-			<td>{_deny}</td>
+			<td>{cast}</td>
+			<td>{deny}</td>
 			<td style={{ textAlign: "left" }} colSpan="4">
-				{_powers}
+				{powers}
 			</td>
 		</tr>
 	);
@@ -588,7 +628,6 @@ const ForceRules = ({ rules }) => {
 					<div
 						key={rule}
 						style={{
-							fontSize: ".8em",
 							lineHeight: 1.4,
 						}}
 					>
