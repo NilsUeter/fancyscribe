@@ -84,28 +84,37 @@ function App() {
 			</div>
 
 			<div className="body">
-				<input
-					type="file"
-					name="rosterUpload"
-					id="rosterUpload"
-					onChange={handleFileSelect}
-					style={{ display: "none" }}
-				/>
-				<label
-					htmlFor="rosterUpload"
-					className={
-						"print-display-none rosterUpload" +
-						" " +
-						(roster ? "rosterUploaded" : "")
-					}
-					id="rosterUploadContainer"
+				<div
+					className="print-display-none"
+					style={{ display: "flex", width: "100%", gap: 8 }}
 				>
-					<div id="preloadContainer">
-						<span>Upload roster file (.ros, .rosz)</span>
-					</div>
-				</label>
-				<div style={{ color: "red" }}>{error}</div>
+					<input
+						type="file"
+						name="rosterUpload"
+						id="rosterUpload"
+						onChange={handleFileSelect}
+						style={{ display: "none" }}
+					/>
+					<label
+						htmlFor="rosterUpload"
+						className={"rosterUpload " + (roster ? "rosterUploaded" : "")}
+						id="rosterUploadContainer"
+					>
+						<div id="preloadContainer">
+							<span>Upload roster file (.ros, .rosz)</span>
+						</div>
+					</label>
 
+					<button
+						style={{ display: roster ? "" : "none" }}
+						onClick={() => window.print()}
+					>
+						Print roster
+					</button>
+				</div>
+				<div className="print-display-none" style={{ color: "red" }}>
+					{error}
+				</div>
 				<Roster roster={roster} />
 				<button
 					className="print-display-none"

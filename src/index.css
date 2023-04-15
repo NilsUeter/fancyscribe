@@ -54,6 +54,7 @@ button {
 }
 button:hover {
 	border-color: #536766;
+	background-color: #53676660;
 }
 button:focus,
 button:focus-visible {
@@ -89,6 +90,7 @@ button:focus-visible {
 }
 
 .rosterUpload {
+	flex: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -151,7 +153,8 @@ button:focus-visible {
 }
 
 @media print {
-	.print-display-none {
+	.print-display-none,
+	.print-display-none > * {
 		display: none;
 	}
 
