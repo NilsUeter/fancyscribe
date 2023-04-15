@@ -97,14 +97,14 @@ const Force = ({ force }) => {
 			}}
 		>
 			{units.map((unit, index) => (
-				<Unit key={index} unit={unit} />
+				<Unit key={index} unit={unit} catalog={catalog} />
 			))}
 			<ForceRules rules={rules} />
 		</div>
 	);
 };
 
-const Unit = ({ unit }) => {
+const Unit = ({ unit, catalog }) => {
 	let {
 		name,
 		weapons,
@@ -314,7 +314,7 @@ const Unit = ({ unit }) => {
 					<Rules rules={rules} />
 					<Abilities abilities={abilities.Abilities} />
 					<Factions factions={factions} />
-					<FactionIcon />
+					<FactionIcon catalog={catalog} />
 				</div>
 			</div>
 		</div>
@@ -364,7 +364,8 @@ const ModelStats = ({ modelStats, index, showName, modelList }) => {
 	);
 };
 
-const FactionIcon = () => {
+const FactionIcon = ({ catalog }) => {
+	console.log(catalog);
 	return (
 		<div
 			style={{
@@ -383,7 +384,9 @@ const FactionIcon = () => {
 		>
 			<div
 				style={{
-					background: `url(${adeptusAstartesIcon})`,
+					background: catalog.includes("Imperium")
+						? `url(${adeptusAstartesIcon})`
+						: "#bcbcbe",
 					backgroundPosition: "center",
 					minHeight: "75px",
 					minWidth: "76px",

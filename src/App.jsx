@@ -8,7 +8,7 @@ import Demo1 from "./assets/Demo1.png";
 function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
-	function handleFileSelect(event) {
+	async function handleFileSelect(event) {
 		const files = event?.target?.files;
 
 		if (files) {
@@ -23,11 +23,19 @@ function App() {
 				parseXML(xmldata);
 			};
 			reader.readAsBinaryString(files[0]);
+		} else {
+			// load example
+			const example = await fetch("Ultramarines Example.rosz");
+			const arrayBuffer = await example.arrayBuffer();
+			// Create a new Blob object from the zip file contents
+			const zipBlob = new Blob([arrayBuffer], { type: "application/zip" });
+			const xmldata = await unzip(zipBlob);
+			parseXML(xmldata);
 		}
 	}
 
 	const unzip = async (file) => {
-		if (file.charAt(0) !== "P") {
+		if (file?.charAt && file.charAt(0) !== "P") {
 			return file;
 		} else {
 			const jszip = new JSZip();
@@ -59,8 +67,7 @@ function App() {
 			console.log(roster);
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
-				/* const renderer = new Renderer40k(roster);
-        renderer.render(rosterTitle, rosterList, forceUnits); */
+				setError("");
 			}
 		} else {
 			setError("No support for game type '" + gameType + "'.");
@@ -100,6 +107,13 @@ function App() {
 				<div style={{ color: "red" }}>{error}</div>
 
 				<Roster roster={roster} />
+				<button
+					className="print-display-none"
+					style={{ display: roster ? "none" : "" }}
+					onClick={handleFileSelect}
+				>
+					Load Ultramarines example
+				</button>
 				<div
 					className="print-display-none"
 					style={{ display: roster ? "none" : "" }}

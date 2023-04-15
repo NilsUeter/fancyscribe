@@ -53,8 +53,9 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	let { name, selectionName, range, type, str, ap, damage, abilities } = weapon;
 	var lastWhiteSpace = type.lastIndexOf(" ");
-	type = type.substring(0, lastWhiteSpace);
 	const attacks = type.substring(lastWhiteSpace + 1);
+	type = type.substring(0, lastWhiteSpace);
+
 	const bs = modelStats[0].bs;
 	const ws = modelStats[0].ws;
 	const strModel = modelStats[0].str;
