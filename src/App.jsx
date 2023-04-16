@@ -79,7 +79,7 @@ function App() {
 			<div className="header print-display-none">
 				FancyScribe
 				<div className="subheader">
-					A fancy way to view your Warhammer 40k BattleScribe rosters.
+					A fancy way to view your Warhammer 40k BattleScribe rosters
 				</div>
 			</div>
 
