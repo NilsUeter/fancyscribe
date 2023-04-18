@@ -326,9 +326,21 @@ const ModelStats = ({ modelStats, index, showName, modelList }) => {
 	if (!wounds) {
 		wounds = "/";
 	}
-	const modelListMatches = modelList
-		.filter((model) => model.includes(name))
-		.map((model) => "(" + model.split("(")[1]);
+	if (!name.includes("Sgt")) {
+		modelList = modelList.filter((model) => !model.includes("Sgt"));
+	}
+	if (!name.includes("Sergeant")) {
+		modelList = modelList.filter((model) => !model.includes("Sergeant"));
+	}
+	let modelListMatches = modelList.filter((model) =>
+		model.includes(name + " w")
+	);
+	if (modelListMatches.length === 0) {
+		modelListMatches = modelList.filter((model) => model.includes(name));
+	}
+	modelListMatches = modelListMatches.map((model) =>
+		model.replaceAll(name, "")
+	);
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
@@ -365,7 +377,6 @@ const ModelStats = ({ modelStats, index, showName, modelList }) => {
 };
 
 const FactionIcon = ({ catalog }) => {
-	console.log(catalog);
 	return (
 		<div
 			style={{

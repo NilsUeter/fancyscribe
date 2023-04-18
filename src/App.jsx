@@ -141,6 +141,13 @@ function App() {
 						</a>{" "}
 						website.
 					</div>
+					<div style={{ fontSize: "1.2rem" }}>
+						FancyScribe is an open-source project and can be found on Github (
+						<a href="https://github.com/NilsUeter/fancyscribe" target="_blank">
+							FancyScribe
+						</a>
+						) .
+					</div>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
 					</div>
