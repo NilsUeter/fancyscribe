@@ -57,7 +57,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	type = type.substring(0, lastWhiteSpace);
 
 	const bs = modelStats[0].bs;
-	const ws = modelStats[0].ws;
+	let ws = modelStats[0].ws;
 	const strModel = modelStats[0].str;
 	const meleeAttacks = modelStats[0].attacks;
 
@@ -82,6 +82,17 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	if (abilities === "Blast") {
 		abilities = abilities.replaceAll("Blast", "");
 		type += ", Blast";
+	}
+	if (
+		abilities?.includes(
+			"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll."
+		)
+	) {
+		abilities = abilities.replaceAll(
+			"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll.",
+			""
+		);
+		ws = `${parseInt(ws, 10) + 1}+`;
 	}
 
 	return (

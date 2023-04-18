@@ -158,7 +158,7 @@ export class Model extends BaseNotes {
 	}
 
 	nameAndGear() {
-		let name = super.name;
+		let name = this.name;
 
 		if (this.weapons.length > 0 || this.upgrades.length > 0) {
 			const gear = this.getDedupedWeaponsAndUpgrades();
