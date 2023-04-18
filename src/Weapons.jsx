@@ -68,32 +68,76 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		selectionName !== name &&
 		!name.includes("(Shooting)") &&
 		!name.includes("(Melee)");
-	const interestingType = type && type !== "Melee";
+
 	if (differentProfiles && name.endsWith(" grenades")) {
 		name = name.replace(" grenades", "");
 	}
 	if (differentProfiles && name.endsWith(" grenade")) {
 		name = name.replace(" grenade", "");
 	}
+	if (name.startsWith("Missile launcher, ")) {
+		name = name.replace("Missile launcher, ", "");
+	}
+
 	if (differentProfiles && name.includes(" - ")) {
 		name = name.split(" - ")[1];
 	}
 
-	if (abilities === "Blast") {
-		abilities = abilities.replaceAll("Blast", "");
+	if (abilities?.includes("Blast")) {
+		abilities = abilities.replaceAll("Blast.", "").replaceAll("Blast", "");
 		type += ", Blast";
+	}
+	if (abilities?.includes("Plague Weapon")) {
+		abilities = abilities
+			.replaceAll("Plague Weapon.", "")
+			.replaceAll("Plague Weapon", "");
+		if (type) {
+			type += ", Plague Weapon";
+		} else {
+			type = "Plague Weapon";
+		}
 	}
 	if (
 		abilities?.includes(
 			"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon profile, subtract 1 from that attack's hit roll."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon, you must subtract 1 from the hit roll."
+		) ||
+		abilities?.includes(
+			"When attacking with this weapon, you must subtract 1 from the hit rolls."
 		)
 	) {
-		abilities = abilities.replaceAll(
-			"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll.",
-			""
-		);
+		abilities = abilities
+			.replaceAll(
+				"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon profile, subtract 1 from that attack's hit roll.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, you must subtract 1 from the hit roll.",
+				""
+			)
+			.replaceAll(
+				"When attacking with this weapon, you must subtract 1 from the hit rolls.",
+				""
+			);
 		ws = `${parseInt(ws, 10) + 1}+`;
 	}
+	name = name.replaceAll(" (Shooting)", "").replaceAll(" (Melee)", "");
 
 	return (
 		<>
@@ -112,7 +156,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 					>
 						{differentProfiles && selectionName + " - "}
 						{name}
-						{interestingType && (
+						{type && (
 							<span
 								style={{
 									fontSize: ".8em",
