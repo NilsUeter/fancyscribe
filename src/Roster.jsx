@@ -115,6 +115,7 @@ const Unit = ({ unit, catalog }) => {
 		modelStats,
 		modelList,
 		psykers,
+		cost,
 	} = unit;
 
 	const hasDifferentProfiles = weapons.some(
@@ -214,9 +215,15 @@ const Unit = ({ unit, catalog }) => {
 							textTransform: "uppercase",
 							zIndex: 1,
 							position: "relative",
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
 						}}
 					>
 						{name}
+						<span style={{ textTransform: "initial", fontSize: "1.1rem" }}>
+							{cost.points}pts
+						</span>
 					</div>
 					<div
 						style={{
@@ -235,6 +242,9 @@ const Unit = ({ unit, catalog }) => {
 								modelList={modelList}
 								index={index}
 								showName={modelStats.length > 1}
+								showWeapons={
+									modelList.length > 1 || modelList[0].includes("x ") // show Weapons when multiple weapons of same type, for example (2x Atomiser Beam, Reanimator's Claws)
+								}
 							/>
 						))}
 					</div>
@@ -321,7 +331,13 @@ const Unit = ({ unit, catalog }) => {
 	);
 };
 
-const ModelStats = ({ modelStats, index, showName, modelList }) => {
+const ModelStats = ({
+	modelStats,
+	index,
+	showName,
+	showWeapons,
+	modelList,
+}) => {
 	let { move, toughness, save, wounds, leadership, name } = modelStats;
 	if (!wounds) {
 		wounds = "/";
@@ -348,29 +364,30 @@ const ModelStats = ({ modelStats, index, showName, modelList }) => {
 			<Characteristic title="SV" characteristic={save} index={index} />
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
+
 			{showName && (
-				<>
-					<div
-						style={{
-							marginTop: index === 0 ? 16 : 0,
-							marginLeft: -10,
-							whiteSpace: "nowrap",
-						}}
-					>
-						{name}
-					</div>
-					<div
-						style={{
-							marginTop: index === 0 ? 16 : 0,
-							marginLeft: -10,
-							fontSize: "0.7em",
-						}}
-					>
-						{modelListMatches.map((model, index) => (
-							<div>{model}</div>
-						))}
-					</div>
-				</>
+				<div
+					style={{
+						marginTop: index === 0 ? 16 : 0,
+						marginLeft: -10,
+						whiteSpace: "nowrap",
+					}}
+				>
+					{name}
+				</div>
+			)}
+			{showWeapons && (
+				<div
+					style={{
+						marginTop: index === 0 ? 16 : 0,
+						marginLeft: -10,
+						fontSize: "0.7em",
+					}}
+				>
+					{modelListMatches.map((model, index) => (
+						<div>{model}</div>
+					))}
+				</div>
 			)}
 		</div>
 	);
@@ -548,9 +565,12 @@ const FancyBox = ({ children }) => {
 					alignItems: "center",
 					justifyContent: "center",
 					background: "linear-gradient(315deg, transparent 3px, #E8EDE7 0)",
+					padding: 3,
+					fontSize: "1.6em",
+					fontWeight: 800,
 				}}
 			>
-				<div style={{ fontSize: "1.6em", fontWeight: 800 }}>{children}</div>
+				{children}
 			</div>
 		</div>
 	);

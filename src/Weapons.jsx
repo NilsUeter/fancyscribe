@@ -19,7 +19,7 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 								<img src={isMelee ? meleeIcon : rangedIcon} />
 							</div>
 						</th>
-						<th style={{ textAlign: "left", width: "44%" }}>{title}</th>
+						<th style={{ textAlign: "left" }}>{title}</th>
 						<th>RANGE</th>
 						<th>A</th>
 						<th>{isMelee ? "WS" : "BS"}</th>
@@ -59,7 +59,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	const bs = modelStats[0].bs;
 	let ws = modelStats[0].ws;
 	const strModel = modelStats[0].str;
-	const meleeAttacks = modelStats[0].attacks;
+	let meleeAttacks = modelStats[0].attacks;
 
 	if (name === "Krak grenades") {
 		name = "Krak grenade";
@@ -97,6 +97,30 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			type = "Plague Weapon";
 		}
 	}
+	if (
+		abilities?.includes(
+			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2."
+		) ||
+		abilities?.includes(
+			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2."
+		)
+	) {
+		abilities = abilities
+			.replaceAll(
+				"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2.",
+				""
+			);
+		if (type) {
+			type += ", Melta 2";
+		} else {
+			type = "Melta 2";
+		}
+	}
+
 	if (
 		abilities?.includes(
 			"Each time an attack is made with this weapon, subtract 1 from that attack’s hit roll."
@@ -137,6 +161,55 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			);
 		ws = `${parseInt(ws, 10) + 1}+`;
 	}
+
+	if (
+		abilities?.includes(
+			"Each time an attack is made with this weapon profile, make 2 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon, make 2 attack rolls instead of 1."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon, make 2 hit rolls instead of 1."
+		)
+	) {
+		abilities = abilities
+			.replaceAll(
+				"Each time an attack is made with this weapon profile, make 2 hit rolls instead of 1.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, make 2 attack rolls instead of 1.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, make 2 hit rolls instead of 1.",
+				""
+			);
+
+		meleeAttacks = meleeAttacks * 2;
+	}
+	if (
+		abilities?.includes(
+			"Each time an attack is made with this weapon profile, make 3 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made with this weapon, make 3 hit rolls instead of 1."
+		)
+	) {
+		abilities = abilities
+			.replaceAll(
+				"Each time an attack is made with this weapon profile, make 3 hit rolls instead of 1.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, make 3 hit rolls instead of 1.",
+				""
+			);
+
+		meleeAttacks = meleeAttacks * 3;
+	}
+
 	name = name.replaceAll(" (Shooting)", "").replaceAll(" (Melee)", "");
 
 	return (
@@ -162,6 +235,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 									fontSize: ".8em",
 									fontWeight: 700,
 									color: "var(--primary-color)",
+									textTransform: "uppercase",
 								}}
 							>
 								[{type}]
