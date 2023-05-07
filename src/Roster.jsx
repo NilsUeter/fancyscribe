@@ -4,7 +4,7 @@ import rangedIcon from "./assets/rangedIcon.png";
 import { Arrow, wavyLine } from "./assets/icons";
 import { Weapons } from "./Weapons";
 
-export const Roster = ({ roster }) => {
+export const Roster = ({ roster, onePerPage }) => {
 	if (!roster) {
 		return null;
 	}
@@ -21,6 +21,7 @@ export const Roster = ({ roster }) => {
 			}}
 		>
 			<div
+				className="print-display-none"
 				style={{
 					backgroundColor: "var(--primary-color)",
 					color: "#fff",
@@ -34,7 +35,7 @@ export const Roster = ({ roster }) => {
 				{name} [{cost.commandPoints} CP]
 			</div>
 			{forces.map((force, index) => (
-				<Force key={index} force={force} />
+				<Force key={index} force={force} onePerPage={onePerPage} />
 			))}
 		</div>
 	);
@@ -87,7 +88,7 @@ const getPrimaryColor = (catalog) => {
 	}
 };
 
-const Force = ({ force }) => {
+const Force = ({ force, onePerPage }) => {
 	const { units, rules, catalog } = force;
 
 	return (
@@ -97,14 +98,19 @@ const Force = ({ force }) => {
 			}}
 		>
 			{units.map((unit, index) => (
-				<Unit key={index} unit={unit} catalog={catalog} />
+				<Unit
+					key={index}
+					unit={unit}
+					catalog={catalog}
+					onePerPage={onePerPage}
+				/>
 			))}
-			<ForceRules rules={rules} />
+			<ForceRules rules={rules} onePerPage={onePerPage} />
 		</div>
 	);
 };
 
-const Unit = ({ unit, catalog }) => {
+const Unit = ({ unit, catalog, onePerPage }) => {
 	let {
 		name,
 		weapons,
@@ -145,7 +151,7 @@ const Unit = ({ unit, catalog }) => {
 
 	return (
 		<div
-			className="avoid-page-break"
+			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}
 			style={{
 				fontWeight: 500,
 				border: "2px solid var(--primary-color)",
@@ -773,10 +779,10 @@ const getSpellClassNames = (spells, index) => {
 	return classes.join(" ");
 };
 
-const ForceRules = ({ rules }) => {
+const ForceRules = ({ rules, onePerPage }) => {
 	return (
 		<div
-			className="avoid-page-break"
+			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}
 			style={{
 				display: "flex",
 				flexDirection: "column",

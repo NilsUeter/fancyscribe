@@ -153,14 +153,18 @@ button:focus-visible {
 	background-color: #d0d1d3;
 }
 
+.avoid-page-break {
+	break-inside: avoid;
+}
+
+.page-break {
+	break-before: page;
+}
+
 @media print {
 	.print-display-none,
 	.print-display-none > * {
 		display: none;
-	}
-
-	.avoid-page-break {
-		break-inside: avoid;
 	}
 
 	#root {

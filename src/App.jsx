@@ -8,6 +8,7 @@ import Demo1 from "./assets/Demo1.png";
 function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
+	const [onePerPage, setOnePerPage] = useState(false);
 	const uploadRef = useRef();
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
@@ -129,10 +130,22 @@ function App() {
 						Print roster
 					</button>
 				</div>
+				<div
+					className="print-display-none"
+					style={{ display: roster ? "" : "none", width: "100%" }}
+				>
+					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+						<input
+							type="checkbox"
+							onChange={(e) => setOnePerPage(e.target.checked)}
+						/>
+						One Datacard per Page when printing
+					</label>
+				</div>
 				<div className="print-display-none" style={{ color: "red" }}>
 					{error}
 				</div>
-				<Roster roster={roster} />
+				<Roster roster={roster} onePerPage={onePerPage} />
 				<button
 					className="print-display-none"
 					style={{ display: roster ? "none" : "" }}
