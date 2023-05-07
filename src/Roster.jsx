@@ -100,6 +100,7 @@ const Force = ({ force, onePerPage }) => {
 			{units.map((unit, index) => (
 				<Unit
 					key={index}
+					index={index}
 					unit={unit}
 					catalog={catalog}
 					onePerPage={onePerPage}
@@ -110,7 +111,7 @@ const Force = ({ force, onePerPage }) => {
 	);
 };
 
-const Unit = ({ unit, catalog, onePerPage }) => {
+const Unit = ({ unit, index, catalog, onePerPage }) => {
 	let {
 		name,
 		weapons,
@@ -151,7 +152,9 @@ const Unit = ({ unit, catalog, onePerPage }) => {
 
 	return (
 		<div
-			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}
+			className={
+				"avoid-page-break " + (onePerPage && index !== 0 ? "page-break" : "")
+			}
 			style={{
 				fontWeight: 500,
 				border: "2px solid var(--primary-color)",
