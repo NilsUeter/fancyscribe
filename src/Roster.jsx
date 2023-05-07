@@ -142,9 +142,7 @@ const Unit = ({ unit, catalog }) => {
 	const rangedWeapons = weapons
 		.filter((weapon) => weapon.range !== "Melee" && weapon.range !== "-")
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
-	if (!modelStats.some((model) => model.name.includes("wounds remaining)"))) {
-		modelStats = modelStats.sort((a, b) => b.name.length - a.name.length); // Sort by length of name, so that for example "Primaris Intercessor Sergeant" is before "Primaris Intercessor"
-	}
+
 	return (
 		<div
 			className="avoid-page-break"
@@ -341,7 +339,8 @@ const ModelStats = ({
 	showWeapons,
 	modelList,
 }) => {
-	let { move, toughness, save, wounds, leadership, name, bs, ws } = modelStat;
+	let { move, toughness, save, wounds, leadership, name, bs, ws, attacks } =
+		modelStat;
 	if (!wounds) {
 		wounds = "/";
 	}
@@ -360,8 +359,22 @@ const ModelStats = ({
 	modelListMatches = modelListMatches.map((model) =>
 		model.replaceAll(name, "")
 	);
+
+	const degradingStuff = [];
 	const bsChange = Math.abs(parseInt(modelStats[0].bs, 10) - parseInt(bs, 10));
+	if (bsChange > 0) {
+		degradingStuff.push(`${bsChange} from the balistic skill`);
+	}
 	const wsChange = Math.abs(parseInt(modelStats[0].ws, 10) - parseInt(ws, 10));
+	if (wsChange > 0) {
+		degradingStuff.push(`${wsChange} from the weapon skill`);
+	}
+	const attacksChange = Math.abs(
+		parseInt(modelStats[0].attacks, 10) - parseInt(attacks, 10)
+	);
+	if (attacksChange > 0) {
+		degradingStuff.push(`${attacksChange} from the number of attacks`);
+	}
 
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
@@ -395,22 +408,19 @@ const ModelStats = ({
 					))}
 				</div>
 			)}
-			{name.toLowerCase().includes("wounds remaining") &&
-				(bsChange !== 0 || wsChange !== 0) && (
-					<div
-						style={{
-							whiteSpace: "normal",
-							marginLeft: -10,
-							fontSize: "0.7em",
-						}}
-					>
-						{` Each time this model makes
+			{degradingStuff.length > 0 && (
+				<div
+					style={{
+						whiteSpace: "normal",
+						marginLeft: -10,
+						fontSize: "0.7em",
+					}}
+				>
+					{`Each time this model makes
 							an attack, subtract 
-							${bsChange ? `${bsChange} from the balistic skill` : ""}
-							${bsChange !== 0 && wsChange !== 0 ? " and " : ""}
-							${wsChange ? `${wsChange} from the weapon skill` : ""}.`}
-					</div>
-				)}
+							${degradingStuff.join(" and ")}.`}
+				</div>
+			)}
 		</div>
 	);
 };

@@ -228,7 +228,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 						}}
 					>
 						{differentProfiles && selectionName + " - "}
-						{name}
+						{differentProfiles ? name.replaceAll(selectionName, "") : name}
 						{type && (
 							<span
 								style={{
