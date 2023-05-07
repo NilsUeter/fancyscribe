@@ -1,6 +1,6 @@
 import JSZip from "jszip";
 import { Create40kRoster } from "./roster40k";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Roster } from "./Roster";
 import Demo0 from "./assets/Demo0.png";
 import Demo1 from "./assets/Demo1.png";
@@ -8,6 +8,7 @@ import Demo1 from "./assets/Demo1.png";
 function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
+	const uploadRef = useRef();
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
 
@@ -74,6 +75,20 @@ function App() {
 		}
 	}
 
+	useEffect(() => {
+		// Check if the browser is Safari, and if so, remove the accept attribute
+		// from the file input element. This is because Safari doesn't support
+		// extensions on the accept attribute for input type=file
+		// (https://caniuse.com/input-file-accept). If set, they will not allow any
+		// file to be selected.
+		if (
+			navigator.userAgent.match(/AppleWebKit.*Safari/) &&
+			!navigator.userAgent.includes("Chrome")
+		) {
+			uploadRef.current?.removeAttribute("accept");
+		}
+	}, []);
+
 	return (
 		<div className="App">
 			<div className="header print-display-none">
@@ -90,6 +105,7 @@ function App() {
 				>
 					<input
 						type="file"
+						ref={uploadRef}
 						accept=".ros,.rosz"
 						name="rosterUpload"
 						id="rosterUpload"
