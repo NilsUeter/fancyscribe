@@ -380,13 +380,6 @@ const ModelStats = ({
 					}}
 				>
 					{name}
-					{name.toLowerCase().includes("wounds remaining") &&
-						(bsChange !== 0 || wsChange !== 0) &&
-						` Each time this model makes an attack, subtract ${
-							bsChange ? `${bsChange} from the balistic skill` : ""
-						}${bsChange !== 0 && wsChange !== 0 ? " and " : ""}${
-							wsChange ? `${wsChange} from the weapon skill` : ""
-						}.`}
 				</div>
 			)}
 			{showWeapons && (
@@ -402,6 +395,22 @@ const ModelStats = ({
 					))}
 				</div>
 			)}
+			{name.toLowerCase().includes("wounds remaining") &&
+				(bsChange !== 0 || wsChange !== 0) && (
+					<div
+						style={{
+							whiteSpace: "normal",
+							marginLeft: -10,
+							fontSize: "0.7em",
+						}}
+					>
+						{` Each time this model makes
+							an attack, subtract 
+							${bsChange ? `${bsChange} from the balistic skill` : ""}
+							${bsChange !== 0 && wsChange !== 0 ? " and " : ""}
+							${wsChange ? `${wsChange} from the weapon skill` : ""}.`}
+					</div>
+				)}
 		</div>
 	);
 };
