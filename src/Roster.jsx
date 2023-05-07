@@ -115,6 +115,7 @@ const Unit = ({ unit, catalog }) => {
 		modelStats,
 		modelList,
 		psykers,
+		spells,
 		cost,
 	} = unit;
 
@@ -238,7 +239,8 @@ const Unit = ({ unit, catalog }) => {
 						{modelStats.map((model, index) => (
 							<ModelStats
 								key={index}
-								modelStats={model}
+								modelStats={modelStats}
+								modelStat={model}
 								modelList={modelList}
 								index={index}
 								showName={modelStats.length > 1}
@@ -261,10 +263,8 @@ const Unit = ({ unit, catalog }) => {
 						flexDirection: "column",
 					}}
 				>
-					<table
-						className="weapons-table"
-						style={{ width: "100%", marginTop: 20 }}
-					>
+					<Spells title="PSYCHIC" spells={spells} />
+					<table className="weapons-table" style={{ width: "100%" }}>
 						<Weapons
 							title="RANGED WEAPONS"
 							weapons={rangedWeapons}
@@ -275,25 +275,26 @@ const Unit = ({ unit, catalog }) => {
 							weapons={meleeWeapons}
 							modelStats={modelStats}
 						/>
-						<Psykers title="PSYKER" psykers={psykers} />
 					</table>
 					<div style={{ flex: "1" }}></div>
 					{hasDifferentProfiles && (
 						<table className="weapons-table" style={{ width: "100%" }}>
-							<tr className="emptyRow noBorderTop">
-								<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
-								<td
-									colSpan={7}
-									style={{
-										textAlign: "left",
-										fontSize: ".8em",
-										paddingLeft: 0,
-									}}
-								>
-									Before selecting targets for this weapon, select one of its
-									profiles to make attacks with.
-								</td>
-							</tr>
+							<tbody>
+								<tr className="emptyRow noBorderTop">
+									<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
+									<td
+										colSpan={7}
+										style={{
+											textAlign: "left",
+											fontSize: ".8em",
+											paddingLeft: 0,
+										}}
+									>
+										Before selecting targets for this weapon, select one of its
+										profiles to make attacks with.
+									</td>
+								</tr>
+							</tbody>
 						</table>
 					)}
 					<Keywords keywords={keywords} />
@@ -323,6 +324,7 @@ const Unit = ({ unit, catalog }) => {
 					</div>
 					<Rules rules={rules} />
 					<Abilities abilities={abilities.Abilities} />
+					<Psykers title="PSYKER" psykers={psykers} />
 					<Factions factions={factions} />
 					<FactionIcon catalog={catalog} />
 				</div>
@@ -333,12 +335,13 @@ const Unit = ({ unit, catalog }) => {
 
 const ModelStats = ({
 	modelStats,
+	modelStat,
 	index,
 	showName,
 	showWeapons,
 	modelList,
 }) => {
-	let { move, toughness, save, wounds, leadership, name } = modelStats;
+	let { move, toughness, save, wounds, leadership, name, bs, ws } = modelStat;
 	if (!wounds) {
 		wounds = "/";
 	}
@@ -357,6 +360,9 @@ const ModelStats = ({
 	modelListMatches = modelListMatches.map((model) =>
 		model.replaceAll(name, "")
 	);
+	const bsChange = Math.abs(parseInt(modelStats[0].bs, 10) - parseInt(bs, 10));
+	const wsChange = Math.abs(parseInt(modelStats[0].ws, 10) - parseInt(ws, 10));
+
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
@@ -374,6 +380,13 @@ const ModelStats = ({
 					}}
 				>
 					{name}
+					{name.toLowerCase().includes("wounds remaining") &&
+						(bsChange !== 0 || wsChange !== 0) &&
+						` Each time this model makes an attack, subtract ${
+							bsChange ? `${bsChange} from the balistic skill` : ""
+						}${bsChange !== 0 && wsChange !== 0 ? " and " : ""}${
+							wsChange ? `${wsChange} from the weapon skill` : ""
+						}.`}
 				</div>
 			)}
 			{showWeapons && (
@@ -385,7 +398,7 @@ const ModelStats = ({
 					}}
 				>
 					{modelListMatches.map((model, index) => (
-						<div>{model}</div>
+						<div key={model}>{model}</div>
 					))}
 				</div>
 			)}
@@ -578,7 +591,10 @@ const FancyBox = ({ children }) => {
 
 const Psykers = ({ title, psykers }) => {
 	return (
-		<>
+		<table
+			className="weapons-table"
+			style={{ width: "100%", margin: "4px 2px" }}
+		>
 			{psykers.length > 0 && (
 				<thead>
 					<tr
@@ -587,11 +603,6 @@ const Psykers = ({ title, psykers }) => {
 							color: "#fff",
 						}}
 					>
-						<th style={{ width: 37 }}>
-							<div style={{ display: "flex" }}>
-								<img src={rangedIcon} />
-							</div>
-						</th>
 						<th style={{ textAlign: "left" }}>{title}</th>
 						<th>Cast</th>
 						<th>Deny</th>
@@ -607,12 +618,12 @@ const Psykers = ({ title, psykers }) => {
 				))}
 				{psykers.length > 0 && (
 					<tr className="emptyRow">
-						<td style={{ width: 37, borderTop: "none" }}></td>
+						<td style={{ width: 37 }}></td>
 						<td colSpan={7}></td>
 					</tr>
 				)}
 			</tbody>
-		</>
+		</table>
 	);
 };
 
@@ -620,8 +631,10 @@ const Psyker = ({ psyker, index }) => {
 	let { name, cast, deny, powers } = psyker;
 
 	return (
-		<tr className={index % 2 ? "rowOtherColor" : ""}>
-			<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}></td>
+		<tr
+			className={index % 2 ? "rowOtherColor" : ""}
+			style={{ fontSize: ".8em" }}
+		>
 			<td style={{ textAlign: "left" }}>
 				<div
 					style={{
@@ -641,6 +654,104 @@ const Psyker = ({ psyker, index }) => {
 			</td>
 		</tr>
 	);
+};
+
+const Spells = ({ title, spells }) => {
+	return (
+		<table className="weapons-table" style={{ width: "100%", marginTop: 20 }}>
+			{spells.length > 0 && (
+				<thead>
+					<tr
+						style={{
+							backgroundColor: "var(--primary-color)",
+							color: "#fff",
+						}}
+					>
+						<th style={{ width: 37 }}>
+							<div style={{ display: "flex" }}>
+								<img src={rangedIcon} />
+							</div>
+						</th>
+						<th style={{ textAlign: "left" }}>{title}</th>
+						<th>RANGE</th>
+						<th>WARP CHARGE</th>
+					</tr>
+				</thead>
+			)}
+			<tbody>
+				{spells.map((spell, index) => (
+					<Spell
+						key={spell.name}
+						spell={spell}
+						index={index}
+						className={getSpellClassNames(spells, index)}
+					/>
+				))}
+				{spells.length > 0 && (
+					<tr className="emptyRow">
+						<td style={{ width: 37, borderTop: "none" }}></td>
+						<td colSpan={7}></td>
+					</tr>
+				)}
+			</tbody>
+		</table>
+	);
+};
+
+const Spell = ({ spell, index, className }) => {
+	let { name, range, manifest, details } = spell;
+	return (
+		<>
+			<tr className={className}>
+				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}></td>
+				<td style={{ textAlign: "left" }}>
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							flexWrap: "wrap",
+							gap: "0 4px",
+						}}
+					>
+						{name}
+					</div>
+				</td>
+				<td>{range}</td>
+				<td>{manifest}</td>
+			</tr>
+			<tr className={className + " noBorderTop"}>
+				<td style={{ backgroundColor: "#dfe0e2" }}></td>
+				<td
+					colSpan="7"
+					style={{
+						textAlign: "left",
+						fontSize: "0.8em",
+						paddingTop: 0,
+						paddingBottom: 1,
+						lineHeight: 1.4,
+					}}
+				>
+					{details}
+				</td>
+			</tr>
+		</>
+	);
+};
+
+const getSpellClassNames = (spells, index) => {
+	let differentColor = false;
+	for (let i = 1; i <= index; i++) {
+		let { name } = spells[i];
+		if (name !== spells[i - 1].name) {
+			differentColor = !differentColor;
+		}
+	}
+	const classes = [];
+	if (differentColor) classes.push("rowOtherColor");
+	if (index === 0) classes.push("noBorderTop");
+	if (index > 0 && spells[index].name === spells[index - 1].name)
+		classes.push("noBorderTop");
+	return classes.join(" ");
 };
 
 const ForceRules = ({ rules }) => {

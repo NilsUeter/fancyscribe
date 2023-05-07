@@ -97,7 +97,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			type = "Plague Weapon";
 		}
 	}
-	if (
+	/* if (
 		abilities?.includes(
 			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2."
 		) ||
@@ -119,7 +119,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		} else {
 			type = "Melta 2";
 		}
-	}
+	} */
 
 	if (
 		abilities?.includes(
@@ -251,7 +251,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 				<td>{damage}</td>
 			</tr>
 			{abilities && abilities !== "-" && (
-				<tr className={className + " " + "noBorderTop"}>
+				<tr className={className + " noBorderTop"}>
 					<td style={{ backgroundColor: "#dfe0e2" }}></td>
 					<td
 						colSpan="7"

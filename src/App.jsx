@@ -58,7 +58,7 @@ function App() {
 
 		const rosterName = info.getAttribute("name");
 		if (rosterName) {
-			document.title = `PrettyScribe ${rosterName}`;
+			document.title = `FancyScribe ${rosterName}`;
 		}
 
 		if (gameType == "Warhammer 40,000 9th Edition") {
@@ -90,6 +90,7 @@ function App() {
 				>
 					<input
 						type="file"
+						accept=".ros,.rosz"
 						name="rosterUpload"
 						id="rosterUpload"
 						onChange={handleFileSelect}
@@ -146,7 +147,7 @@ function App() {
 						<a href="https://github.com/NilsUeter/fancyscribe" target="_blank">
 							FancyScribe
 						</a>
-						) .
+						).
 					</div>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
