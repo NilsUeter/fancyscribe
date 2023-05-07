@@ -9,17 +9,20 @@ export const Roster = ({ roster }) => {
 		return null;
 	}
 	const { name, cost, forces } = roster;
+	const primaryColor = getPrimaryColor(forces[0].catalog);
 	return (
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "column",
 				gap: 32,
+				"--primary-color": primaryColor,
+				"--primary-color-transparent": primaryColor + "60",
 			}}
 		>
 			<div
 				style={{
-					backgroundColor: "#536766",
+					backgroundColor: "var(--primary-color)",
 					color: "#fff",
 					padding: "4px 16px",
 					fontSize: " 1.7em",
@@ -87,13 +90,10 @@ const getPrimaryColor = (catalog) => {
 const Force = ({ force }) => {
 	const { units, rules, catalog } = force;
 
-	const primaryColor = getPrimaryColor(catalog);
 	return (
 		<div
 			style={{
 				display: "contents",
-				"--primary-color": primaryColor,
-				"--primary-color-transparent": "#53676660",
 			}}
 		>
 			{units.map((unit, index) => (
