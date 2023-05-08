@@ -93,7 +93,9 @@ function App() {
 	return (
 		<div className="App">
 			<div className="header print-display-none">
-				FancyScribe
+				<a href="/" style={{ color: "#fff", fontWeight: 800 }}>
+					FancyScribe
+				</a>
 				<div className="subheader">
 					A fancy way to view your Warhammer 40k BattleScribe rosters
 				</div>
@@ -139,7 +141,7 @@ function App() {
 							type="checkbox"
 							onChange={(e) => setOnePerPage(e.target.checked)}
 						/>
-						One Datacard per Page when printing
+						One Datacard per Page when Printing
 					</label>
 				</div>
 				<div className="print-display-none" style={{ color: "red" }}>

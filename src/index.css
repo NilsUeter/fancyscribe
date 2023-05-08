@@ -159,9 +159,9 @@ button:focus-visible {
 	break-inside: avoid;
 }
 
-.page-break {
-	page-break-before: page;
-	break-before: page;
+.page-break:not(.print-display-none) {
+	page-break-after: page;
+	break-after: page;
 }
 
 @media print {

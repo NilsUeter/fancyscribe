@@ -1,3 +1,4 @@
+import { useState } from "react";
 import factionBackground from "./assets/factionBackground.png";
 import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
@@ -109,6 +110,7 @@ const Force = ({ force, onePerPage }) => {
 };
 
 const Unit = ({ unit, index, catalog, onePerPage }) => {
+	const [hide, setHide] = useState(false);
 	let {
 		name,
 		weapons,
@@ -160,7 +162,9 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 	return (
 		<div
 			className={
-				"avoid-page-break " + (onePerPage && index !== 0 ? "page-break" : "")
+				"avoid-page-break" +
+				(onePerPage ? " page-break" : "") +
+				(hide ? " print-display-none" : "")
 			}
 			style={{
 				fontWeight: 500,
@@ -169,6 +173,10 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 				marginBottom: 32,
 			}}
 		>
+			<label className="print-display-none">
+				<input type="checkbox" onChange={() => setHide(!hide)} />
+				Don't print this card.
+			</label>
 			<div
 				style={{
 					padding: "24px 0",
