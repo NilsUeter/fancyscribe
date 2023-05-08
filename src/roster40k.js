@@ -90,6 +90,24 @@ export const UnitRole = {
 	NF: "NF",
 };
 
+export const UnitRoleSorting = {
+	NONE: 0,
+
+	// 40k
+	SCD: 1,
+	HQ: 2,
+	TR: 3,
+	EL: 4,
+	FA: 5,
+	HS: 6,
+	FL: 7,
+	DT: 8,
+	FT: 9,
+	LW: 10,
+	AGENTS: 11,
+	NF: 12,
+};
+
 export const UnitRoleToString = [
 	"None",
 
@@ -486,10 +504,10 @@ function ParseSelections(root, force) {
 		force.rules.delete(key);
 	}
 
-	// Sort force units by role and name
+	// Sort force units by role and name#
 	force.units.sort((a, b) => {
-		if (a.role > b.role) return 1;
-		else if (a.role == b.role) {
+		if (UnitRoleSorting[a.role] > UnitRoleSorting[b.role]) return 1;
+		else if (UnitRoleSorting[a.role] == UnitRoleSorting[b.role]) {
 			if (a.name > b.name) return 1;
 			else if (a.name == b.name) return 0;
 			return -1;
