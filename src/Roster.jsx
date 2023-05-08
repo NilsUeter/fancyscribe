@@ -392,44 +392,45 @@ const ModelStats = ({
 			<Characteristic title="SV" characteristic={save} index={index} />
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
-
-			{showName && (
-				<div
-					style={{
-						marginTop: index === 0 ? 16 : 0,
-						marginLeft: -10,
-						whiteSpace: "nowrap",
-					}}
-				>
-					{name}
-				</div>
-			)}
-			{showWeapons && (
-				<div
-					style={{
-						marginTop: index === 0 ? 16 : 0,
-						marginLeft: -10,
-						fontSize: "0.7em",
-					}}
-				>
-					{modelListMatches.map((model, index) => (
-						<div key={model}>{model}</div>
-					))}
-				</div>
-			)}
-			{degradingStuff.length > 0 && (
-				<div
-					style={{
-						whiteSpace: "normal",
-						marginLeft: -10,
-						fontSize: "0.7em",
-					}}
-				>
-					{`Each time this model makes
+			<div>
+				{showName && (
+					<div
+						style={{
+							marginTop: index === 0 ? 16 : 0,
+							marginLeft: -10,
+							whiteSpace: "nowrap",
+						}}
+					>
+						{name}
+					</div>
+				)}
+				{showWeapons && (
+					<div
+						style={{
+							marginTop: index === 0 && !showName ? 16 : 0,
+							marginLeft: -10,
+							fontSize: "0.7em",
+						}}
+					>
+						{modelListMatches.map((model, index) => (
+							<div key={model}>{model}</div>
+						))}
+					</div>
+				)}
+				{degradingStuff.length > 0 && (
+					<div
+						style={{
+							whiteSpace: "normal",
+							marginLeft: -10,
+							fontSize: "0.7em",
+						}}
+					>
+						{`Each time this model makes
 							an attack, subtract 
 							${degradingStuff.join(" and ")}.`}
-				</div>
-			)}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };
