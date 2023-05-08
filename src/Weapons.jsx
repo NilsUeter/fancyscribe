@@ -246,7 +246,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 				<td>{range}</td>
 				<td>{isMelee ? meleeAttacks : attacks}</td>
 				<td>{isMelee ? ws : bs}</td>
-				<td>{isMelee ? calculateWeaponStrength(strModel, str) : str}</td>
+				<td>{calculateWeaponStrength(strModel, str)}</td>
 				<td>{ap}</td>
 				<td>{damage}</td>
 			</tr>
