@@ -50,11 +50,11 @@ const getPrimaryColor = (catalog) => {
 		case "Adeptus Mechanicus":
 			return "#536766";
 		case "Astra Militarum":
-			return "#536766";
+			return "#375441";
 		case "Chaos Daemons":
 			return "#536766";
 		case "Chaos Space Marines":
-			return "#536766";
+			return "#1d3138";
 		case "Death Guard":
 			return "#536766";
 		case "Drukhari":
@@ -68,9 +68,9 @@ const getPrimaryColor = (catalog) => {
 		case "Imperial Knights":
 			return "#536766";
 		case "Necrons":
-			return "#536766";
+			return "#005c2f";
 		case "Orks":
-			return "#536766";
+			return "#4b6621";
 		case "Sisters of Battle":
 			return "#536766";
 		case "Space Marines":
@@ -126,14 +126,11 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 		cost,
 	} = unit;
 
-	const hasDifferentProfiles = weapons.some(
-		(weapon) =>
-			weapon.selectionName !== weapon.name &&
-			!weapon.name.includes("(Shooting)") &&
-			!weapon.name.includes("(Melee)")
-	);
 	const meleeWeapons = weapons
-		.filter((weapon) => weapon.range === "Melee" && weapon.range !== "-")
+		.filter(
+			(weapon) =>
+				weapon.range === "Melee" && weapon.range !== "-" && weapon.range !== ""
+		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	if (meleeWeapons.length === 0) {
 		meleeWeapons.push({
@@ -147,8 +144,21 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 		});
 	}
 	const rangedWeapons = weapons
-		.filter((weapon) => weapon.range !== "Melee" && weapon.range !== "-")
+		.filter(
+			(weapon) =>
+				weapon.range !== "Melee" && weapon.range !== "-" && weapon.range !== ""
+		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
+
+	const weaponDescriptions = weapons
+		.filter((weapon) => weapon.range === "-" || weapon.range === "")
+		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
+	const modelsWithDifferentProfiles = weapons.filter(
+		(weapon) =>
+			weapon.selectionName !== weapon.name &&
+			!weapon.name.includes("(Shooting)") &&
+			!weapon.name.includes("(Melee)")
+	);
 
 	return (
 		<div
@@ -284,26 +294,42 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 						/>
 					</table>
 					<div style={{ flex: "1" }}></div>
-					{hasDifferentProfiles && (
-						<table className="weapons-table" style={{ width: "100%" }}>
-							<tbody>
-								<tr className="emptyRow noBorderTop">
+					<table className="weapons-table" style={{ width: "100%" }}>
+						<tbody>
+							{weaponDescriptions.map((weapon, index) => (
+								<tr key={index} className="emptyRow noBorderTop">
 									<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
 									<td
-										colSpan={7}
 										style={{
 											textAlign: "left",
 											fontSize: ".8em",
 											paddingLeft: 0,
 										}}
 									>
-										Before selecting targets for this weapon, select one of its
-										profiles to make attacks with.
+										{weapon.name} - {weapon.abilities}
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					)}
+							))}
+							{modelsWithDifferentProfiles.length > 0 &&
+								!weaponDescriptions.length && (
+									<tr className="emptyRow noBorderTop">
+										<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
+										<td
+											colSpan={7}
+											style={{
+												textAlign: "left",
+												fontSize: ".8em",
+												paddingLeft: 0,
+											}}
+										>
+											Before selecting targets for this weapon, select one of
+											its profiles to make attacks with.
+										</td>
+									</tr>
+								)}
+						</tbody>
+					</table>
+
 					<Keywords keywords={keywords} />
 				</div>
 				<div

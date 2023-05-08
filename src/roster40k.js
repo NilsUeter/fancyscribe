@@ -29,7 +29,7 @@ export class Upgrade extends BaseNotes {
 export class Weapon extends Upgrade {
 	selectionName = "";
 
-	range = "Melee";
+	range = "";
 	type = "Melee";
 	str = "user";
 	ap = "";
