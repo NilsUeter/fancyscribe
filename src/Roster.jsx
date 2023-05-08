@@ -14,9 +14,6 @@ export const Roster = ({ roster, onePerPage }) => {
 		<div
 			style={{
 				position: "relative",
-				display: "flex",
-				flexDirection: "column",
-				gap: 32,
 				"--primary-color": primaryColor,
 				"--primary-color-transparent": primaryColor + "60",
 			}}
@@ -170,6 +167,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 				fontWeight: 500,
 				border: "2px solid var(--primary-color)",
 				backgroundColor: "#DFE0E2",
+				marginBottom: 32,
 			}}
 		>
 			<div
