@@ -154,6 +154,7 @@ button:focus-visible {
 }
 
 .avoid-page-break {
+	position: relative;
 	break-inside: avoid;
 }
 

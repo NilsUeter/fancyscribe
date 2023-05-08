@@ -13,6 +13,7 @@ export const Roster = ({ roster, onePerPage }) => {
 	return (
 		<div
 			style={{
+				position: "relative",
 				display: "flex",
 				flexDirection: "column",
 				gap: 32,
