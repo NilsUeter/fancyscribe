@@ -940,12 +940,12 @@ function ParseModelProfiles(profiles, model, unit) {
 			model.psyker = ParsePsykerProfile(profile);
 		} else {
 			// Everything else, like Prayers and Warlord Traits.
-			if (!unit.abilities[typeName]) unit.abilities[typeName] = new Map();
+			// if (!unit.abilities[typeName]) unit.abilities[typeName] = new Map();
 			ParseProfileCharacteristics(
 				profile,
 				profileName,
 				typeName,
-				unit.abilities[typeName]
+				unit.abilities.Abilities
 			);
 		}
 	}
