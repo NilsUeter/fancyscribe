@@ -99,7 +99,7 @@ function App() {
 	return (
 		<div className="App">
 			<div className="header print-display-none">
-				<a href="/" style={{ color: "#fff", fontWeight: 800 }}>
+				<a href="/fancyscribe" style={{ color: "#fff", fontWeight: 800 }}>
 					FancyScribe
 				</a>
 				<div className="subheader">
@@ -155,17 +155,30 @@ function App() {
 						/>
 						One Datacard per Page when Printing
 					</label>
-					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
-						<input
-							type="color"
-							style={{ height: 24, width: 32, padding: "0 2px" }}
-							value={primaryColor}
-							onChange={(e) => {
-								setPrimaryColor(e.target.value);
-							}}
-						></input>
-						Custom Color
-					</label>
+					<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+						<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+							<input
+								type="color"
+								style={{ height: 24, width: 32, padding: "0 2px" }}
+								value={primaryColor}
+								onChange={(e) => {
+									setPrimaryColor(e.target.value);
+								}}
+							></input>
+							Custom Color
+						</label>
+
+						{primaryColor !== getPrimaryColor(roster.forces[0].catalog) && (
+							<button
+								onClick={() =>
+									setPrimaryColor(getPrimaryColor(roster.forces[0].catalog))
+								}
+								style={{ padding: "2px 4px", borderRadius: 4, borderWidth: 1 }}
+							>
+								Reset color
+							</button>
+						)}
+					</div>
 				</div>
 				<div className="print-display-none" style={{ color: "red" }}>
 					{error}
