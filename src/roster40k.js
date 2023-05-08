@@ -983,7 +983,6 @@ function ParseProfileCharacteristics(profile, profileName, typeName, map) {
 			if (!map) {
 				debugger;
 			}
-			console.log(map);
 			map.set(profileName, char.textContent);
 		}
 	}

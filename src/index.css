@@ -57,8 +57,8 @@ button {
 	transition: border-color 0.25s;
 }
 button:hover {
-	border-color: #536766;
-	background-color: #53676660;
+	border-color: var(--primary-color);
+	background-color: var(--primary-color-transparent);
 }
 button:focus,
 button:focus-visible {
@@ -82,7 +82,7 @@ button:focus-visible {
 	justify-content: space-between;
 	align-items: center;
 	padding: 8px 16px;
-	background-color: #536766;
+	background-color: var(--primary-color);
 	width: 100%;
 	color: #fff;
 	font-size: 1.7em;
@@ -114,8 +114,8 @@ button:focus-visible {
 }
 
 .rosterUpload:hover {
-	border-color: #536766;
-	background-color: #53676660;
+	border-color: var(--primary-color);
+	background-color: var(--primary-color-transparent);
 	font-size: 2rem;
 }
 

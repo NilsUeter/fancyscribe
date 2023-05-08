@@ -9,7 +9,7 @@ function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
 	const [onePerPage, setOnePerPage] = useState(false);
-	const [primaryColor, setPrimaryColor] = useState();
+	const [primaryColor, setPrimaryColor] = useState("#536766");
 	const uploadRef = useRef();
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
@@ -97,7 +97,13 @@ function App() {
 	}, [roster]);
 
 	return (
-		<div className="App">
+		<div
+			className="App"
+			style={{
+				"--primary-color": primaryColor,
+				"--primary-color-transparent": primaryColor + "60",
+			}}
+		>
 			<div className="header print-display-none">
 				<a href="/fancyscribe" style={{ color: "#fff", fontWeight: 800 }}>
 					FancyScribe
@@ -107,13 +113,7 @@ function App() {
 				</div>
 			</div>
 
-			<div
-				className="body"
-				style={{
-					"--primary-color": primaryColor,
-					"--primary-color-transparent": primaryColor + "60",
-				}}
-			>
+			<div className="body">
 				<div
 					className="print-display-none"
 					style={{ display: "flex", width: "100%", gap: 8 }}
