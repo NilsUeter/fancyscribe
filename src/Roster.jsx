@@ -781,6 +781,7 @@ const ForceRules = ({ rules, onePerPage }) => {
 				padding: "var(--size-20)",
 				backgroundColor: "#dfe0e2",
 				border: "2px solid var(--primary-color)",
+				marginBottom: 32,
 			}}
 		>
 			{[...rules.keys()]

@@ -958,7 +958,7 @@ function ParseModelProfiles(profiles, model, unit) {
 			model.psyker = ParsePsykerProfile(profile);
 		} else {
 			// Everything else, like Prayers and Warlord Traits.
-			if (!unit.abilities[typeName]) unit.abilities[typeName] = new Map();
+			if (!unit.abilities.Abilities) unit.abilities["Abilities"] = new Map();
 			ParseProfileCharacteristics(
 				profile,
 				profileName,
@@ -980,6 +980,10 @@ function ParseProfileCharacteristics(profile, profileName, typeName, map) {
 			map.set([profileName, charName.toString()].join(" - "), char.textContent);
 		} else {
 			// Profiles with a single characteristic can ignore the char name.
+			if (!map) {
+				debugger;
+			}
+			console.log(map);
 			map.set(profileName, char.textContent);
 		}
 	}
