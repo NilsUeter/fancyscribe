@@ -9,6 +9,7 @@ function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
 	const [onePerPage, setOnePerPage] = useState(false);
+	const [primaryColor, setPrimaryColor] = useState();
 	const uploadRef = useRef();
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
@@ -89,6 +90,11 @@ function App() {
 			uploadRef.current?.removeAttribute("accept");
 		}
 	}, []);
+	useEffect(() => {
+		if (roster) {
+			setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
+		}
+	}, [roster]);
 
 	return (
 		<div className="App">
@@ -101,7 +107,13 @@ function App() {
 				</div>
 			</div>
 
-			<div className="body">
+			<div
+				className="body"
+				style={{
+					"--primary-color": primaryColor,
+					"--primary-color-transparent": primaryColor + "60",
+				}}
+			>
 				<div
 					className="print-display-none"
 					style={{ display: "flex", width: "100%", gap: 8 }}
@@ -134,7 +146,7 @@ function App() {
 				</div>
 				<div
 					className="print-display-none"
-					style={{ display: roster ? "" : "none", width: "100%" }}
+					style={{ display: roster ? "flex" : "none", width: "100%", gap: 16 }}
 				>
 					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
 						<input
@@ -142,6 +154,17 @@ function App() {
 							onChange={(e) => setOnePerPage(e.target.checked)}
 						/>
 						One Datacard per Page when Printing
+					</label>
+					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+						<input
+							type="color"
+							style={{ height: 24, width: 32, padding: "0 2px" }}
+							value={primaryColor}
+							onChange={(e) => {
+								setPrimaryColor(e.target.value);
+							}}
+						></input>
+						Custom Color
 					</label>
 				</div>
 				<div className="print-display-none" style={{ color: "red" }}>
@@ -190,5 +213,52 @@ function App() {
 		</div>
 	);
 }
+
+const getPrimaryColor = (catalog) => {
+	switch (catalog) {
+		case "Adeptus Astartes":
+			return "#536766";
+		case "Adeptus Custodes":
+			return "#536766";
+		case "Adeptus Mechanicus":
+			return "#536766";
+		case "Astra Militarum":
+			return "#375441";
+		case "Chaos Daemons":
+			return "#536766";
+		case "Chaos Space Marines":
+			return "#1d3138";
+		case "Death Guard":
+			return "#536766";
+		case "Drukhari":
+			return "#536766";
+		case "Genestealer Cults":
+			return "#536766";
+		case "Grey Knights":
+			return "#536766";
+		case "Harlequins":
+			return "#536766";
+		case "Imperial Knights":
+			return "#536766";
+		case "Necrons":
+			return "#005c2f";
+		case "Orks":
+			return "#4b6621";
+		case "Sisters of Battle":
+			return "#536766";
+		case "Space Marines":
+			return "#536766";
+		case "Tau Empire":
+			return "#536766";
+		case "Thousand Sons":
+			return "#536766";
+		case "Tyranids":
+			return "#44264C";
+		case "Ynnari":
+			return "#536766";
+		default:
+			return "#536766";
+	}
+};
 
 export default App;

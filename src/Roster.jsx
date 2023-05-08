@@ -10,13 +10,10 @@ export const Roster = ({ roster, onePerPage }) => {
 		return null;
 	}
 	const { name, cost, forces } = roster;
-	const primaryColor = getPrimaryColor(forces[0].catalog);
 	return (
 		<div
 			style={{
 				position: "relative",
-				"--primary-color": primaryColor,
-				"--primary-color-transparent": primaryColor + "60",
 			}}
 		>
 			<div
@@ -37,53 +34,6 @@ export const Roster = ({ roster, onePerPage }) => {
 			))}
 		</div>
 	);
-};
-
-const getPrimaryColor = (catalog) => {
-	switch (catalog) {
-		case "Adeptus Astartes":
-			return "#536766";
-		case "Adeptus Custodes":
-			return "#536766";
-		case "Adeptus Mechanicus":
-			return "#536766";
-		case "Astra Militarum":
-			return "#375441";
-		case "Chaos Daemons":
-			return "#536766";
-		case "Chaos Space Marines":
-			return "#1d3138";
-		case "Death Guard":
-			return "#536766";
-		case "Drukhari":
-			return "#536766";
-		case "Genestealer Cults":
-			return "#536766";
-		case "Grey Knights":
-			return "#536766";
-		case "Harlequins":
-			return "#536766";
-		case "Imperial Knights":
-			return "#536766";
-		case "Necrons":
-			return "#005c2f";
-		case "Orks":
-			return "#4b6621";
-		case "Sisters of Battle":
-			return "#536766";
-		case "Space Marines":
-			return "#536766";
-		case "Tau Empire":
-			return "#536766";
-		case "Thousand Sons":
-			return "#536766";
-		case "Tyranids":
-			return "#44264C";
-		case "Ynnari":
-			return "#536766";
-		default:
-			return "#536766";
-	}
 };
 
 const Force = ({ force, onePerPage }) => {
@@ -173,9 +123,12 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 				marginBottom: 32,
 			}}
 		>
-			<label className="print-display-none">
+			<label
+				className="print-display-none"
+				style={{ display: "flex", alignItems: "center" }}
+			>
 				<input type="checkbox" onChange={() => setHide(!hide)} />
-				Don't print this card.
+				<span className="print-display-none">Don't print this card.</span>
 			</label>
 			<div
 				style={{
@@ -251,7 +204,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 					</div>
 					<div
 						style={{
-							width: "calc(100% - 32px)",
+							width: "100%",
 							display: "flex",
 							flexDirection: "column",
 							gap: 6,
@@ -340,8 +293,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 				</div>
 				<div
 					style={{
-						padding: 20,
-						paddingBottom: 50,
+						padding: "var(--size-20) var(--size-20) 50px var(--size-20)",
 						flex: "1",
 						maxWidth: 400,
 						position: "relative",
@@ -719,7 +671,10 @@ const Psyker = ({ psyker, index }) => {
 
 const Spells = ({ title, spells }) => {
 	return (
-		<table className="weapons-table" style={{ width: "100%", marginTop: 20 }}>
+		<table
+			className="weapons-table"
+			style={{ width: "100%", marginTop: "var(--size-20)" }}
+		>
 			{spells.length > 0 && (
 				<thead>
 					<tr
@@ -823,7 +778,7 @@ const ForceRules = ({ rules, onePerPage }) => {
 				display: "flex",
 				flexDirection: "column",
 				gap: 8,
-				padding: "20px 20px",
+				padding: "var(--size-20)",
 				backgroundColor: "#dfe0e2",
 				border: "2px solid var(--primary-color)",
 			}}
