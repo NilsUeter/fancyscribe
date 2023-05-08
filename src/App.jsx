@@ -168,16 +168,21 @@ function App() {
 							Custom Color
 						</label>
 
-						{primaryColor !== getPrimaryColor(roster.forces[0].catalog) && (
-							<button
-								onClick={() =>
-									setPrimaryColor(getPrimaryColor(roster.forces[0].catalog))
-								}
-								style={{ padding: "2px 4px", borderRadius: 4, borderWidth: 1 }}
-							>
-								Reset color
-							</button>
-						)}
+						{roster &&
+							primaryColor !== getPrimaryColor(roster.forces[0].catalog) && (
+								<button
+									onClick={() =>
+										setPrimaryColor(getPrimaryColor(roster.forces[0].catalog))
+									}
+									style={{
+										padding: "2px 4px",
+										borderRadius: 4,
+										borderWidth: 1,
+									}}
+								>
+									Reset color
+								</button>
+							)}
 					</div>
 				</div>
 				<div className="print-display-none" style={{ color: "red" }}>
