@@ -27,7 +27,6 @@ export const Roster = ({ roster, onePerPage }) => {
 					fontSize: " 1.7em",
 					fontWeight: "800",
 					textTransform: "uppercase",
-					marginBottom: -16,
 				}}
 			>
 				{name} [{cost.commandPoints} CP]
