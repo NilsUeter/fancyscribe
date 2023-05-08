@@ -292,7 +292,12 @@ const getWeaponClassNames = (weapons, index) => {
 
 const calculateWeaponStrength = (strModel, strWeapon) => {
 	if (strWeapon.startsWith("User")) return strModel;
-	if (strWeapon.startsWith("x"))
+	if (strWeapon.startsWith("x")) {
 		return strModel * parseInt(strWeapon.replace("x", ""));
-	return strModel + parseInt(strWeapon, 10);
+	}
+	if (strWeapon.includes("+")) {
+		return strModel + parseInt(strWeapon, 10);
+	}
+	if (!strWeapon) return strModel;
+	return parseInt(strWeapon, 10);
 };

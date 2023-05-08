@@ -142,7 +142,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 			range: "Melee",
 			damage: "1",
 			type: "Melee",
-			str: "0",
+			str: "+0",
 			ap: "0",
 		});
 	}
