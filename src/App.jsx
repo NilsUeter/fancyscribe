@@ -153,7 +153,7 @@ function App() {
 							type="checkbox"
 							onChange={(e) => setOnePerPage(e.target.checked)}
 						/>
-						One Datacard per Page when Printing
+						<span>One Datacard per Page when Printing</span>
 					</label>
 					<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
 						<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -165,7 +165,7 @@ function App() {
 									setPrimaryColor(e.target.value);
 								}}
 							></input>
-							Custom Color
+							<span> Custom Color</span>
 						</label>
 
 						{roster &&
@@ -242,12 +242,14 @@ const getPrimaryColor = (catalog) => {
 			return "#536766";
 		case "Astra Militarum":
 			return "#375441";
-		case "Chaos Daemons":
-			return "#536766";
+		case "Chaos - Daemons":
+			return "#383c46";
 		case "Chaos Space Marines":
 			return "#1d3138";
-		case "Death Guard":
-			return "#536766";
+		case "Chaos - World Eaters":
+			return "#883531";
+		case "Chaos - Death Guard":
+			return "#5c672b";
 		case "Drukhari":
 			return "#536766";
 		case "Genestealer Cults":
@@ -275,6 +277,7 @@ const getPrimaryColor = (catalog) => {
 		case "Ynnari":
 			return "#536766";
 		default:
+			console.log(catalog);
 			return "#536766";
 	}
 };

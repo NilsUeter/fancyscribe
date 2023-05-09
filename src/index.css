@@ -170,7 +170,7 @@ button:focus-visible {
 
 @media print {
 	.print-display-none,
-	.print-display-none > * {
+	.print-display-none * {
 		display: none;
 	}
 

@@ -109,6 +109,8 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 			!weapon.name.includes("(Melee)")
 	);
 
+	const overridePrimary = getOverridePrimary(factions, keywords);
+
 	return (
 		<div
 			className={
@@ -121,6 +123,11 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 				border: "2px solid var(--primary-color)",
 				backgroundColor: "#DFE0E2",
 				marginBottom: 32,
+
+				"--primary-color": overridePrimary,
+				"--primary-color-transparent": overridePrimary
+					? overridePrimary + "60"
+					: "",
 			}}
 		>
 			<label
@@ -798,4 +805,19 @@ const ForceRules = ({ rules, onePerPage }) => {
 				))}
 		</div>
 	);
+};
+
+const getOverridePrimary = (factions, keywords) => {
+	if (
+		factions.has("Khorne") &&
+		factions.has("Tzeentch") &&
+		factions.has("Nurgle") &&
+		factions.has("Slaanesh")
+	)
+		return;
+	if (factions.has("Khorne") || keywords.has("Khorne")) return "#883531";
+	if (factions.has("Tzeentch") || keywords.has("Tzeentch")) return "#1f3d7a";
+	if (factions.has("Nurgle") || keywords.has("Nurgle")) return "#5c672b";
+	if (factions.has("Slaanesh") || keywords.has("Slaanesh")) return "#634c74";
+	console.log(factions);
 };
