@@ -227,9 +227,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	return (
 		<>
 			<tr className={className}>
-				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}>
-					{differentProfiles && Arrow}
-				</td>
+				<td style={{ borderTop: "none" }}>{differentProfiles && Arrow}</td>
 				<td style={{ textAlign: "left" }}>
 					<div
 						style={{
@@ -303,7 +301,7 @@ const getWeaponClassNames = (weapons, index) => {
 };
 
 const calculateWeaponStrength = (strModel, strWeapon) => {
-	if (strWeapon.startsWith("User")) return strModel;
+	if (strWeapon.includes("User")) return strModel;
 	if (strWeapon.startsWith("x")) {
 		return strModel * parseInt(strWeapon.replace("x", ""));
 	}

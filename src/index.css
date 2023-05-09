@@ -71,7 +71,7 @@ button:focus-visible {
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	padding: var(--size-24) var(--size-32);
+	padding: var(--size-24) var(--size-20);
 	max-width: 1100px;
 	margin-left: auto;
 	margin-right: auto;
@@ -176,6 +176,12 @@ button:focus-visible {
 
 	#root {
 		min-width: 1000px;
+	}
+
+	.body {
+		padding: 0;
+		display: block;
+		max-width: none;
 	}
 }
 

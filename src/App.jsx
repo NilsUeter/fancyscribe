@@ -27,8 +27,18 @@ function App() {
 			};
 			reader.readAsBinaryString(files[0]);
 		} else {
+			let example;
+			switch (event) {
+				case "ultras":
+					example = await fetch("Ultramarines Example.rosz");
+					break;
+				case "chaos daemons":
+					example = await fetch("Chaos Demons Mix.rosz");
+				default:
+					break;
+			}
 			// load example
-			const example = await fetch("Ultramarines Example.rosz");
+
 			const arrayBuffer = await example.arrayBuffer();
 			// Create a new Blob object from the zip file contents
 			const zipBlob = new Blob([arrayBuffer], { type: "application/zip" });
@@ -189,13 +199,22 @@ function App() {
 					{error}
 				</div>
 				<Roster roster={roster} onePerPage={onePerPage} />
-				<button
-					className="print-display-none"
-					style={{ display: roster ? "none" : "" }}
-					onClick={handleFileSelect}
-				>
-					Load Ultramarines example
-				</button>
+				<div style={{ display: "flex", gap: 8 }}>
+					<button
+						className="print-display-none"
+						style={{ display: roster ? "none" : "" }}
+						onClick={() => handleFileSelect("ultras")}
+					>
+						Load Ultramarines example
+					</button>
+					<button
+						className="print-display-none"
+						style={{ display: roster ? "none" : "" }}
+						onClick={() => handleFileSelect("chaos daemons")}
+					>
+						Load Chaos Daemons example
+					</button>
+				</div>
 				<div
 					className="print-display-none"
 					style={{ display: roster ? "none" : "" }}

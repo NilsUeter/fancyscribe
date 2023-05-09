@@ -25,6 +25,7 @@ export const Roster = ({ roster, onePerPage }) => {
 					fontSize: " 1.7em",
 					fontWeight: "800",
 					textTransform: "uppercase",
+					marginBottom: "12px",
 				}}
 			>
 				{name} [{cost.commandPoints} CP]
@@ -121,8 +122,6 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 			}
 			style={{
 				fontWeight: 500,
-				border: "2px solid var(--primary-color)",
-				backgroundColor: "#DFE0E2",
 				marginBottom: 32,
 
 				"--primary-color": overridePrimary,
@@ -133,7 +132,11 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 		>
 			<label
 				className="print-display-none"
-				style={{ display: "flex", alignItems: "center" }}
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "flex-end",
+				}}
 			>
 				<input type="checkbox" onChange={() => setHide(!hide)} />
 				<span className="print-display-none">Don't print this card.</span>
@@ -237,7 +240,14 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 					</div>
 				</div>
 			</div>
-			<div style={{ display: "flex" }}>
+			<div
+				style={{
+					display: "flex",
+					border: "2px solid var(--primary-color)",
+					borderTop: "none",
+					backgroundColor: "#DFE0E2",
+				}}
+			>
 				<div
 					style={{
 						flex: "1",
@@ -324,7 +334,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 					</div>
 					<Rules rules={rules} />
 					<Abilities abilities={abilities.Abilities} />
-					<Psykers title="PSYKER" psykers={psykers} />
+					<Psykers psykers={psykers} />
 					<Factions factions={factions} />
 					<FactionIcon catalog={catalog} />
 				</div>
@@ -625,10 +635,10 @@ const Psykers = ({ title, psykers }) => {
 							color: "#fff",
 						}}
 					>
-						<th style={{ textAlign: "left" }}>{title}</th>
+						<th style={{ textAlign: "left" }}>PSYKER</th>
 						<th>Cast</th>
 						<th>Deny</th>
-						<th style={{ textAlign: "left" }} colSpan="4">
+						<th style={{ textAlign: "left", width: "100%" }} colSpan="4">
 							Powers Known
 						</th>
 					</tr>
@@ -640,8 +650,7 @@ const Psykers = ({ title, psykers }) => {
 				))}
 				{psykers.length > 0 && (
 					<tr className="emptyRow">
-						<td style={{ width: 37 }}></td>
-						<td colSpan={7}></td>
+						<td colSpan={4}></td>
 					</tr>
 				)}
 			</tbody>
@@ -657,18 +666,7 @@ const Psyker = ({ psyker, index }) => {
 			className={index % 2 ? "rowOtherColor" : ""}
 			style={{ fontSize: ".8em" }}
 		>
-			<td style={{ textAlign: "left" }}>
-				<div
-					style={{
-						display: "flex",
-						alignItems: "center",
-						flexWrap: "wrap",
-						gap: "0 4px",
-					}}
-				>
-					{name}
-				</div>
-			</td>
+			<td style={{ textAlign: "left" }}></td>
 			<td>{cast}</td>
 			<td>{deny}</td>
 			<td style={{ textAlign: "left" }} colSpan="4">
