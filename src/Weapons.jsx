@@ -97,6 +97,17 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			type = "Plague Weapon";
 		}
 	}
+	if (abilities?.toLowerCase().includes("turret weapon")) {
+		abilities = abilities
+			.replaceAll("Turret weapon.", "")
+			.replaceAll("Turret Weapon", "")
+			.replaceAll("Turret weapon", "");
+		if (type) {
+			type += ", Turret weapon";
+		} else {
+			type = "Turret weapon";
+		}
+	}
 	/* if (
 		abilities?.includes(
 			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2."

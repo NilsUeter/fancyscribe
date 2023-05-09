@@ -76,10 +76,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 	} = unit;
 
 	const meleeWeapons = weapons
-		.filter(
-			(weapon) =>
-				weapon.range === "Melee" && weapon.range !== "-" && weapon.range !== ""
-		)
+		.filter((weapon) => weapon.range === "Melee" || weapon.type === "Melee")
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	if (meleeWeapons.length === 0) {
 		meleeWeapons.push({
@@ -100,7 +97,10 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 
 	const weaponDescriptions = weapons
-		.filter((weapon) => weapon.range === "-" || weapon.range === "")
+		.filter(
+			(weapon) =>
+				(weapon.range === "-" || weapon.range === "") && weapon.abilities
+		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	const modelsWithDifferentProfiles = weapons.filter(
 		(weapon) =>
@@ -819,5 +819,4 @@ const getOverridePrimary = (factions, keywords) => {
 	if (factions.has("Tzeentch") || keywords.has("Tzeentch")) return "#1f3d7a";
 	if (factions.has("Nurgle") || keywords.has("Nurgle")) return "#5c672b";
 	if (factions.has("Slaanesh") || keywords.has("Slaanesh")) return "#634c74";
-	console.log(factions);
 };
