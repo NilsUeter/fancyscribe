@@ -65,6 +65,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		name = "Krak grenade";
 	}
 	const differentProfiles =
+		selectionName &&
 		selectionName !== name &&
 		!name.includes("(Shooting)") &&
 		!name.includes("(Melee)");
@@ -78,7 +79,6 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	if (name.startsWith("Missile launcher, ")) {
 		name = name.replace("Missile launcher, ", "");
 	}
-
 	if (differentProfiles && name.includes(" - ")) {
 		name = name.split(" - ")[1];
 	}
@@ -99,6 +99,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	}
 	if (abilities?.toLowerCase().includes("turret weapon")) {
 		abilities = abilities
+			.replaceAll("Turret Weapon.", "")
 			.replaceAll("Turret weapon.", "")
 			.replaceAll("Turret Weapon", "")
 			.replaceAll("Turret weapon", "");

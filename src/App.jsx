@@ -234,11 +234,11 @@ function App() {
 
 const getPrimaryColor = (catalog) => {
 	switch (catalog) {
-		case "Adeptus Astartes":
+		case "Imperium - Adeptus Astartes":
 			return "#536766";
-		case "Adeptus Custodes":
+		case "Imperium - Adeptus Custodes":
 			return "#536766";
-		case "Adeptus Mechanicus":
+		case "Imperium - Adeptus Mechanicus":
 			return "#536766";
 		case "Imperium - Astra Militarum":
 			return "#375441";

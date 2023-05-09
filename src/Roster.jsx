@@ -73,6 +73,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 		psykers,
 		spells,
 		cost,
+		woundTracker,
 	} = unit;
 
 	const meleeWeapons = weapons
@@ -232,6 +233,7 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 								}
 							/>
 						))}
+						<WoundTracker woundTracker={woundTracker} />
 					</div>
 				</div>
 			</div>
@@ -673,6 +675,51 @@ const Psyker = ({ psyker, index }) => {
 				{powers}
 			</td>
 		</tr>
+	);
+};
+
+const WoundTracker = ({ woundTracker }) => {
+	if (!woundTracker || woundTracker.length === 0) return null;
+
+	return (
+		<div style={{ display: "flex" }}>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				<table
+					className="weapons-table"
+					style={{ width: "100%", margin: "4px 2px", marginBottom: -16 }}
+				>
+					<thead>
+						<tr
+							style={{
+								backgroundColor: "var(--primary-color)",
+								color: "#fff",
+							}}
+						>
+							{[...woundTracker[0].table.keys()].map((key) => (
+								<th key={key}>{key}</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{woundTracker.map((woundTrack, index) => (
+							<tr key={index}>
+								{[...woundTrack.table.values()].map((entry) => (
+									<td key={entry} style={{ borderTop: "none" }}>
+										{entry}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</div>
 	);
 };
 
