@@ -78,7 +78,11 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 	} = unit;
 
 	const meleeWeapons = weapons
-		.filter((weapon) => weapon.range === "Melee" || weapon.type === "Melee")
+		.filter(
+			(weapon) =>
+				(weapon.range === "Melee" || weapon.type === "Melee") &&
+				weapon.range !== ""
+		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	if (meleeWeapons.length === 0) {
 		meleeWeapons.push({
@@ -829,6 +833,19 @@ const getSpellClassNames = (spells, index) => {
 };
 
 const ForceRules = ({ rules, onePerPage }) => {
+	rules.set(
+		"Torrent",
+		"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit."
+	);
+	rules.set(
+		"Indirect Fire",
+		"This weapon can target units that are not visible to the bearer."
+	);
+	rules.set(
+		"Melta X",
+		"Each time an attack made with this weapon targets a unit within half range, that attack's Damagae characteristic is increased by the amount denotex by 'X'."
+	);
+
 	return (
 		<div
 			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}

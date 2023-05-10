@@ -59,7 +59,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	const bs = modelStats[0].bs;
 	let ws = modelStats[0].ws;
 	const strModel = modelStats[0].str;
-	let meleeAttacks = modelStats[0].attacks;
+	let meleeAttacks = modelStats.map((modelStat) => modelStat.attacks);
 
 	if (name === "Krak grenades") {
 		name = "Krak grenade";
@@ -83,55 +83,61 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		name = name.split(" - ")[1];
 	}
 
-	if (abilities?.includes("Blast")) {
-		abilities = abilities.replaceAll("Blast.", "").replaceAll("Blast", "");
-		type += ", Blast";
-	}
-	if (abilities?.includes("Plague Weapon")) {
-		abilities = abilities
-			.replaceAll("Plague Weapon.", "")
-			.replaceAll("Plague Weapon", "");
-		if (type) {
-			type += ", Plague Weapon";
-		} else {
-			type = "Plague Weapon";
+	const replaceAbilityWithType = (occurences, typeName) => {
+		if (!abilities) return;
+		if (occurences.some((occurence) => abilities.includes(occurence))) {
+			for (let i = 0; i < occurences.length; i++) {
+				abilities = abilities.replaceAll(occurences[i], "");
+			}
+			if (type) {
+				type += `, ${typeName}`;
+			} else {
+				type = typeName;
+			}
 		}
-	}
-	if (abilities?.toLowerCase().includes("turret weapon")) {
-		abilities = abilities
-			.replaceAll("Turret Weapon.", "")
-			.replaceAll("Turret weapon.", "")
-			.replaceAll("Turret Weapon", "")
-			.replaceAll("Turret weapon", "");
-		if (type) {
-			type += ", Turret weapon";
-		} else {
-			type = "Turret weapon";
-		}
-	}
-	/* if (
-		abilities?.includes(
-			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2."
-		) ||
-		abilities?.includes(
-			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2."
-		)
-	) {
-		abilities = abilities
-			.replaceAll(
-				"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2.",
-				""
-			)
-			.replaceAll(
-				"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2.",
-				""
-			);
-		if (type) {
-			type += ", Melta 2";
-		} else {
-			type = "Melta 2";
-		}
-	} */
+		return abilities;
+	};
+
+	replaceAbilityWithType(["Blast.", "Blast"], "Blast");
+	replaceAbilityWithType(
+		[
+			"Each time an attack is made with this weapon, that attack automatically hits the target.",
+			"This weapon automatically hits its target.",
+			"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit.",
+		],
+		"Torrent"
+	);
+	replaceAbilityWithType(
+		["This weapon can target units that are not visible to the bearer."],
+		"Indirect Fire"
+	);
+	replaceAbilityWithType(
+		[
+			"Plague Weapon.",
+			"Plague Weapon",
+			"Each time an attack is made with this weapon, re-roll a wound roll of 1.",
+		],
+		"Plague Weapon"
+	);
+	replaceAbilityWithType(
+		["Turret Weapon.", "Turret weapon.", "Turret Weapon", "Turret weapon"],
+		"Turret Weapon"
+	);
+	replaceAbilityWithType(
+		[
+			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2.",
+			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2.",
+			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2",
+		],
+		"Melta 2"
+	);
+	replaceAbilityWithType(
+		[
+			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+4.",
+			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+4.",
+		],
+		"Melta 4"
+	);
 
 	if (
 		abilities?.includes(
@@ -183,6 +189,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		) ||
 		abilities?.includes(
 			"Each time an attack is made with this weapon, make 2 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
+			"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1."
 		)
 	) {
 		abilities = abilities
@@ -197,9 +206,13 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			.replaceAll(
 				"Each time an attack is made with this weapon, make 2 hit rolls instead of 1.",
 				""
+			)
+			.replaceAll(
+				"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1.",
+				""
 			);
 
-		meleeAttacks = meleeAttacks * 2;
+		meleeAttacks = meleeAttacks.map((meleeAttack) => meleeAttack * 2);
 	}
 	if (
 		abilities?.includes(
@@ -219,7 +232,10 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 				""
 			);
 
-		meleeAttacks = meleeAttacks * 3;
+		meleeAttacks = meleeAttacks.map((meleeAttack) => meleeAttack * 3);
+	}
+	if (meleeAttacks.every((meleeAttack) => meleeAttack === meleeAttacks[0])) {
+		meleeAttacks = meleeAttacks[0];
 	}
 
 	name = name.replaceAll(" (Shooting)", "").replaceAll(" (Melee)", "");
@@ -256,7 +272,13 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 					</div>
 				</td>
 				<td>{range}</td>
-				<td>{isMelee ? meleeAttacks : attacks}</td>
+				<td>
+					{isMelee
+						? meleeAttacks.join
+							? meleeAttacks.join("|")
+							: meleeAttacks
+						: attacks}
+				</td>
 				<td>{isMelee ? ws : bs}</td>
 				<td>{calculateWeaponStrength(strModel, str)}</td>
 				<td>{ap}</td>
