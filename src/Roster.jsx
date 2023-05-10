@@ -678,6 +678,12 @@ const Psyker = ({ psyker, index }) => {
 
 const WoundTracker = ({ woundTracker }) => {
 	if (!woundTracker || woundTracker.length === 0) return null;
+	const uniqueWoundTracker = woundTracker.filter((woundTrack, index) => {
+		const firstIndex = woundTracker.findIndex(
+			(woundTrack2) => woundTrack2.name === woundTrack.name
+		);
+		return firstIndex === index;
+	});
 
 	return (
 		<div style={{ display: "flex" }}>
@@ -699,13 +705,13 @@ const WoundTracker = ({ woundTracker }) => {
 								color: "#fff",
 							}}
 						>
-							{[...woundTracker[0].table.keys()].map((key) => (
+							{[...uniqueWoundTracker[0].table.keys()].map((key) => (
 								<th key={key}>{key}</th>
 							))}
 						</tr>
 					</thead>
 					<tbody>
-						{woundTracker.map((woundTrack, index) => (
+						{uniqueWoundTracker.map((woundTrack, index) => (
 							<tr key={index}>
 								{[...woundTrack.table.values()].map((entry) => (
 									<td key={entry} style={{ borderTop: "none" }}>
