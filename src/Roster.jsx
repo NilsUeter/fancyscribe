@@ -376,22 +376,6 @@ const ModelStats = ({
 		model.replaceAll(name, "")
 	);
 
-	const degradingStuff = [];
-	const bsChange = Math.abs(parseInt(modelStats[0].bs, 10) - parseInt(bs, 10));
-	if (bsChange > 0) {
-		degradingStuff.push(`${bsChange} from the balistic skill`);
-	}
-	const wsChange = Math.abs(parseInt(modelStats[0].ws, 10) - parseInt(ws, 10));
-	if (wsChange > 0) {
-		degradingStuff.push(`${wsChange} from the weapon skill`);
-	}
-	const attacksChange = Math.abs(
-		parseInt(modelStats[0].attacks, 10) - parseInt(attacks, 10)
-	);
-	if (attacksChange > 0) {
-		degradingStuff.push(`${attacksChange} from the number of attacks`);
-	}
-
 	return (
 		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
@@ -422,19 +406,6 @@ const ModelStats = ({
 						{modelListMatches.map((model, index) => (
 							<div key={model}>{model}</div>
 						))}
-					</div>
-				)}
-				{degradingStuff.length > 0 && (
-					<div
-						style={{
-							whiteSpace: "normal",
-							marginLeft: -10,
-							fontSize: "0.7em",
-						}}
-					>
-						{`Each time this model makes
-							an attack, subtract 
-							${degradingStuff.join(" and ")}.`}
 					</div>
 				)}
 			</div>
@@ -475,9 +446,6 @@ const FactionIcon = ({ catalog }) => {
 };
 
 const Keywords = ({ keywords }) => {
-	keywords = Array.from(keywords).filter(
-		(keyword) => keyword !== "Configuration"
-	);
 	return (
 		<div
 			style={{
@@ -556,6 +524,10 @@ const Rules = ({ rules }) => {
 
 const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
+	let keys = [...abilities.keys()];
+	keys = keys.filter(
+		(key) => key !== "Stratagem: Warlord Trait" && key !== "Stratagem: Relic"
+	);
 	return (
 		<div
 			style={{
@@ -567,7 +539,7 @@ const Abilities = ({ abilities }) => {
 			}}
 		>
 			{abilities &&
-				[...abilities.keys()].map((ability) => (
+				keys.map((ability) => (
 					<div
 						key={ability}
 						style={{
@@ -640,10 +612,10 @@ const Psykers = ({ title, psykers }) => {
 						}}
 					>
 						<th style={{ textAlign: "left" }}>PSYKER</th>
-						<th>Cast</th>
-						<th>Deny</th>
+						<th>CAST</th>
+						<th>DENY</th>
 						<th style={{ textAlign: "left", width: "100%" }} colSpan="4">
-							Powers Known
+							POWERS KNOWN
 						</th>
 					</tr>
 				</thead>
@@ -844,6 +816,10 @@ const ForceRules = ({ rules, onePerPage }) => {
 	rules.set(
 		"Melta X",
 		"Each time an attack made with this weapon targets a unit within half range, that attack's Damagae characteristic is increased by the amount denotex by 'X'."
+	);
+	rules.set(
+		"Lethal Hits",
+		"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target."
 	);
 
 	return (

@@ -56,8 +56,8 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	const attacks = type.substring(lastWhiteSpace + 1);
 	type = type.substring(0, lastWhiteSpace);
 
-	const bs = modelStats[0].bs;
-	let ws = modelStats[0].ws;
+	let bs = modelStats.map((modelStat) => modelStat.bs);
+	let ws = modelStats.map((modelStat) => modelStat.ws);
 	const strModel = modelStats[0].str;
 	let meleeAttacks = modelStats.map((modelStat) => modelStat.attacks);
 
@@ -138,6 +138,12 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		],
 		"Melta 4"
 	);
+	replaceAbilityWithType(
+		[
+			"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target.",
+		],
+		"Lethal Hits"
+	);
 
 	if (
 		abilities?.includes(
@@ -177,7 +183,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 				"When attacking with this weapon, you must subtract 1 from the hit rolls.",
 				""
 			);
-		ws = `${parseInt(ws, 10) + 1}+`;
+		ws = ws.map((ws) => `${parseInt(ws, 10) + 1}+`);
 	}
 
 	if (
@@ -237,6 +243,12 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	if (meleeAttacks.every((meleeAttack) => meleeAttack === meleeAttacks[0])) {
 		meleeAttacks = meleeAttacks[0];
 	}
+	if (bs.every((b) => b === bs[0])) {
+		bs = bs[0];
+	}
+	if (ws.every((w) => w === ws[0])) {
+		ws = ws[0];
+	}
 
 	name = name.replaceAll(" (Shooting)", "").replaceAll(" (Melee)", "");
 
@@ -256,7 +268,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 						}}
 					>
 						{differentProfiles && selectionName + " - "}
-						{differentProfiles ? name.replaceAll(selectionName, "") : name}
+						{differentProfiles
+							? name.replaceAll(selectionName, "").replaceAll(", ", "")
+							: name}
 						{type && (
 							<span
 								style={{
@@ -279,7 +293,15 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 							: meleeAttacks
 						: attacks}
 				</td>
-				<td>{isMelee ? ws : bs}</td>
+				<td>
+					{isMelee
+						? ws.join
+							? ws.join("|")
+							: ws
+						: bs.join
+						? bs.join("|")
+						: bs}
+				</td>
 				<td>{calculateWeaponStrength(strModel, str)}</td>
 				<td>{ap}</td>
 				<td>{damage}</td>

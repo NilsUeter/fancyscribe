@@ -297,6 +297,8 @@ const getPrimaryColor = (catalog) => {
 			return "#44264C";
 		case "Ynnari":
 			return "#536766";
+		case "Leagues of Votann":
+			return "#7d4c08";
 		default:
 			console.log(catalog);
 			return "#536766";
