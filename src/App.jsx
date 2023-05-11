@@ -240,6 +240,13 @@ function App() {
 						</a>
 						).
 					</div>
+					<div style={{ fontSize: "1.2rem" }}>
+						If you have any feedback or find any bugs, write{" "}
+						<a href="https://www.reddit.com/r/WarhammerCompetitive/comments/13ajo3b/fancyscribe_convert_9th_edition_battlescribe">
+							here
+						</a>{" "}
+						or send me a message.
+					</div>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
 					</div>

@@ -141,6 +141,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 	replaceAbilityWithType(
 		[
 			"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target.",
+			"Each unmodified hit roll of 6 made for this weapon's attacks automatically hits and results in a wound (do not make a wound roll for that attack).",
 		],
 		"Lethal Hits"
 	);
