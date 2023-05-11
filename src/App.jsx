@@ -202,14 +202,14 @@ function App() {
 				<div style={{ display: "flex", gap: 8 }}>
 					<button
 						className="print-display-none"
-						style={{ display: roster ? "none" : "" }}
+						style={{ display: roster ? "none" : "", fontSize: "1.2rem" }}
 						onClick={() => handleFileSelect("ultras")}
 					>
 						Load Ultramarines example
 					</button>
 					<button
 						className="print-display-none"
-						style={{ display: roster ? "none" : "" }}
+						style={{ display: roster ? "none" : "", fontSize: "1.2rem" }}
 						onClick={() => handleFileSelect("chaos daemons")}
 					>
 						Load Chaos Daemons example
