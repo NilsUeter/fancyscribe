@@ -2,7 +2,7 @@ import meleeIcon from "./assets/meleeIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
 import { Arrow } from "./assets/icons";
 
-export const Weapons = ({ title, weapons, modelStats }) => {
+export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 	const isMelee = title === "MELEE WEAPONS";
 	return (
 		<>
@@ -37,6 +37,7 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 						modelStats={modelStats}
 						isMelee={isMelee}
 						className={getWeaponClassNames(weapons, index)}
+						forceRules={forceRules}
 					/>
 				))}
 				{weapons.length > 0 && (
@@ -50,7 +51,7 @@ export const Weapons = ({ title, weapons, modelStats }) => {
 	);
 };
 
-const Weapon = ({ weapon, modelStats, isMelee, className }) => {
+const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	let { name, selectionName, range, type, str, ap, damage, abilities } = weapon;
 	var lastWhiteSpace = type.lastIndexOf(" ");
 	const attacks = type.substring(lastWhiteSpace + 1);
@@ -83,7 +84,11 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 		name = name.split(" - ")[1];
 	}
 
-	const replaceAbilityWithType = (occurences, typeName) => {
+	const replaceAbilityWithType = (
+		occurences,
+		typeName,
+		ruleTextForForceRules
+	) => {
 		if (!abilities) return;
 		if (occurences.some((occurence) => abilities.includes(occurence))) {
 			for (let i = 0; i < occurences.length; i++) {
@@ -94,7 +99,12 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			} else {
 				type = typeName;
 			}
+
+			if (ruleTextForForceRules) {
+				forceRules.set(typeName, ruleTextForForceRules);
+			}
 		}
+
 		return abilities;
 	};
 
@@ -105,20 +115,16 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			"This weapon automatically hits its target.",
 			"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit.",
 		],
-		"Torrent"
+		"Torrent",
+		"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit."
 	);
 	replaceAbilityWithType(
 		["This weapon can target units that are not visible to the bearer."],
-		"Indirect Fire"
+		"Indirect Fire",
+		"This weapon can target units that are not visible to the bearer."
 	);
-	replaceAbilityWithType(
-		[
-			"Plague Weapon.",
-			"Plague Weapon",
-			"Each time an attack is made with this weapon, re-roll a wound roll of 1.",
-		],
-		"Plague Weapon"
-	);
+	replaceAbilityWithType(["Plague Weapon.", "Plague Weapon"], "Plague Weapon");
+	replaceAbilityWithType(["Sonic Weapon.", "Sonic Weapon"], "Sonic Weapon");
 	replaceAbilityWithType(
 		["Turret Weapon.", "Turret weapon.", "Turret Weapon", "Turret weapon"],
 		"Turret Weapon"
@@ -129,21 +135,24 @@ const Weapon = ({ weapon, modelStats, isMelee, className }) => {
 			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2.",
 			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2",
 		],
-		"Melta 2"
+		"Melta 2",
+		"Each time an attack made with this weapon targets a unit within half range, that attack attack has a Damage characteristic of D6+2."
 	);
 	replaceAbilityWithType(
 		[
 			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+4.",
 			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+4.",
 		],
-		"Melta 4"
+		"Melta 4",
+		"Each time an attack made with this weapon targets a unit within half range, that attack attack has a Damage characteristic of D6+4."
 	);
 	replaceAbilityWithType(
 		[
 			"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target.",
 			"Each unmodified hit roll of 6 made for this weapon's attacks automatically hits and results in a wound (do not make a wound roll for that attack).",
 		],
-		"Lethal Hits"
+		"Lethal Hits",
+		"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target."
 	);
 
 	if (

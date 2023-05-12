@@ -305,6 +305,7 @@ const getPrimaryColor = (catalog) => {
 		case "Thousand Sons":
 			return "#536766";
 		case "Tyranids":
+		case "Tyranids - Genestealer Cults":
 			return "#44264C";
 		case "Ynnari":
 			return "#536766";

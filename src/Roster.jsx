@@ -53,6 +53,7 @@ const Force = ({ force, onePerPage }) => {
 					unit={unit}
 					catalog={catalog}
 					onePerPage={onePerPage}
+					forceRules={rules}
 				/>
 			))}
 			<ForceRules rules={rules} onePerPage={onePerPage} />
@@ -60,7 +61,7 @@ const Force = ({ force, onePerPage }) => {
 	);
 };
 
-const Unit = ({ unit, index, catalog, onePerPage }) => {
+const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const [hide, setHide] = useState(false);
 	let {
 		name,
@@ -268,11 +269,13 @@ const Unit = ({ unit, index, catalog, onePerPage }) => {
 							title="RANGED WEAPONS"
 							weapons={rangedWeapons}
 							modelStats={modelStats}
+							forceRules={forceRules}
 						/>
 						<Weapons
 							title="MELEE WEAPONS"
 							weapons={meleeWeapons}
 							modelStats={modelStats}
+							forceRules={forceRules}
 						/>
 					</table>
 					<div style={{ flex: "1" }}></div>
@@ -805,23 +808,6 @@ const getSpellClassNames = (spells, index) => {
 };
 
 const ForceRules = ({ rules, onePerPage }) => {
-	rules.set(
-		"Torrent",
-		"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit."
-	);
-	rules.set(
-		"Indirect Fire",
-		"This weapon can target units that are not visible to the bearer."
-	);
-	rules.set(
-		"Melta X",
-		"Each time an attack made with this weapon targets a unit within half range, that attack's Damagae characteristic is increased by the amount denotex by 'X'."
-	);
-	rules.set(
-		"Lethal Hits",
-		"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target."
-	);
-
 	return (
 		<div
 			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}
@@ -835,18 +821,16 @@ const ForceRules = ({ rules, onePerPage }) => {
 				marginBottom: 32,
 			}}
 		>
-			{[...rules.keys()]
-				.filter((rule) => !rule.startsWith("Explodes"))
-				.map((rule) => (
-					<div
-						key={rule}
-						style={{
-							lineHeight: 1.4,
-						}}
-					>
-						<span style={{ fontWeight: 700 }}>{rule}:</span> {rules.get(rule)}
-					</div>
-				))}
+			{[...rules.keys()].map((rule) => (
+				<div
+					key={rule}
+					style={{
+						lineHeight: 1.4,
+					}}
+				>
+					<span style={{ fontWeight: 700 }}>{rule}:</span> {rules.get(rule)}
+				</div>
+			))}
 		</div>
 	);
 };
