@@ -81,6 +81,10 @@ function App() {
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
 				setError("");
+				smartlook("track", "loadRoster", {
+					name: rosterName,
+					faction: roster.forces[0].catalog,
+				});
 			}
 		} else {
 			setError("No support for game type '" + gameType + "'.");
