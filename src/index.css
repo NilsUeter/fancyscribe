@@ -133,13 +133,13 @@ button:focus-visible {
 
 .weapons-table th {
 	font-size: 1.1em;
-	padding: 2px 8px;
+	padding: 2px 6px;
 	height: 27px;
 	font-weight: 600;
 }
 
 .weapons-table td {
-	padding: 1px 8px;
+	padding: 1px 6px;
 	border-top: 1px dotted #9e9fa1;
 	text-align: center;
 	vertical-align: baseline;

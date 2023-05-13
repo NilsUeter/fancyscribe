@@ -125,6 +125,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	);
 	replaceAbilityWithType(["Plague Weapon.", "Plague Weapon"], "Plague Weapon");
 	replaceAbilityWithType(["Sonic Weapon.", "Sonic Weapon"], "Sonic Weapon");
+	replaceAbilityWithType(["Shuriken.", "Shuriken"], "Shuriken");
 	replaceAbilityWithType(
 		["Turret Weapon.", "Turret weapon.", "Turret Weapon", "Turret weapon"],
 		"Turret Weapon"
@@ -163,6 +164,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll."
 		) ||
 		abilities?.includes(
+			"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll"
+		) ||
+		abilities?.includes(
 			"Each time an attack is made with this weapon profile, subtract 1 from that attack's hit roll."
 		) ||
 		abilities?.includes(
@@ -179,6 +183,10 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			)
 			.replaceAll(
 				"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon, subtract 1 from that attack's hit roll",
 				""
 			)
 			.replaceAll(
