@@ -310,6 +310,8 @@ const getPrimaryColor = (catalog) => {
 			return "#6f322f";
 		case "Leagues of Votann":
 			return "#7d4c08";
+		case "T'au Empire":
+			return "#398a9f";
 		default:
 			console.log(catalog);
 			return "#536766";
