@@ -281,14 +281,15 @@ const getPrimaryColor = (catalog) => {
 		case "Imperium - Adeptus Custodes":
 			return "#93672a";
 		case "Imperium - Adeptus Mechanicus":
-			return "#a0361b";
+			return "#a03332";
 		case "Imperium - Adepta Sororitas":
 			return "#5e0a00";
 		case "Imperium - Astra Militarum":
 			return "#375441";
 		case "Imperium - Grey Knights":
 			return "#465056";
-
+		case "Imperium - Imperial Knights":
+			return "#03495e";
 		case "Chaos - Daemons":
 			return "#383c46";
 		case "Chaos - Chaos Space Marines":
@@ -296,7 +297,7 @@ const getPrimaryColor = (catalog) => {
 		case "Chaos - World Eaters":
 			return "#883531";
 		case "Chaos - Death Guard":
-			return "#5c672b";
+			return "#576011";
 		case "Chaos - Chaos Knights":
 			return "#513627";
 		case "Necrons":
@@ -306,12 +307,14 @@ const getPrimaryColor = (catalog) => {
 		case "Tyranids":
 		case "Tyranids - Genestealer Cults":
 			return "#44264C";
+		case "Aeldari - Craftworlds":
+			return "#1f787f";
 		case "Aeldari - Harlequins":
 			return "#6f322f";
 		case "Leagues of Votann":
 			return "#7d4c08";
 		case "T'au Empire":
-			return "#398a9f";
+			return "#206173";
 		default:
 			console.log(catalog);
 			return "#536766";
