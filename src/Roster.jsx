@@ -808,29 +808,48 @@ const getSpellClassNames = (spells, index) => {
 };
 
 const ForceRules = ({ rules, onePerPage }) => {
+	const [hide, setHide] = useState(false);
 	return (
 		<div
-			className={"avoid-page-break " + (onePerPage ? "page-break" : "")}
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				gap: 8,
-				padding: "var(--size-20)",
-				backgroundColor: "#dfe0e2",
-				border: "2px solid var(--primary-color)",
-				marginBottom: 32,
-			}}
+			className={
+				"avoid-page-break " +
+				(onePerPage ? "page-break" : "") +
+				(hide ? " print-display-none" : "")
+			}
 		>
-			{[...rules.keys()].map((rule) => (
-				<div
-					key={rule}
-					style={{
-						lineHeight: 1.4,
-					}}
-				>
-					<span style={{ fontWeight: 700 }}>{rule}:</span> {rules.get(rule)}
-				</div>
-			))}
+			<label
+				className="print-display-none"
+				style={{
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "flex-end",
+				}}
+			>
+				<input type="checkbox" onChange={() => setHide(!hide)} />
+				<span className="print-display-none">Don't print this card.</span>
+			</label>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					gap: 8,
+					padding: "var(--size-20)",
+					backgroundColor: "#dfe0e2",
+					border: "2px solid var(--primary-color)",
+					marginBottom: 32,
+				}}
+			>
+				{[...rules.keys()].map((rule) => (
+					<div
+						key={rule}
+						style={{
+							lineHeight: 1.4,
+						}}
+					>
+						<span style={{ fontWeight: 700 }}>{rule}:</span> {rules.get(rule)}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 };

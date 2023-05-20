@@ -108,7 +108,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		return abilities;
 	};
 
-	replaceAbilityWithType(["Blast.", "Blast"], "Blast");
+	replaceAbilityWithType(["Blast.", "Blast, ", "Blast"], "Blast");
 	replaceAbilityWithType(
 		[
 			"Each time an attack is made with this weapon, that attack automatically hits the target.",
