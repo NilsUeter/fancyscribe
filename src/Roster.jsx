@@ -28,7 +28,7 @@ export const Roster = ({ roster, onePerPage }) => {
 					marginBottom: "12px",
 				}}
 			>
-				{name} [{cost.commandPoints} CP]
+				{name} [{cost.commandPoints} CP, {cost.points} pts]
 			</div>
 			{forces.map((force, index) => (
 				<Force key={index} force={force} onePerPage={onePerPage} />
@@ -38,8 +38,8 @@ export const Roster = ({ roster, onePerPage }) => {
 };
 
 const Force = ({ force, onePerPage }) => {
-	const { units, rules, catalog } = force;
-
+	const { units, factionRules, rules, catalog } = force;
+	var mergedRules = new Map([...factionRules, ...rules]);
 	return (
 		<div
 			style={{
@@ -56,7 +56,7 @@ const Force = ({ force, onePerPage }) => {
 					forceRules={rules}
 				/>
 			))}
-			<ForceRules rules={rules} onePerPage={onePerPage} />
+			<ForceRules rules={mergedRules} onePerPage={onePerPage} />
 		</div>
 	);
 };
