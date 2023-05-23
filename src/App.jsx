@@ -279,7 +279,7 @@ const getPrimaryColor = (catalog) => {
 		case "Imperium - Adeptus Astartes - White Scars":
 			return "#783028";
 		case "Imperium - Adeptus Custodes":
-			return "#93672a";
+			return "#765c41";
 		case "Imperium - Adeptus Mechanicus":
 			return "#a03332";
 		case "Imperium - Adepta Sororitas":
