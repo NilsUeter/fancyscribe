@@ -295,7 +295,6 @@ export class Unit extends BaseNotes {
 	normalize() {
 		// Sort force units by role and name
 		this.models.sort(CompareModel);
-		console.log(this.modelStats);
 		this.modelStats = this.modelStats.sort((a, b) => {
 			var wounds_order =
 				(isNaN(parseInt(a.wounds)) ? -1 : parseInt(a.wounds)) -
