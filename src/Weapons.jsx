@@ -149,11 +149,28 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	);
 	replaceAbilityWithType(
 		[
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 automatically wounds the target.",
 			"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target.",
 			"Each unmodified hit roll of 6 made for this weapon's attacks automatically hits and results in a wound (do not make a wound roll for that attack).",
 		],
 		"Lethal Hits",
 		"Each time an attack is made with this weapon profile, an unmodified hit roll of 6 automatically wounds the target."
+	);
+	replaceAbilityWithType(
+		[
+			"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 1 additional hit.",
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores 1 additional hits.",
+		],
+		"Sustained Hits 1",
+		"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 1 additional hit."
+	);
+	replaceAbilityWithType(
+		[
+			"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 2 additional hit.",
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores 2 additional hits.",
+		],
+		"Sustained Hits 2",
+		"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 2 additional hit."
 	);
 
 	if (

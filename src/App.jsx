@@ -287,7 +287,7 @@ const getPrimaryColor = (catalog) => {
 		case "Imperium - Astra Militarum":
 			return "#375441";
 		case "Imperium - Grey Knights":
-			return "#465056";
+			return "#4a6672";
 		case "Imperium - Imperial Knights":
 			return "#03495e";
 		case "Chaos - Daemons":

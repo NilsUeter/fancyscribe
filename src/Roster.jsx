@@ -863,7 +863,7 @@ const getOverridePrimary = (factions, keywords) => {
 	)
 		return;
 	if (factions.has("Khorne") || keywords.has("Khorne")) return "#883531";
-	if (factions.has("Tzeentch") || keywords.has("Tzeentch")) return "#1f3d7a";
+	if (factions.has("Tzeentch") || keywords.has("Tzeentch")) return "#015d68";
 	if (factions.has("Nurgle") || keywords.has("Nurgle")) return "#5c672b";
 	if (factions.has("Slaanesh") || keywords.has("Slaanesh")) return "#634c74";
 };
