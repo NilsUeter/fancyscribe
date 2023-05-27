@@ -131,6 +131,18 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		"Turret Weapon"
 	);
 	replaceAbilityWithType(
+		["Poisoned Weapon (2+).", "Poisoned Weapon (2+)"],
+		"Poisoned Weapon 2+"
+	);
+	replaceAbilityWithType(
+		["Poisoned Weapon (3+).", "Poisoned Weapon (3+)"],
+		"Poisoned Weapon 3+"
+	);
+	replaceAbilityWithType(
+		["Poisoned Weapon (4+).", "Poisoned Weapon (4+)"],
+		"Poisoned Weapon 4+"
+	);
+	replaceAbilityWithType(
 		[
 			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+2.",
 			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+2.",
@@ -143,6 +155,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		[
 			"Each time an attack made with this weapon targets an enemy within half range, that attack has a Damage characteristic of D6+4.",
 			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+4.",
+			"Each time an attack made with this weapon targets a unit within half range, that attack has a Damage characteristic of D6+4",
 		],
 		"Melta 4",
 		"Each time an attack made with this weapon targets a unit within half range, that attack attack has a Damage characteristic of D6+4."
