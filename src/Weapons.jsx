@@ -131,6 +131,40 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		"One Shoot",
 		"The bearer can only shoot with this weapon once per battle."
 	);
+
+	/* replaceAbilityWithType(
+		[
+			"Each time the bearer fights, it makes 1 additional attack with this weapon.",
+			"Each time the bearer fights, it makes 1 additional attack with this weapon",
+		],
+		"Extra Attacks 1",
+		"Each time the bearer fights, it makes 1 additional attack with this weapon."
+	);
+	replaceAbilityWithType(
+		[
+			"Each time the bearer fights, it makes 2 additional attacks with this weapon.",
+			"Each time the bearer fights, it makes 2 additional attacks with this weapon",
+		],
+		"Extra Attacks 2",
+		"Each time the bearer fights, it makes 2 additional attacks with this weapon."
+	);
+	replaceAbilityWithType(
+		[
+			"Each time the bearer fights, it makes 3 additional attacks with this weapon.",
+			"Each time the bearer fights, it makes 3 additional attacks with this weapon",
+		],
+		"Extra Attacks 3",
+		"Each time the bearer fights, it makes 3 additional attacks with this weapon."
+	);
+	replaceAbilityWithType(
+		[
+			"Each time the bearer fights, it makes 4 additional attacks with this weapon.",
+			"Each time the bearer fights, it makes 4 additional attacks with this weapon",
+		],
+		"Extra Attacks 4",
+		"Each time the bearer fights, it makes 4 additional attacks with this weapon."
+	); */
+
 	replaceAbilityWithType(["Plague Weapon.", "Plague Weapon"], "Plague Weapon");
 	replaceAbilityWithType(["Sonic Weapon.", "Sonic Weapon"], "Sonic Weapon");
 	replaceAbilityWithType(["Shuriken.", "Shuriken"], "Shuriken");
