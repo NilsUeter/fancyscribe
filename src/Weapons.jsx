@@ -123,6 +123,14 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		"Indirect Fire",
 		"This weapon can target units that are not visible to the bearer."
 	);
+	replaceAbilityWithType(
+		[
+			"The bearer can only shoot with this weapon once per battle.",
+			"The bearer can only shoot with this weapon once per battle",
+		],
+		"One Shoot",
+		"The bearer can only shoot with this weapon once per battle."
+	);
 	replaceAbilityWithType(["Plague Weapon.", "Plague Weapon"], "Plague Weapon");
 	replaceAbilityWithType(["Sonic Weapon.", "Sonic Weapon"], "Sonic Weapon");
 	replaceAbilityWithType(["Shuriken.", "Shuriken"], "Shuriken");
