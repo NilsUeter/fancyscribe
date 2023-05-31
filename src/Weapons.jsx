@@ -214,7 +214,11 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	replaceAbilityWithType(
 		[
 			"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 1 additional hit.",
+			"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores one additional hit.",
 			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores 1 additional hits.",
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores 1 additional hit.",
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores one additional hits.",
+			"Each time an attack is made with this weapon, an unmodified hit roll of 6 scores one additional hit.",
 		],
 		"Sustained Hits 1",
 		"When resolving an attack made with this weapon, an unmofidied hit roll of 6 scores 1 additional hit."
@@ -288,6 +292,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		) ||
 		abilities?.includes(
 			"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
+			"Make 2 hit rolls for each attack made with this profile, instead of 1"
 		)
 	) {
 		abilities = abilities
@@ -305,6 +312,10 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			)
 			.replaceAll(
 				"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1.",
+				""
+			)
+			.replaceAll(
+				"Make 2 hit rolls for each attack made with this profile, instead of 1",
 				""
 			);
 
