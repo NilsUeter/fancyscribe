@@ -250,6 +250,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		) ||
 		abilities?.includes(
 			"When attacking with this weapon, you must subtract 1 from the hit rolls."
+		) ||
+		abilities?.includes(
+			"Each time an attack roll is made with this weapon, subtract 1 from the attack's hit roll"
 		)
 	) {
 		abilities = abilities
@@ -275,6 +278,10 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			)
 			.replaceAll(
 				"When attacking with this weapon, you must subtract 1 from the hit rolls.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack roll is made with this weapon, subtract 1 from the attack's hit roll",
 				""
 			);
 		ws = ws.map((ws) => `${parseInt(ws, 10) + 1}+`);

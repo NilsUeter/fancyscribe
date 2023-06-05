@@ -263,9 +263,9 @@ const getPrimaryColor = (catalog) => {
 		case "Imperium - Adeptus Astartes":
 			return "#536766";
 		case "Imperium - Adeptus Astartes - Blood Angels":
-			return "#a00a0a";
+			return "#761119";
 		case "Imperium - Adeptus Astartes - Space Wolves":
-			return "#4185af";
+			return "#3e646f";
 		case "Imperium - Adeptus Astartes - Imperial Fists":
 			return "#b87d00";
 		case "Imperium - Adeptus Astartes - Raven Guard":
@@ -274,6 +274,12 @@ const getPrimaryColor = (catalog) => {
 			return "#1b623f";
 		case "Imperium - Adeptus Astartes - White Scars":
 			return "#783028";
+		case "Imperium - Adeptus Astartes - Dark Angels":
+			return "#014419";
+		case "Imperium - Adeptus Astartes - Black Templars":
+			return "#002f42";
+		case "Imperium - Adeptus Astartes - Deathwatch":
+			return "#44494d";
 		case "Imperium - Adeptus Custodes":
 			return "#765c41";
 		case "Imperium - Adeptus Mechanicus":
