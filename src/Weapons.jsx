@@ -67,7 +67,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	}
 	const differentProfiles =
 		selectionName &&
-		selectionName !== name &&
+		selectionName.toLowerCase() !== name.toLowerCase() &&
 		!name.includes("(Shooting)") &&
 		!name.includes("(Melee)");
 
@@ -113,6 +113,7 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		[
 			"Each time an attack is made with this weapon, that attack automatically hits the target.",
 			"This weapon automatically hits its target.",
+			"This weapon automatically hits its targets.",
 			"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit.",
 		],
 		"Torrent",
@@ -122,6 +123,13 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 		["This weapon can target units that are not visible to the bearer."],
 		"Indirect Fire",
 		"This weapon can target units that are not visible to the bearer."
+	);
+	replaceAbilityWithType(
+		[
+			"Each time an attack is made with this weapon, the target does not receive the benefits of cover against that attack.",
+		],
+		"Ignores Cover",
+		"Each time an attack is made with this weapon, the target does not receive the benefits of cover against that attack."
 	);
 	replaceAbilityWithType(
 		[
@@ -301,6 +309,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1."
 		) ||
 		abilities?.includes(
+			"Each time an attack is made with this profile, make 2 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
 			"Make 2 hit rolls for each attack made with this profile, instead of 1"
 		)
 	) {
@@ -320,6 +331,9 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 			.replaceAll(
 				"Each time an attack is made wit this weapon profile, make 2 hit rolls instead of 1.",
 				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this profile, make 2 hit rolls instead of 1."
 			)
 			.replaceAll(
 				"Make 2 hit rolls for each attack made with this profile, instead of 1",

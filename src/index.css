@@ -127,10 +127,6 @@ button:focus-visible {
 	border-radius: 8px;
 }
 
-.weapons-table {
-	border-collapse: collapse;
-}
-
 .weapons-table th {
 	font-size: 1.1em;
 	padding: 2px 6px;

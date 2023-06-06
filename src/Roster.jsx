@@ -264,7 +264,11 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					}}
 				>
 					<Spells title="PSYCHIC" spells={spells} />
-					<table className="weapons-table" style={{ width: "100%" }}>
+					<table
+						cellspacing="0"
+						className="weapons-table"
+						style={{ width: "100%" }}
+					>
 						<Weapons
 							title="RANGED WEAPONS"
 							weapons={rangedWeapons}
@@ -279,7 +283,11 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						/>
 					</table>
 					<div style={{ flex: "1" }}></div>
-					<table className="weapons-table" style={{ width: "100%" }}>
+					<table
+						cellspacing="0"
+						className="weapons-table"
+						style={{ width: "100%" }}
+					>
 						<tbody>
 							{weaponDescriptions.map((weapon, index) => (
 								<tr key={index} className="emptyRow noBorderTop">
@@ -603,6 +611,7 @@ const FancyBox = ({ children }) => {
 const Psykers = ({ title, psykers }) => {
 	return (
 		<table
+			cellspacing="0"
 			className="weapons-table"
 			style={{ width: "100%", margin: "4px 2px" }}
 		>
@@ -674,6 +683,7 @@ const WoundTracker = ({ woundTracker }) => {
 				}}
 			>
 				<table
+					cellspacing="0"
 					className="weapons-table"
 					style={{ width: "100%", margin: "4px 2px", marginBottom: -16 }}
 				>
@@ -709,6 +719,7 @@ const WoundTracker = ({ woundTracker }) => {
 const Spells = ({ title, spells }) => {
 	return (
 		<table
+			cellspacing="0"
 			className="weapons-table"
 			style={{ width: "100%", marginTop: "var(--size-20)" }}
 		>
