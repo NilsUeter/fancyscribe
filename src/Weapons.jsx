@@ -112,12 +112,20 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	replaceAbilityWithType(
 		[
 			"Each time an attack is made with this weapon, that attack automatically hits the target.",
+			"Each time an attack is made with this weapon profile, that attack automatically hits the target.",
 			"This weapon automatically hits its target.",
 			"This weapon automatically hits its targets.",
 			"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit.",
 		],
 		"Torrent",
 		"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit."
+	);
+	replaceAbilityWithType(
+		[
+			"Each time an attack is made with this weapon, you can re-roll the wound roll.",
+		],
+		"Twin-Linked",
+		"Each time an attack is made with this weapon, you can re-roll the wound roll."
 	);
 	replaceAbilityWithType(
 		["This weapon can target units that are not visible to the bearer."],

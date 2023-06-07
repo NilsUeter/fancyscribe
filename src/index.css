@@ -20,6 +20,22 @@
 	--size-32: 32px;
 }
 
+@font-face {
+	font-family: "ConduitITCStd";
+	src: url("fonts/ConduitITCStd ExtraBold.woff2") format("woff2");
+	font-weight: 800;
+}
+@font-face {
+	font-family: "ConduitITCStd";
+	src: url("fonts/ConduitITCStd Bold.woff2") format("woff2");
+	font-weight: 700;
+}
+@font-face {
+	font-family: "ConduitITCStd";
+	src: url("fonts/ConduitITCStd-Regular.woff2") format("woff2");
+	font-weight: 400;
+}
+
 * {
 	box-sizing: border-box;
 	print-color-adjust: exact;
@@ -46,7 +62,10 @@ h1 {
 	line-height: 1.1;
 }
 
-button {
+button,
+.button {
+	background-color: #f0f0f0;
+	color: #111113;
 	border-radius: 8px;
 	border: 2px solid #999;
 	padding: 0.6em 1.2em;
@@ -56,12 +75,15 @@ button {
 	cursor: pointer;
 	transition: border-color 0.25s;
 }
-button:hover {
+button:hover,
+.button:hover {
 	border-color: var(--primary-color);
 	background-color: var(--primary-color-transparent);
 }
 button:focus,
-button:focus-visible {
+button:focus-visible,
+.button:focus,
+.button:focus-visible {
 	outline: 4px auto -webkit-focus-ring-color;
 }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import factionBackground from "./assets/factionBackground.png";
 import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
@@ -63,6 +63,8 @@ const Force = ({ force, onePerPage }) => {
 
 const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const [hide, setHide] = useState(false);
+	const uploadRef = useRef();
+	const [image, setImage] = useState(null);
 	let {
 		name,
 		weapons,
@@ -118,6 +120,20 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 
 	const overridePrimary = getOverridePrimary(factions, keywords);
 
+	useEffect(() => {
+		// Check if the browser is Safari, and if so, remove the accept attribute
+		// from the file input element. This is because Safari doesn't support
+		// extensions on the accept attribute for input type=file
+		// (https://caniuse.com/input-file-accept). If set, they will not allow any
+		// file to be selected.
+		if (
+			navigator.userAgent.match(/AppleWebKit.*Safari/) &&
+			!navigator.userAgent.includes("Chrome")
+		) {
+			uploadRef.current?.removeAttribute("accept");
+		}
+	}, []);
+
 	return (
 		<div
 			className={
@@ -153,6 +169,8 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					background:
 						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
 					color: "#fff",
+					minHeight: 200,
+					position: "relative",
 				}}
 			>
 				<div
@@ -203,7 +221,10 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					</div>
 					<div
 						style={{
-							fontSize: "1.7em",
+							fontFamily: "ConduitITCStd",
+							fontSize: "2.5em",
+							letterSpacing: "1px",
+							lineHeight: "1",
 							fontWeight: 800,
 							textTransform: "uppercase",
 							zIndex: 1,
@@ -211,10 +232,11 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							display: "flex",
 							justifyContent: "space-between",
 							alignItems: "center",
+							marginBottom: 2,
 						}}
 					>
 						{name}
-						<span style={{ textTransform: "initial", fontSize: "1.1rem" }}>
+						<span style={{ textTransform: "initial", fontSize: "1.2rem" }}>
 							{cost.points}pts
 						</span>
 					</div>
@@ -241,8 +263,61 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 								}
 							/>
 						))}
+
 						<WoundTracker woundTracker={woundTracker} />
 					</div>
+				</div>
+				<div
+					style={{
+						position: "absolute",
+						right: 0,
+						top: 0,
+						height: "100%",
+						bottom: 0,
+						width: "50%",
+					}}
+				>
+					{image && (
+						<img
+							src={image}
+							alt=""
+							style={{ width: "100%", height: "100%", objectFit: "contain" }}
+						/>
+					)}
+					<label
+						className="button print-display-none"
+						style={{
+							position: "absolute",
+							top: 0,
+							right: 0,
+							border: "1px solid #999",
+							top: 1,
+							right: 1,
+							padding: "1px 4px",
+							fontSize: "0.8rem",
+							backgroundColor: "#f0f0f0",
+						}}
+					>
+						<input
+							ref={uploadRef}
+							type="file"
+							className="print-display-none"
+							accept=".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff,.webp,.svg,.jfif,.pjpeg,.pjp,.avif,.apng,.ico,.cur,.ani"
+							onChange={(e) => {
+								if (e.target.files && e.target.files[0]) {
+									let reader = new FileReader();
+									reader.onload = function (ev) {
+										setImage(ev.target.result);
+									}.bind(this);
+									reader.readAsDataURL(e.target.files[0]);
+								}
+							}}
+							style={{
+								display: "none",
+							}}
+						/>
+						Upload image
+					</label>
 				</div>
 			</div>
 			<div
@@ -358,14 +433,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	);
 };
 
-const ModelStats = ({
-	modelStats,
-	modelStat,
-	index,
-	showName,
-	showWeapons,
-	modelList,
-}) => {
+const ModelStats = ({ modelStat, index, showName, showWeapons, modelList }) => {
 	let { move, toughness, save, wounds, leadership, name, bs, ws, attacks } =
 		modelStat;
 	if (!wounds) {
