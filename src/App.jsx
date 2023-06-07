@@ -106,6 +106,11 @@ function App() {
 		}
 	}, [roster]);
 
+	const handleDrag = (e) => {
+		e.preventDefault();
+		e.stopPropagation();
+	};
+
 	return (
 		<div
 			className="App"
@@ -141,6 +146,17 @@ function App() {
 						htmlFor="rosterUpload"
 						className={"rosterUpload " + (roster ? "rosterUploaded" : "")}
 						id="rosterUploadContainer"
+						onDrop={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+								e.target.files = e.dataTransfer.files;
+								handleFileSelect(e);
+							}
+						}}
+						onDragEnter={handleDrag}
+						onDragLeave={handleDrag}
+						onDragOver={handleDrag}
 					>
 						<div id="preloadContainer">
 							<span>Upload roster file (.ros, .rosz)</span>
