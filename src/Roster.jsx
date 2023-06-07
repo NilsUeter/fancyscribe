@@ -3,7 +3,7 @@ import factionBackground from "./assets/factionBackground.png";
 import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
 import rangedIcon from "./assets/rangedIcon.png";
 import { Arrow, wavyLine } from "./assets/icons";
-import { Weapons } from "./Weapons";
+import { Weapons, hasDifferentProfiles } from "./Weapons";
 
 export const Roster = ({ roster, onePerPage }) => {
 	if (!roster) {
@@ -111,12 +111,23 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				(weapon.range === "-" || weapon.range === "") && weapon.abilities
 		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
-	const modelsWithDifferentProfiles = weapons.filter(
-		(weapon) =>
-			weapon.selectionName !== weapon.name &&
-			!weapon.name.includes("(Shooting)") &&
-			!weapon.name.includes("(Melee)")
-	);
+	const modelsWithDifferentProfiles = weapons.filter((weapon, index) => {
+		const { selectionName, name } = weapon;
+		const previousWeapon = weapons[index - 1];
+		const nextWeapon = weapons[index + 1];
+		return (
+			hasDifferentProfiles(selectionName, name) &&
+			((previousWeapon &&
+				hasDifferentProfiles(
+					previousWeapon.selectionName,
+					previousWeapon.name
+				) &&
+				selectionName === previousWeapon.selectionName) ||
+				(nextWeapon &&
+					hasDifferentProfiles(nextWeapon.selectionName, nextWeapon.name) &&
+					selectionName === nextWeapon.selectionName))
+		);
+	});
 
 	const overridePrimary = getOverridePrimary(factions, keywords);
 
@@ -223,7 +234,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						style={{
 							fontFamily: "ConduitITCStd",
 							fontSize: "2.5em",
-							letterSpacing: "1px",
+							letterSpacing: ".1px",
 							lineHeight: "1",
 							fontWeight: 800,
 							textTransform: "uppercase",
@@ -340,7 +351,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				>
 					<Spells title="PSYCHIC" spells={spells} />
 					<table
-						cellspacing="0"
+						cellSpacing="0"
 						className="weapons-table"
 						style={{ width: "100%" }}
 					>
@@ -359,7 +370,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					</table>
 					<div style={{ flex: "1" }}></div>
 					<table
-						cellspacing="0"
+						cellSpacing="0"
 						className="weapons-table"
 						style={{ width: "100%" }}
 					>
@@ -679,7 +690,7 @@ const FancyBox = ({ children }) => {
 const Psykers = ({ title, psykers }) => {
 	return (
 		<table
-			cellspacing="0"
+			cellSpacing="0"
 			className="weapons-table"
 			style={{ width: "100%", margin: "4px 2px" }}
 		>
@@ -751,7 +762,7 @@ const WoundTracker = ({ woundTracker }) => {
 				}}
 			>
 				<table
-					cellspacing="0"
+					cellSpacing="0"
 					className="weapons-table"
 					style={{ width: "100%", margin: "4px 2px", marginBottom: -16 }}
 				>
@@ -787,7 +798,7 @@ const WoundTracker = ({ woundTracker }) => {
 const Spells = ({ title, spells }) => {
 	return (
 		<table
-			cellspacing="0"
+			cellSpacing="0"
 			className="weapons-table"
 			style={{ width: "100%", marginTop: "var(--size-20)" }}
 		>

@@ -34,6 +34,8 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 					<Weapon
 						key={weapon.name}
 						weapon={weapon}
+						previousWeapon={weapons[index - 1]}
+						nextWeapon={weapons[index + 1]}
 						modelStats={modelStats}
 						isMelee={isMelee}
 						className={getWeaponClassNames(weapons, index)}
@@ -51,7 +53,24 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 	);
 };
 
-const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
+export const hasDifferentProfiles = (selectionName, name) => {
+	return (
+		selectionName &&
+		selectionName.toLowerCase() !== name.toLowerCase() &&
+		!name.includes("(Shooting)") &&
+		!name.includes("(Melee)")
+	);
+};
+
+const Weapon = ({
+	weapon,
+	previousWeapon,
+	nextWeapon,
+	modelStats,
+	isMelee,
+	className,
+	forceRules,
+}) => {
 	let { name, selectionName, range, type, str, ap, damage, abilities } = weapon;
 	var lastWhiteSpace = type.lastIndexOf(" ");
 	const attacks = type.substring(lastWhiteSpace + 1);
@@ -65,11 +84,15 @@ const Weapon = ({ weapon, modelStats, isMelee, className, forceRules }) => {
 	if (name === "Krak grenades") {
 		name = "Krak grenade";
 	}
+
 	const differentProfiles =
-		selectionName &&
-		selectionName.toLowerCase() !== name.toLowerCase() &&
-		!name.includes("(Shooting)") &&
-		!name.includes("(Melee)");
+		hasDifferentProfiles(selectionName, name) &&
+		((previousWeapon &&
+			hasDifferentProfiles(previousWeapon.selectionName, previousWeapon.name) &&
+			selectionName === previousWeapon.selectionName) ||
+			(nextWeapon &&
+				hasDifferentProfiles(nextWeapon.selectionName, nextWeapon.name) &&
+				selectionName === nextWeapon.selectionName));
 
 	if (differentProfiles && name.endsWith(" grenades")) {
 		name = name.replace(" grenades", "");

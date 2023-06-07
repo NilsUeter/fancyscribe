@@ -22,17 +22,17 @@
 
 @font-face {
 	font-family: "ConduitITCStd";
-	src: url("fonts/ConduitITCStd ExtraBold.woff2") format("woff2");
+	src: url("/fonts/ConduitITCStd ExtraBold.woff2") format("woff2");
 	font-weight: 800;
 }
 @font-face {
 	font-family: "ConduitITCStd";
-	src: url("fonts/ConduitITCStd Bold.woff2") format("woff2");
+	src: url("/fonts/ConduitITCStd Bold.woff2") format("woff2");
 	font-weight: 700;
 }
 @font-face {
 	font-family: "ConduitITCStd";
-	src: url("fonts/ConduitITCStd-Regular.woff2") format("woff2");
+	src: url("/fonts/ConduitITCStd-Regular.woff2") format("woff2");
 	font-weight: 400;
 }
 
