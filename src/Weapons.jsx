@@ -138,6 +138,7 @@ const Weapon = ({
 			"Each time an attack is made with this weapon profile, that attack automatically hits the target.",
 			"This weapon automatically hits its target.",
 			"This weapon automatically hits its targets.",
+			"This weapon hits automatically",
 			"When resolving an attack made with this weapon, do not make a hit roll: it automatically scores a hit.",
 		],
 		"Torrent",
@@ -292,6 +293,9 @@ const Weapon = ({
 		) ||
 		abilities?.includes(
 			"Each time an attack roll is made with this weapon, subtract 1 from the attack's hit roll"
+		) ||
+		abilities?.includes(
+			"When resolving an attack made with this weapon, subtract 1 from the hit roll"
 		)
 	) {
 		abilities = abilities
@@ -321,6 +325,10 @@ const Weapon = ({
 			)
 			.replaceAll(
 				"Each time an attack roll is made with this weapon, subtract 1 from the attack's hit roll",
+				""
+			)
+			.replaceAll(
+				"When resolving an attack made with this weapon, subtract 1 from the hit roll",
 				""
 			);
 		ws = ws.map((ws) => `${parseInt(ws, 10) + 1}+`);
@@ -398,6 +406,9 @@ const Weapon = ({
 	}
 	if (bs.every((b) => b === bs[0])) {
 		bs = bs[0];
+	}
+	if (type.includes("Torrent")) {
+		bs = "N/A";
 	}
 	if (ws.every((w) => w === ws[0])) {
 		ws = ws[0];

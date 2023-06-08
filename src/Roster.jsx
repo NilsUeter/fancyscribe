@@ -48,7 +48,7 @@ const Force = ({ force, onePerPage }) => {
 		>
 			{units.map((unit, index) => (
 				<Unit
-					key={index}
+					key={unit.name + index}
 					index={index}
 					unit={unit}
 					catalog={catalog}
