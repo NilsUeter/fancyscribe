@@ -386,12 +386,19 @@ const Weapon = ({
 			"Each time an attack is made with this weapon profile, make 3 hit rolls instead of 1."
 		) ||
 		abilities?.includes(
+			"Each time an attack is made with this weapon profile, made 3 hit rolls instead of 1."
+		) ||
+		abilities?.includes(
 			"Each time an attack is made with this weapon, make 3 hit rolls instead of 1."
 		)
 	) {
 		abilities = abilities
 			.replaceAll(
 				"Each time an attack is made with this weapon profile, make 3 hit rolls instead of 1.",
+				""
+			)
+			.replaceAll(
+				"Each time an attack is made with this weapon profile, made 3 hit rolls instead of 1.",
 				""
 			)
 			.replaceAll(
