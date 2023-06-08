@@ -162,7 +162,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					: "",
 			}}
 		>
-			<label
+			<div
 				className="print-display-none"
 				style={{
 					display: "flex",
@@ -170,9 +170,11 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					justifyContent: "flex-end",
 				}}
 			>
-				<input type="checkbox" onChange={() => setHide(!hide)} />
-				<span className="print-display-none">Don't print this card.</span>
-			</label>
+				<label className="print-display-none">
+					<input type="checkbox" onChange={() => setHide(!hide)} />
+					Don't print this card.
+				</label>
+			</div>
 			<div
 				style={{
 					padding: "24px 0",
