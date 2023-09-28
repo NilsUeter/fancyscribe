@@ -1,13 +1,17 @@
 import JSZip from "jszip";
 import { Create40kRoster } from "./roster40k";
+import { Create40kRoster10th } from "./roster40k-10th";
 import { useEffect, useState, useRef } from "react";
-import { Roster } from "./Roster";
+
 import Demo0 from "./assets/Demo0.png";
 import Demo1 from "./assets/Demo1.png";
+import { Roster } from "./9th/Roster";
+import { Roster as Roster10th } from "./10th/Roster";
 
 function App() {
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
+	const [edition, setEdition] = useState(9); // [9, 10]
 	const [onePerPage, setOnePerPage] = useState(false);
 	const [primaryColor, setPrimaryColor] = useState("#536766");
 	const uploadRef = useRef();
@@ -73,13 +77,21 @@ function App() {
 		if (rosterName) {
 			document.title = `FancyScribe ${rosterName}`;
 		}
-
+		console.log(doc);
 		if (gameType == "Warhammer 40,000 9th Edition") {
-			console.log(doc);
 			const roster = Create40kRoster(doc);
 			console.log(roster);
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
+				setEdition(9);
+				setError("");
+			}
+		} else if (gameType == "Warhammer 40,000 10th Edition") {
+			const roster = Create40kRoster10th(doc);
+			console.log(roster);
+			if (roster && roster.forces.length > 0) {
+				setRoster(roster);
+				setEdition(10);
 				setError("");
 			}
 		} else {
@@ -214,7 +226,10 @@ function App() {
 				<div className="print-display-none" style={{ color: "red" }}>
 					{error}
 				</div>
-				<Roster roster={roster} onePerPage={onePerPage} />
+				{edition === 9 && <Roster roster={roster} onePerPage={onePerPage} />}
+				{edition === 10 && (
+					<Roster10th roster={roster} onePerPage={onePerPage} />
+				)}
 				<div style={{ display: "flex", gap: 8 }}>
 					<button
 						className="print-display-none"

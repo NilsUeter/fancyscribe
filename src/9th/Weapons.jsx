@@ -1,6 +1,6 @@
-import meleeIcon from "./assets/meleeIcon.png";
-import rangedIcon from "./assets/rangedIcon.png";
-import { Arrow } from "./assets/icons";
+import meleeIcon from "../assets/meleeIcon.png";
+import rangedIcon from "../assets/rangedIcon.png";
+import { Arrow } from "../assets/icons";
 
 export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 	const isMelee = title === "MELEE WEAPONS";

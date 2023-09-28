@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import factionBackground from "./assets/factionBackground.png";
-import adeptusAstartesIcon from "./assets/adeptusAstartesIcon.png";
-import rangedIcon from "./assets/rangedIcon.png";
-import { Arrow, wavyLine } from "./assets/icons";
+import factionBackground from "../assets/factionBackground.png";
+import adeptusAstartesIcon from "../assets/adeptusAstartesIcon.png";
+import rangedIcon from "../assets/rangedIcon.png";
+import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 
 export const Roster = ({ roster, onePerPage }) => {
