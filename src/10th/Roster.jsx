@@ -74,7 +74,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 		rules,
 		modelStats,
 		modelList,
-		psykers,
 		spells,
 		cost,
 		woundTracker,
@@ -266,8 +265,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 								}
 							/>
 						))}
-
-						<WoundTracker woundTracker={woundTracker} />
 					</div>
 				</div>
 				<div
@@ -341,7 +338,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						flexDirection: "column",
 					}}
 				>
-					<Spells title="PSYCHIC" spells={spells} />
 					<table
 						cellSpacing="0"
 						className="weapons-table"
@@ -359,6 +355,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							modelStats={modelStats}
 							forceRules={forceRules}
 						/>
+						<OtherAbilities abilities={abilities} />
 					</table>
 					<div style={{ flex: "1" }}></div>
 					<table
@@ -427,7 +424,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					</div>
 					<Rules rules={rules} />
 					<Abilities abilities={abilities.Abilities} />
-					<Psykers psykers={psykers} />
+
 					<Factions factions={factions} />
 					<FactionIcon catalog={catalog} />
 				</div>
@@ -608,9 +605,7 @@ const Rules = ({ rules }) => {
 const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
 	let keys = [...abilities.keys()];
-	keys = keys.filter(
-		(key) => key !== "Stratagem: Warlord Trait" && key !== "Stratagem: Relic"
-	);
+
 	return (
 		<div
 			style={{
@@ -680,14 +675,11 @@ const FancyBox = ({ children }) => {
 	);
 };
 
-const Psykers = ({ title, psykers }) => {
-	return (
-		<table
-			cellSpacing="0"
-			className="weapons-table"
-			style={{ width: "100%", margin: "4px 2px" }}
-		>
-			{psykers.length > 0 && (
+const OtherAbilities = ({ abilities }) => {
+	let keys = [...Object.keys(abilities)?.filter((key) => key !== "Abilities")];
+	return keys.map((key) => {
+		return (
+			<>
 				<thead>
 					<tr
 						style={{
@@ -695,199 +687,35 @@ const Psykers = ({ title, psykers }) => {
 							color: "#fff",
 						}}
 					>
-						<th style={{ textAlign: "left" }}>PSYKER</th>
-						<th>CAST</th>
-						<th>DENY</th>
-						<th style={{ textAlign: "left", width: "100%" }} colSpan="4">
-							POWERS KNOWN
+						<th></th>
+						<th colspan="7" style={{ textAlign: "left" }}>
+							{key}
 						</th>
 					</tr>
 				</thead>
-			)}
-			<tbody>
-				{psykers.map((psyker, index) => (
-					<Psyker key={psyker.name} psyker={psyker} index={index} />
-				))}
-				{psykers.length > 0 && (
-					<tr className="emptyRow">
-						<td colSpan={4}></td>
-					</tr>
-				)}
-			</tbody>
-		</table>
-	);
-};
-
-const Psyker = ({ psyker, index }) => {
-	let { name, cast, deny, powers } = psyker;
-
-	return (
-		<tr
-			className={index % 2 ? "rowOtherColor" : ""}
-			style={{ fontSize: ".8em" }}
-		>
-			<td style={{ textAlign: "left" }}></td>
-			<td>{cast}</td>
-			<td>{deny}</td>
-			<td style={{ textAlign: "left" }} colSpan="4">
-				{powers}
-			</td>
-		</tr>
-	);
-};
-
-const WoundTracker = ({ woundTracker }) => {
-	if (!woundTracker || woundTracker.length === 0) return null;
-	const uniqueWoundTracker = woundTracker.filter((woundTrack, index) => {
-		const firstIndex = woundTracker.findIndex(
-			(woundTrack2) => woundTrack2.name === woundTrack.name
-		);
-		return firstIndex === index;
-	});
-
-	return (
-		<div style={{ display: "flex" }}>
-			<div
-				style={{
-					display: "flex",
-					flexDirection: "column",
-					alignItems: "center",
-				}}
-			>
-				<table
-					cellSpacing="0"
-					className="weapons-table"
-					style={{ width: "100%", margin: "4px 2px", marginBottom: -16 }}
-				>
-					<thead>
-						<tr
-							style={{
-								backgroundColor: "var(--primary-color)",
-								color: "#fff",
-							}}
-						>
-							{[...uniqueWoundTracker[0].table.keys()].map((key) => (
-								<th key={key}>{key}</th>
-							))}
+				<tbody>
+					{[...abilities[key]].map(([name, value]) => (
+						<tr key={name}>
+							<td></td>
+							<td
+								colspan={7}
+								key={name}
+								style={{
+									fontSize: ".9em",
+									lineHeight: 1.4,
+									textAlign: "left",
+									paddingTop: 4,
+									paddingBottom: 4,
+								}}
+							>
+								<span style={{ fontWeight: 700 }}>{name}:</span> {value}
+							</td>
 						</tr>
-					</thead>
-					<tbody>
-						{uniqueWoundTracker.map((woundTrack, index) => (
-							<tr key={index}>
-								{[...woundTrack.table.values()].map((entry) => (
-									<td key={entry} style={{ borderTop: "none" }}>
-										{entry}
-									</td>
-								))}
-							</tr>
-						))}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	);
-};
-
-const Spells = ({ title, spells }) => {
-	return (
-		<table
-			cellSpacing="0"
-			className="weapons-table"
-			style={{ width: "100%", marginTop: "var(--size-20)" }}
-		>
-			{spells.length > 0 && (
-				<thead>
-					<tr
-						style={{
-							backgroundColor: "var(--primary-color)",
-							color: "#fff",
-						}}
-					>
-						<th style={{ width: 37 }}>
-							<div style={{ display: "flex" }}>
-								<img src={rangedIcon} />
-							</div>
-						</th>
-						<th style={{ textAlign: "left" }}>{title}</th>
-						<th>RANGE</th>
-						<th>WARP CHARGE</th>
-					</tr>
-				</thead>
-			)}
-			<tbody>
-				{spells.map((spell, index) => (
-					<Spell
-						key={spell.name}
-						spell={spell}
-						index={index}
-						className={getSpellClassNames(spells, index)}
-					/>
-				))}
-				{spells.length > 0 && (
-					<tr className="emptyRow">
-						<td style={{ width: 37, borderTop: "none" }}></td>
-						<td colSpan={7}></td>
-					</tr>
-				)}
-			</tbody>
-		</table>
-	);
-};
-
-const Spell = ({ spell, index, className }) => {
-	let { name, range, manifest, details } = spell;
-	return (
-		<>
-			<tr className={className}>
-				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}></td>
-				<td style={{ textAlign: "left" }}>
-					<div
-						style={{
-							display: "flex",
-							alignItems: "center",
-							flexWrap: "wrap",
-							gap: "0 4px",
-						}}
-					>
-						{name}
-					</div>
-				</td>
-				<td>{range}</td>
-				<td>{manifest}</td>
-			</tr>
-			<tr className={className + " noBorderTop"}>
-				<td style={{ backgroundColor: "#dfe0e2" }}></td>
-				<td
-					colSpan="7"
-					style={{
-						textAlign: "left",
-						fontSize: "0.8em",
-						paddingTop: 0,
-						paddingBottom: 1,
-						lineHeight: 1.4,
-					}}
-				>
-					{details}
-				</td>
-			</tr>
-		</>
-	);
-};
-
-const getSpellClassNames = (spells, index) => {
-	let differentColor = false;
-	for (let i = 1; i <= index; i++) {
-		let { name } = spells[i];
-		if (name !== spells[i - 1].name) {
-			differentColor = !differentColor;
-		}
-	}
-	const classes = [];
-	if (differentColor) classes.push("rowOtherColor");
-	if (index === 0) classes.push("noBorderTop");
-	if (index > 0 && spells[index].name === spells[index - 1].name)
-		classes.push("noBorderTop");
-	return classes.join(" ");
+					))}
+				</tbody>
+			</>
+		);
+	});
 };
 
 const ForceRules = ({ rules, onePerPage }) => {

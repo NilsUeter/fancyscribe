@@ -62,15 +62,7 @@ export const hasDifferentProfiles = (selectionName, name) => {
 	);
 };
 
-const Weapon = ({
-	weapon,
-	previousWeapon,
-	nextWeapon,
-	modelStats,
-	isMelee,
-	className,
-	forceRules,
-}) => {
+const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 	let {
 		name,
 		selectionName,

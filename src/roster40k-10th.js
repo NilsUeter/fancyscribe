@@ -959,19 +959,22 @@ function ParseModelProfiles(profiles, model, unit) {
 		} else if (typeName == "Psychic Power") {
 			const power = ParsePsychicPowerProfile(profile);
 			model.psychicPowers.push(power);
-		} else if (typeName.includes("Explosion")) {
-			const explosion = ParseExplosionProfile(profile);
-			model.explosions.push(explosion);
-		} else if (typeName == "Psyker") {
-			model.psyker = ParsePsykerProfile(profile);
-		} else {
-			// Everything else, like Prayers and Warlord Traits.
+		} else if (typeName == "Abilities") {
 			if (!unit.abilities.Abilities) unit.abilities["Abilities"] = new Map();
 			ParseProfileCharacteristics(
 				profile,
 				profileName,
 				typeName,
 				unit.abilities.Abilities
+			);
+		} else {
+			// Everything else, like Prayers and Warlord Traits.
+			if (!unit.abilities[typeName]) unit.abilities[typeName] = new Map();
+			ParseProfileCharacteristics(
+				profile,
+				profileName,
+				typeName,
+				unit.abilities[typeName]
 			);
 		}
 	}
