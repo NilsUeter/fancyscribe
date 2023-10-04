@@ -38,6 +38,13 @@ function App() {
 					break;
 				case "chaos daemons":
 					example = await fetch("Chaos Demons Mix.rosz");
+					break;
+				case "death guard":
+					example = await fetch("Death Guard Example.rosz");
+					break;
+				case "thousand sons":
+					example = await fetch("Thousand Sons Example.rosz");
+					break;
 				default:
 					break;
 			}
@@ -133,7 +140,15 @@ function App() {
 		>
 			<div className="header print-display-none">
 				<a href="/fancyscribe" style={{ color: "#fff", fontWeight: 800 }}>
-					FancyScribe
+					FancyScribe{" "}
+					<span
+						style={{
+							fontSize: "0.8rem",
+							fontWeight: 400,
+						}}
+					>
+						Now with 10th edition support!
+					</span>
 				</a>
 				<div className="subheader">
 					A fancy way to view your Warhammer 40k BattleScribe rosters
@@ -230,20 +245,50 @@ function App() {
 				{edition === 10 && (
 					<Roster10th roster={roster} onePerPage={onePerPage} />
 				)}
-				<div style={{ display: "flex", gap: 8 }}>
+				<div
+					style={{
+						padding: "8px 0",
+						fontSize: "1.7rem",
+						display: roster ? "none" : "flex",
+					}}
+				>
+					Examples
+				</div>
+				<div
+					style={{
+						gap: 8,
+						flexWrap: "wrap",
+						justifyContent: "center",
+						display: roster ? "none" : "flex",
+					}}
+				>
 					<button
 						className="print-display-none"
-						style={{ display: roster ? "none" : "", fontSize: "1.2rem" }}
-						onClick={() => handleFileSelect("ultras")}
+						style={{ fontSize: "1.2rem" }}
+						onClick={() => handleFileSelect("thousand sons")}
 					>
-						Load Ultramarines example
+						Thousand Sons (10th)
 					</button>
 					<button
 						className="print-display-none"
-						style={{ display: roster ? "none" : "", fontSize: "1.2rem" }}
+						style={{ fontSize: "1.2rem" }}
+						onClick={() => handleFileSelect("death guard")}
+					>
+						Death Guard (10th)
+					</button>
+					<button
+						className="print-display-none"
+						style={{ fontSize: "1.2rem" }}
+						onClick={() => handleFileSelect("ultras")}
+					>
+						Ultramarines (9th)
+					</button>
+					<button
+						className="print-display-none"
+						style={{ fontSize: "1.2rem" }}
 						onClick={() => handleFileSelect("chaos daemons")}
 					>
-						Load Chaos Daemons example
+						Chaos Daemons (9th)
 					</button>
 				</div>
 				<div
@@ -290,7 +335,7 @@ function App() {
 }
 
 const getPrimaryColor = (catalog) => {
-	switch (catalog) {
+	switch (catalog.replace("Xenos - ", "")) {
 		case "Imperium - Adeptus Astartes":
 			return "#536766";
 		case "Imperium - Adeptus Astartes - Blood Angels":
@@ -333,6 +378,8 @@ const getPrimaryColor = (catalog) => {
 			return "#576011";
 		case "Chaos - Chaos Knights":
 			return "#513627";
+		case "Chaos - Thousand Sons":
+			return "#015d68";
 		case "Necrons":
 			return "#005c2f";
 		case "Orks":

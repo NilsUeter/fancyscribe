@@ -688,7 +688,7 @@ const OtherAbilities = ({ abilities }) => {
 						}}
 					>
 						<th></th>
-						<th colspan="7" style={{ textAlign: "left" }}>
+						<th colSpan="7" style={{ textAlign: "left" }}>
 							{key}
 						</th>
 					</tr>
@@ -698,7 +698,7 @@ const OtherAbilities = ({ abilities }) => {
 						<tr key={name}>
 							<td></td>
 							<td
-								colspan={7}
+								colSpan={7}
 								key={name}
 								style={{
 									fontSize: ".9em",
