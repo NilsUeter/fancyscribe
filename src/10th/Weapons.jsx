@@ -54,12 +54,7 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 };
 
 export const hasDifferentProfiles = (selectionName, name) => {
-	return (
-		selectionName &&
-		selectionName.toLowerCase() !== name.toLowerCase() &&
-		!name.includes("(Shooting)") &&
-		!name.includes("(Melee)")
-	);
+	return selectionName && selectionName.toLowerCase() !== name.toLowerCase();
 };
 
 const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
@@ -176,6 +171,11 @@ const getWeaponClassNames = (weapons, index) => {
 	let differentColor = false;
 	for (let i = 1; i <= index; i++) {
 		let { selectionName } = weapons[i];
+		if (!selectionName && !weapons[i - 1].selectionName) {
+			if (weapons[i].name !== weapons[i - 1].name) {
+				differentColor = !differentColor;
+			}
+		}
 		if (selectionName !== weapons[i - 1].selectionName) {
 			differentColor = !differentColor;
 		}

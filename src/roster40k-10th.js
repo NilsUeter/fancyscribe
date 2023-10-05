@@ -140,7 +140,8 @@ export class Model extends BaseNotes {
 	leadership = 7;
 	save = "";
 
-	weapons = [];
+	rangedWeapons = [];
+	meleeWeapons = [];
 	upgrades = [];
 	// TODO model upgrades (i.e. tau support systems)
 	psyker = null;
@@ -153,11 +154,17 @@ export class Model extends BaseNotes {
 		if (
 			this.name === model.name &&
 			this.count === model.count &&
-			this.weapons.length === model.weapons.length &&
+			this.rangedWeapons.length === model.rangedWeapons.length &&
+			this.meleeWeapons.length === model.meleeWeapons.length &&
 			this.upgrades.length === model.upgrades.length
 		) {
-			for (let wi = 0; wi < this.weapons.length; wi++) {
-				if (!this.weapons[wi].equal(model.weapons[wi])) {
+			for (let wi = 0; wi < this.rangedWeapons.length; wi++) {
+				if (!this.rangedWeapons[wi].equal(model.rangedWeapons[wi])) {
+					return false;
+				}
+			}
+			for (let wi = 0; wi < this.meleeWeapons.length; wi++) {
+				if (!this.meleeWeapons[wi].equal(model.meleeWeapons[wi])) {
 					return false;
 				}
 			}
@@ -178,7 +185,11 @@ export class Model extends BaseNotes {
 	nameAndGear() {
 		let name = this.name;
 
-		if (this.weapons.length > 0 || this.upgrades.length > 0) {
+		if (
+			this.meleeWeapons.length > 0 ||
+			this.rangedWeapons.length > 0 ||
+			this.upgrades.length > 0
+		) {
 			const gear = this.getDedupedWeaponsAndUpgrades();
 			name += ` (${gear.map((u) => u.toString()).join(", ")})`;
 		}
@@ -187,7 +198,11 @@ export class Model extends BaseNotes {
 
 	getDedupedWeaponsAndUpgrades() {
 		const deduped = [];
-		for (const upgrade of [...this.weapons, ...this.upgrades]) {
+		for (const upgrade of [
+			...this.rangedWeapons,
+			...this.meleeWeapons,
+			...this.upgrades,
+		]) {
 			if (
 				!deduped.some(
 					(e) => upgrade.getSelectionName() === e.getSelectionName()
@@ -200,10 +215,12 @@ export class Model extends BaseNotes {
 	}
 
 	normalize() {
-		this.weapons.sort(CompareWeapon);
+		this.rangedWeapons.sort(CompareWeapon);
+		this.meleeWeapons.sort(CompareWeapon);
 		this.upgrades.sort(CompareObj);
 
-		this.normalizeUpgrades(this.weapons);
+		this.normalizeUpgrades(this.rangedWeapons);
+		this.normalizeUpgrades(this.meleeWeapons);
 		this.normalizeUpgrades(this.upgrades);
 	}
 
@@ -237,7 +254,8 @@ export class Unit extends BaseNotes {
 	models = [];
 	modelStats = [];
 	modelList = [];
-	weapons = [];
+	rangedWeapons = [];
+	meleeWeapons = [];
 	spells = [];
 	psykers = [];
 	explosions = [];
@@ -336,12 +354,16 @@ export class Unit extends BaseNotes {
 			(model) =>
 				(model.count > 1 ? `${model.count}x ` : "") + model.nameAndGear()
 		);
-		this.weapons = this.models
-			.map((m) => m.weapons)
+		this.rangedWeapons = this.models
+			.map((m) => m.rangedWeapons)
 			.reduce((acc, val) => acc.concat(val), [])
 			.sort(CompareWeapon)
 			.filter((weap, i, array) => weap.name !== array[i - 1]?.name);
-
+		this.meleeWeapons = this.models
+			.map((m) => m.meleeWeapons)
+			.reduce((acc, val) => acc.concat(val), [])
+			.sort(CompareWeapon)
+			.filter((weap, i, array) => weap.name !== array[i - 1]?.name);
 		this.spells.push(
 			...this.models
 				.map((m) => m.psychicPowers)
@@ -811,12 +833,19 @@ function ParseUnit(root) {
 		const unitUpgradesModel = new Model();
 		unitUpgradesModel.name = "Unit Upgrades";
 		ParseModelProfiles(unseenProfiles, unitUpgradesModel, unit);
-		if (unitUpgradesModel.weapons.length > 0 && unit.models.length > 0) {
+		if (unitUpgradesModel.meleeWeapons.length > 0 && unit.models.length > 0) {
 			// Apply weapons at the unit level to all models in the unit.
 			for (const model of unit.models) {
-				model.weapons.push(...unitUpgradesModel.weapons);
+				model.meleeWeapons.push(...unitUpgradesModel.meleeWeapons);
 			}
-			unitUpgradesModel.weapons.length = 0; // Clear the array.
+			unitUpgradesModel.meleeWeapons.length = 0; // Clear the array.
+		}
+		if (unitUpgradesModel.rangedWeapons.length > 0 && unit.models.length > 0) {
+			// Apply weapons at the unit level to all models in the unit.
+			for (const model of unit.models) {
+				model.rangedWeapons.push(...unitUpgradesModel.rangedWeapons);
+			}
+			unitUpgradesModel.rangedWeapons.length = 0; // Clear the array.
 		}
 		if (unitUpgradesModel.psychicPowers.length > 0) {
 			// Add spells to the unit's spell list. However, we'll still need
@@ -854,7 +883,8 @@ function ParseUnit(root) {
 		}
 
 		if (
-			unitUpgradesModel.weapons.length > 0 ||
+			unitUpgradesModel.rangedWeapons.length > 0 ||
+			unitUpgradesModel.meleeWeapons.length > 0 ||
 			unitUpgradesModel.upgrades.length > 0
 		) {
 			unit.models.push(unitUpgradesModel);
@@ -946,9 +976,12 @@ function ParseModelProfiles(profiles, model, unit) {
 			profile.getAttribute("type") === "model"
 		) {
 			// Do nothing; these were already handled.
-		} else if (typeName === "Ranged Weapons" || typeName === "Melee Weapons") {
+		} else if (typeName === "Ranged Weapons") {
 			const weapon = ParseWeaponProfile(profile);
-			model.weapons.push(weapon);
+			model.rangedWeapons.push(weapon);
+		} else if (typeName === "Melee Weapons") {
+			const weapon = ParseWeaponProfile(profile);
+			model.meleeWeapons.push(weapon);
 		} else if (
 			typeName.includes("Wound Track") ||
 			typeName.includes("Stat Damage") ||

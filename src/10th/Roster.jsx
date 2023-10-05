@@ -67,32 +67,18 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const [image, setImage] = useState(null);
 	let {
 		name,
-		weapons,
+		meleeWeapons,
+		rangedWeapons,
 		abilities,
 		keywords,
 		factions,
 		rules,
 		modelStats,
 		modelList,
-		spells,
 		cost,
-		woundTracker,
 	} = unit;
 
-	const meleeWeapons = weapons
-		.filter(
-			(weapon) =>
-				(weapon.range === "Melee" || weapon.type === "Melee") &&
-				weapon.range !== ""
-		)
-		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
-
-	const rangedWeapons = weapons
-		.filter(
-			(weapon) =>
-				weapon.range !== "Melee" && weapon.range !== "-" && weapon.range !== ""
-		)
-		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
+	const weapons = [...meleeWeapons, ...rangedWeapons];
 
 	const weaponDescriptions = weapons
 		.filter(
@@ -288,8 +274,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						className="button print-display-none"
 						style={{
 							position: "absolute",
-							top: "0",
-							right: 0,
 							border: "1px solid #999",
 							top: 1,
 							right: 1,

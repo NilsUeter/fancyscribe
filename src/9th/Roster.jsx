@@ -301,8 +301,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						className="button print-display-none"
 						style={{
 							position: "absolute",
-							top: "0",
-							right: 0,
 							border: "1px solid #999",
 							top: 1,
 							right: 1,
