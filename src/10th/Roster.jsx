@@ -596,12 +596,20 @@ const Rules = ({ rules }) => {
 				gap: 3,
 				borderBottom: "1px dotted #9e9fa1",
 				lineHeight: 1.3,
+				display: "flex",
+				flexWrap: "wrap",
 			}}
 		>
 			<span style={{ fontSize: ".8em" }}>RULES: </span>
-			<span style={{ fontSize: ".8em", fontWeight: 700 }}>
-				{[...rules.keys()].map((rule) => rule).join(", ")}
-			</span>
+			{[...rules.keys()].map((rule, index) => (
+				<span
+					key={rule}
+					style={{ whiteSpace: "nowrap", fontSize: ".8em", fontWeight: 700 }}
+				>
+					{rule}
+					{index < rules.size - 1 ? ", " : ""}
+				</span>
+			))}
 		</div>
 	);
 };

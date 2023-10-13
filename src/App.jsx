@@ -139,7 +139,16 @@ function App() {
 			}}
 		>
 			<div className="header print-display-none">
-				<a href="/fancyscribe" style={{ color: "#fff", fontWeight: 800 }}>
+				<a
+					href="/fancyscribe"
+					style={{
+						color: "#fff",
+						fontWeight: 800,
+						display: "flex",
+						alignItems: "center",
+						gap: 6,
+					}}
+				>
 					FancyScribe{" "}
 					<span
 						style={{

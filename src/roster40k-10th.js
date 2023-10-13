@@ -493,7 +493,6 @@ function ParseSelections(root, force) {
 
 	// Sort force units by role and name#
 	force.units.sort((a, b) => {
-		console.log(a.role);
 		if (UnitRoleSorting[a.role] > UnitRoleSorting[b.role]) return 1;
 		else if (UnitRoleSorting[a.role] == UnitRoleSorting[b.role]) {
 			if (a.name > b.name) return 1;
@@ -676,7 +675,6 @@ function ParseUnit(root) {
 				unit.factions.add(factKeyword);
 			} else {
 				const roleText = catName.trim();
-				console.log(roleText);
 				let unitRole = LookupRole(roleText);
 				if (unitRole != UnitRole.NONE) {
 					unit.role = unitRole;
