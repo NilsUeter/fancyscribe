@@ -76,55 +76,17 @@ export const UnitRole = {
 	NONE: "NONE",
 
 	// 40k
-	SCD: "SCD",
-	HQ: "HQ",
-	TR: "TR",
-	EL: "EL",
-	FA: "FA",
-	HS: "HS",
-	FL: "FL",
-	DT: "DT",
-	FT: "FT",
-	LW: "LW",
-	AGENTS: "AGENTS",
-	NF: "NF",
+	Character: "Character",
+	Battleline: "Battleline",
+	DedicatedTransport: "TR",
 };
 
 export const UnitRoleSorting = {
-	NONE: 0,
-
-	// 40k
-	SCD: 1,
-	HQ: 2,
-	TR: 3,
-	EL: 4,
-	FA: 5,
-	HS: 6,
-	FL: 7,
-	DT: 8,
-	FT: 9,
-	LW: 10,
-	AGENTS: 11,
-	NF: 12,
+	Character: 0,
+	Battleline: 1,
+	DedicatedTransport: 2,
+	NONE: 3,
 };
-
-export const UnitRoleToString = [
-	"None",
-
-	// 40k
-	"Supreme Command Detachment",
-	"HQ",
-	"Troops",
-	"Elites",
-	"Fast Attack",
-	"Heavy Support",
-	"Flyer",
-	"Dedicated Transport",
-	"Fortification",
-	"Lord of War",
-	"Agent of the Imperium",
-	"No Force Org Slot",
-];
 
 export class Model extends BaseNotes {
 	count = 0;
@@ -245,7 +207,7 @@ export class Model extends BaseNotes {
 }
 
 export class Unit extends BaseNotes {
-	roleRole = UnitRole.NONE;
+	role = UnitRole.NONE;
 	factions = new Set();
 	keywords = new Set();
 
@@ -531,6 +493,7 @@ function ParseSelections(root, force) {
 
 	// Sort force units by role and name#
 	force.units.sort((a, b) => {
+		console.log(a.role);
 		if (UnitRoleSorting[a.role] > UnitRoleSorting[b.role]) return 1;
 		else if (UnitRoleSorting[a.role] == UnitRoleSorting[b.role]) {
 			if (a.name > b.name) return 1;
@@ -605,30 +568,12 @@ function ExtractRuleDescription(rule, map) {
 
 function LookupRole(roleText) {
 	switch (roleText) {
-		case "HQ":
-			return UnitRole.HQ;
-		case "Troops":
-			return UnitRole.TR;
-		case "Elites":
-			return UnitRole.EL;
-		case "Fast Attack":
-			return UnitRole.FA;
-		case "Heavy Support":
-			return UnitRole.HS;
-		case "Flyer":
-			return UnitRole.FL;
+		case "Character":
+			return UnitRole.Character;
+		case "Battleline":
+			return UnitRole.Battleline;
 		case "Dedicated Transport":
-			return UnitRole.DT;
-		case "Fortification":
-			return UnitRole.FT;
-		case "Lord of War":
-			return UnitRole.LW;
-		case "Agent of the Imperium":
-			return UnitRole.AGENTS;
-		case "No Force Org Slot":
-			return UnitRole.NF;
-		case "Primarch | Daemon Primarch | Supreme Commander":
-			return UnitRole.SCD;
+			return UnitRole.DedicatedTransport;
 	}
 	return UnitRole.NONE;
 }
@@ -731,13 +676,12 @@ function ParseUnit(root) {
 				unit.factions.add(factKeyword);
 			} else {
 				const roleText = catName.trim();
+				console.log(roleText);
 				let unitRole = LookupRole(roleText);
 				if (unitRole != UnitRole.NONE) {
 					unit.role = unitRole;
-				} else {
-					// Keyword
-					unit.keywords.add(catName);
 				}
+				unit.keywords.add(catName);
 			}
 		}
 	}

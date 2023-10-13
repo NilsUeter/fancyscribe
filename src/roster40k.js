@@ -227,7 +227,7 @@ export class Model extends BaseNotes {
 }
 
 export class Unit extends BaseNotes {
-	roleRole = UnitRole.NONE;
+	role = UnitRole.NONE;
 	factions = new Set();
 	keywords = new Set();
 
