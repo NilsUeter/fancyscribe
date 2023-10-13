@@ -198,6 +198,7 @@ export class Model extends BaseNotes {
 
 	getDedupedWeaponsAndUpgrades() {
 		const deduped = [];
+
 		for (const upgrade of [
 			...this.rangedWeapons,
 			...this.meleeWeapons,
@@ -833,7 +834,7 @@ function ParseUnit(root) {
 		const unitUpgradesModel = new Model();
 		unitUpgradesModel.name = "Unit Upgrades";
 		ParseModelProfiles(unseenProfiles, unitUpgradesModel, unit);
-		if (unitUpgradesModel.meleeWeapons.length > 0 && unit.models.length > 0) {
+		/* if (unitUpgradesModel.meleeWeapons.length > 0 && unit.models.length > 0) {
 			// Apply weapons at the unit level to all models in the unit.
 			for (const model of unit.models) {
 				model.meleeWeapons.push(...unitUpgradesModel.meleeWeapons);
@@ -846,7 +847,7 @@ function ParseUnit(root) {
 				model.rangedWeapons.push(...unitUpgradesModel.rangedWeapons);
 			}
 			unitUpgradesModel.rangedWeapons.length = 0; // Clear the array.
-		}
+		} */
 		if (unitUpgradesModel.psychicPowers.length > 0) {
 			// Add spells to the unit's spell list. However, we'll still need
 			// to add spell upgrade selections to the upgrade list, below.

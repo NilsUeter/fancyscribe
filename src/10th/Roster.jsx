@@ -120,6 +120,25 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 		}
 	}, []);
 
+	const areAllModelsTheSame = (modelStats) => {
+		if (modelStats.length === 1) return true;
+		const firstModel = modelStats[0];
+		return modelStats.every(
+			(model) =>
+				model.move === firstModel.move &&
+				model.toughness === firstModel.toughness &&
+				model.save === firstModel.save &&
+				model.wounds === firstModel.wounds &&
+				model.leadership === firstModel.leadership &&
+				model.oc === firstModel.oc &&
+				model.bs === firstModel.bs &&
+				model.ws === firstModel.ws &&
+				model.attacks === firstModel.attacks
+		);
+	};
+	if (areAllModelsTheSame(modelStats)) {
+		modelStats = [modelStats[0]];
+	}
 	return (
 		<div
 			className={
@@ -246,9 +265,6 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 								modelList={modelList}
 								index={index}
 								showName={modelStats.length > 1}
-								showWeapons={
-									modelList.length > 1 || modelList[0].includes("x ") // show Weapons when multiple weapons of same type, for example (2x Atomiser Beam, Reanimator's Claws)
-								}
 							/>
 						))}
 					</div>
@@ -417,37 +433,23 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	);
 };
 
-const ModelStats = ({ modelStat, index, showName, showWeapons, modelList }) => {
+const ModelStats = ({ modelStat, index, showName, modelList }) => {
 	let { move, toughness, save, wounds, leadership, name, oc, bs, ws, attacks } =
 		modelStat;
 	if (!wounds) {
 		wounds = "/";
 	}
-	if (!name.includes("Sgt")) {
-		modelList = modelList.filter((model) => !model.includes("Sgt"));
-	}
-	if (!name.includes("Sergeant")) {
-		modelList = modelList.filter((model) => !model.includes("Sergeant"));
-	}
-	let modelListMatches = modelList.filter((model) =>
-		model.includes(name + " w")
-	);
-	if (modelListMatches.length === 0) {
-		modelListMatches = modelList.filter((model) => model.includes(name));
-	}
-	modelListMatches = modelListMatches.map((model) =>
-		model.replaceAll(name, "")
-	);
 
+	const showWeapons = index === 0;
 	return (
-		<div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+		<div style={{ display: "flex", gap: 16 }}>
 			<Characteristic title="M" characteristic={move} index={index} />
 			<Characteristic title="T" characteristic={toughness} index={index} />
 			<Characteristic title="SV" characteristic={save} index={index} />
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			<Characteristic title="OC" characteristic={oc} index={index} />
-			<div>
+			<div style={{ display: "flex", alignItems: "center" }}>
 				{showName && (
 					<div
 						style={{
@@ -467,7 +469,7 @@ const ModelStats = ({ modelStat, index, showName, showWeapons, modelList }) => {
 							fontSize: "0.7em",
 						}}
 					>
-						{modelListMatches.map((model, index) => (
+						{modelList.map((model, index) => (
 							<div key={model}>{model}</div>
 						))}
 					</div>
