@@ -4,6 +4,7 @@ import adeptusAstartesIcon from "../assets/adeptusAstartesIcon.png";
 import rangedIcon from "../assets/rangedIcon.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
+import { useLocalStorage } from "../helpers/useLocalStorage";
 
 export const Roster = ({ roster, onePerPage }) => {
 	if (!roster) {
@@ -64,7 +65,6 @@ const Force = ({ force, onePerPage }) => {
 const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const [hide, setHide] = useState(false);
 	const uploadRef = useRef();
-	const [image, setImage] = useState(null);
 	let {
 		name,
 		meleeWeapons,
@@ -77,6 +77,8 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 		modelList,
 		cost,
 	} = unit;
+	const [image, setImage] = useLocalStorage("image" + name);
+	const hasImage = image && image !== "undefined";
 
 	const weapons = [...meleeWeapons, ...rangedWeapons];
 
@@ -156,7 +158,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					: "",
 			}}
 		>
-			<div
+			<label
 				className="print-display-none"
 				style={{
 					display: "flex",
@@ -164,11 +166,9 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					justifyContent: "flex-end",
 				}}
 			>
-				<label className="print-display-none">
-					<input type="checkbox" onChange={() => setHide(!hide)} />
-					Don't print this card.
-				</label>
-			</div>
+				<input type="checkbox" onChange={() => setHide(!hide)} />
+				<span className="print-display-none">Don't print this card.</span>
+			</label>
 			<div
 				style={{
 					padding: "24px 0",
@@ -276,10 +276,10 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						top: 0,
 						height: "100%",
 						bottom: 0,
-						width: "50%",
+						width: "45%",
 					}}
 				>
-					{image && (
+					{hasImage && (
 						<img
 							src={image}
 							alt=""
@@ -291,7 +291,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						style={{
 							position: "absolute",
 							border: "1px solid #999",
-							top: 1,
+							top: 2,
 							right: 1,
 							padding: "1px 4px",
 							fontSize: "0.8rem",
@@ -316,8 +316,27 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 								display: "none",
 							}}
 						/>
-						Upload image
+						{hasImage ? "Change image" : "Upload image "}
 					</label>
+					{hasImage && (
+						<button
+							className="button print-display-none"
+							style={{
+								position: "absolute",
+								border: "1px solid #999",
+								top: 2,
+								right: 84,
+								padding: "2px 4px",
+								fontSize: "0.8rem",
+								backgroundColor: "#f0f0f0",
+							}}
+							onClick={() => {
+								setImage(undefined);
+							}}
+						>
+							Clear image
+						</button>
+					)}
 				</div>
 			</div>
 			<div
