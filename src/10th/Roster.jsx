@@ -468,12 +468,11 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			<Characteristic title="OC" characteristic={oc} index={index} />
-			<div style={{ display: "flex", alignItems: "center" }}>
+			<div style={{ display: "flex", alignItems: "center", marginLeft: -10 }}>
 				{showName && (
 					<div
 						style={{
 							marginTop: index === 0 ? 16 : 0,
-							marginLeft: -10,
 							whiteSpace: "nowrap",
 						}}
 					>
@@ -483,9 +482,9 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 				{showWeapons && (
 					<div
 						style={{
-							marginTop: index === 0 && !showName ? 16 : 0,
-							marginLeft: -10,
+							marginTop: 16,
 							fontSize: "0.7em",
+							paddingLeft: showName ? 8 : 0,
 						}}
 					>
 						{modelList.map((model, index) => (
