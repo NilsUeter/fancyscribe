@@ -1,7 +1,6 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, Fragment } from "react";
 import factionBackground from "../assets/factionBackground.png";
 import adeptusAstartesIcon from "../assets/adeptusAstartesIcon.png";
-import rangedIcon from "../assets/rangedIcon.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useLocalStorage } from "../helpers/useLocalStorage";
@@ -85,7 +84,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const weaponDescriptions = weapons
 		.filter(
 			(weapon) =>
-				(weapon.range === "-" || weapon.range === "") && weapon.abilities
+				(weapon.range === "-" || weapon.range === "") && weapon.abilities,
 		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	const modelsWithDifferentProfiles = weapons.filter((weapon, index) => {
@@ -97,7 +96,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 			((previousWeapon &&
 				hasDifferentProfiles(
 					previousWeapon.selectionName,
-					previousWeapon.name
+					previousWeapon.name,
 				) &&
 				selectionName === previousWeapon.selectionName) ||
 				(nextWeapon &&
@@ -135,7 +134,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				model.oc === firstModel.oc &&
 				model.bs === firstModel.bs &&
 				model.ws === firstModel.ws &&
-				model.attacks === firstModel.attacks
+				model.attacks === firstModel.attacks,
 		);
 	};
 	if (areAllModelsTheSame(modelStats)) {
@@ -164,6 +163,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "flex-end",
+					gap: 4,
 				}}
 			>
 				<input type="checkbox" onChange={() => setHide(!hide)} />
@@ -200,7 +200,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							style={{
 								backgroundColor: "var(--primary-color-transparent)",
 								height: 80,
-								minWidth: 340,
+								minWidth: "33%",
 							}}
 						></div>
 						<div
@@ -286,57 +286,53 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							style={{ width: "100%", height: "100%", objectFit: "contain" }}
 						/>
 					)}
-					<label
-						className="button print-display-none"
-						style={{
-							position: "absolute",
-							border: "1px solid #999",
-							top: 2,
-							right: 1,
-							padding: "1px 4px",
-							fontSize: "0.8rem",
-							backgroundColor: "#f0f0f0",
-						}}
-					>
-						<input
-							ref={uploadRef}
-							type="file"
-							className="print-display-none"
-							accept=".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff,.webp,.svg,.jfif,.pjpeg,.pjp,.avif,.apng,.ico,.cur,.ani"
-							onChange={(e) => {
-								if (e.target.files && e.target.files[0]) {
-									let reader = new FileReader();
-									reader.onload = function (ev) {
-										setImage(ev.target.result);
-									}.bind(this);
-									reader.readAsDataURL(e.target.files[0]);
-								}
-							}}
-							style={{
-								display: "none",
-							}}
-						/>
-						{hasImage ? "Change image" : "Upload image "}
-					</label>
-					{hasImage && (
-						<button
+					<div className="absolute right-[1px] top-[2px] flex gap-1">
+						<label
 							className="button print-display-none"
 							style={{
-								position: "absolute",
 								border: "1px solid #999",
-								top: 2,
-								right: 84,
-								padding: "2px 4px",
+								padding: "1px 4px",
 								fontSize: "0.8rem",
 								backgroundColor: "#f0f0f0",
 							}}
-							onClick={() => {
-								setImage(undefined);
-							}}
 						>
-							Clear image
-						</button>
-					)}
+							<input
+								ref={uploadRef}
+								type="file"
+								className="print-display-none"
+								accept=".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff,.webp,.svg,.jfif,.pjpeg,.pjp,.avif,.apng,.ico,.cur,.ani"
+								onChange={(e) => {
+									if (e.target.files && e.target.files[0]) {
+										let reader = new FileReader();
+										reader.onload = function (ev) {
+											setImage(ev.target.result);
+										}.bind(this);
+										reader.readAsDataURL(e.target.files[0]);
+									}
+								}}
+								style={{
+									display: "none",
+								}}
+							/>
+							{hasImage ? "Change image" : "Upload image "}
+						</label>
+						{hasImage && (
+							<button
+								className="button print-display-none"
+								style={{
+									border: "1px solid #999",
+									padding: "1px 4px",
+									fontSize: "0.8rem",
+									backgroundColor: "#f0f0f0",
+								}}
+								onClick={() => {
+									setImage(undefined);
+								}}
+							>
+								Clear image
+							</button>
+						)}
+					</div>
 				</div>
 			</div>
 			<div
@@ -383,30 +379,24 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						style={{ width: "100%" }}
 					>
 						<tbody>
-							{weaponDescriptions.map((weapon, index) => (
-								<tr key={index} className="emptyRow noBorderTop">
-									<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
-									<td
-										style={{
-											textAlign: "left",
-											fontSize: ".8em",
-											paddingLeft: 0,
-										}}
-									>
-										{weapon.name} - {weapon.abilities}
-									</td>
-								</tr>
-							))}
 							{modelsWithDifferentProfiles.length > 0 &&
 								!weaponDescriptions.length && (
 									<tr className="emptyRow noBorderTop">
-										<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
+										<td
+											style={{
+												borderTop: "none",
+												verticalAlign: "middle",
+											}}
+										>
+											<div className="flex justify-center">{Arrow}</div>
+										</td>
 										<td
 											colSpan={7}
 											style={{
 												textAlign: "left",
 												fontSize: ".8em",
 												paddingLeft: 0,
+												verticalAlign: "middle",
 											}}
 										>
 											Before selecting targets for this weapon, select one of
@@ -419,14 +409,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 
 					<Keywords keywords={keywords} />
 				</div>
-				<div
-					style={{
-						padding: "var(--size-20) var(--size-20) 50px var(--size-20)",
-						flex: "1",
-						maxWidth: 400,
-						position: "relative",
-					}}
-				>
+				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] print:p-[20px] sm:p-2 sm:pb-[50px] sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:print:p-[20px] md:print:pb-[50px]">
 					<div
 						style={{
 							fontSize: "1.1em",
@@ -461,14 +444,14 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 
 	const showWeapons = index === 0;
 	return (
-		<div style={{ display: "flex", gap: 16 }}>
+		<div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
 			<Characteristic title="T" characteristic={toughness} index={index} />
 			<Characteristic title="SV" characteristic={save} index={index} />
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			<Characteristic title="OC" characteristic={oc} index={index} />
-			<div style={{ display: "flex", alignItems: "center", marginLeft: -10 }}>
+			<div style={{ display: "flex", alignItems: "center" }}>
 				{showName && (
 					<div
 						style={{
@@ -530,6 +513,7 @@ const FactionIcon = ({ catalog }) => {
 };
 
 const Keywords = ({ keywords }) => {
+	const joinedKeywords = [...keywords].join(", ");
 	return (
 		<div
 			style={{
@@ -542,15 +526,20 @@ const Keywords = ({ keywords }) => {
 				alignItems: "center",
 				backgroundColor: "#BCBCBE",
 				border: "2px solid var(--primary-color)",
-				width: "calc(100% - 18px)",
+				width: "calc(100% - 0.9rem)",
 				backgroundSize: "contain",
 				minHeight: 54,
 				gap: 3,
 			}}
 		>
 			<span style={{ fontSize: "1.1em" }}>KEYWORDS:</span>
-			<span style={{ fontSize: "1em", fontWeight: 800 }}>
-				{[...keywords].join(", ")}
+			<span
+				style={{
+					fontSize: joinedKeywords.length > 80 ? ".8em" : "1em",
+					fontWeight: 800,
+				}}
+			>
+				{joinedKeywords}
 			</span>
 		</div>
 	);
@@ -572,7 +561,7 @@ const Factions = ({ factions }) => {
 				color: "#fff",
 				border: "2px solid var(--primary-color)",
 				borderLeft: "none",
-				width: "calc(100% - 18px)",
+				width: "calc(100% - 0.9rem)",
 				backgroundSize: "contain",
 				minHeight: 54,
 			}}
@@ -670,8 +659,8 @@ const FancyBox = ({ children }) => {
 		>
 			<div
 				style={{
-					minWidth: 40,
-					minHeight: 40,
+					minWidth: "3rem",
+					minHeight: "3rem",
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
@@ -691,7 +680,7 @@ const OtherAbilities = ({ abilities }) => {
 	let keys = [...Object.keys(abilities)?.filter((key) => key !== "Abilities")];
 	return keys.map((key) => {
 		return (
-			<>
+			<Fragment key={key}>
 				<thead>
 					<tr
 						style={{
@@ -725,7 +714,7 @@ const OtherAbilities = ({ abilities }) => {
 						</tr>
 					))}
 				</tbody>
-			</>
+			</Fragment>
 		);
 	});
 };
@@ -746,6 +735,8 @@ const ForceRules = ({ rules, onePerPage }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "flex-end",
+					gap: 4,
+					paddingBottom: 2,
 				}}
 			>
 				<input type="checkbox" onChange={() => setHide(!hide)} />

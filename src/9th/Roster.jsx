@@ -84,7 +84,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 		.filter(
 			(weapon) =>
 				(weapon.range === "Melee" || weapon.type === "Melee") &&
-				weapon.range !== ""
+				weapon.range !== "",
 		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	if (meleeWeapons.length === 0) {
@@ -101,14 +101,14 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	const rangedWeapons = weapons
 		.filter(
 			(weapon) =>
-				weapon.range !== "Melee" && weapon.range !== "-" && weapon.range !== ""
+				weapon.range !== "Melee" && weapon.range !== "-" && weapon.range !== "",
 		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 
 	const weaponDescriptions = weapons
 		.filter(
 			(weapon) =>
-				(weapon.range === "-" || weapon.range === "") && weapon.abilities
+				(weapon.range === "-" || weapon.range === "") && weapon.abilities,
 		)
 		.sort((a, b) => a.selectionName.localeCompare(b.selectionName));
 	const modelsWithDifferentProfiles = weapons.filter((weapon, index) => {
@@ -120,7 +120,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 			((previousWeapon &&
 				hasDifferentProfiles(
 					previousWeapon.selectionName,
-					previousWeapon.name
+					previousWeapon.name,
 				) &&
 				selectionName === previousWeapon.selectionName) ||
 				(nextWeapon &&
@@ -168,6 +168,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "flex-end",
+					gap: 4,
 				}}
 			>
 				<label className="print-display-none">
@@ -377,12 +378,21 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						<tbody>
 							{weaponDescriptions.map((weapon, index) => (
 								<tr key={index} className="emptyRow noBorderTop">
-									<td style={{ width: 37, borderTop: "none" }}>{Arrow}</td>
+									<td
+										style={{
+											width: 37,
+											borderTop: "none",
+											verticalAlign: "middle",
+										}}
+									>
+										{Arrow}
+									</td>
 									<td
 										style={{
 											textAlign: "left",
 											fontSize: ".8em",
 											paddingLeft: 0,
+											verticalAlign: "middle",
 										}}
 									>
 										{weapon.name} - {weapon.abilities}
@@ -457,13 +467,13 @@ const ModelStats = ({ modelStat, index, showName, showWeapons, modelList }) => {
 		modelList = modelList.filter((model) => !model.includes("Sergeant"));
 	}
 	let modelListMatches = modelList.filter((model) =>
-		model.includes(name + " w")
+		model.includes(name + " w"),
 	);
 	if (modelListMatches.length === 0) {
 		modelListMatches = modelList.filter((model) => model.includes(name));
 	}
 	modelListMatches = modelListMatches.map((model) =>
-		model.replaceAll(name, "")
+		model.replaceAll(name, ""),
 	);
 
 	return (
@@ -616,7 +626,7 @@ const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
 	let keys = [...abilities.keys()];
 	keys = keys.filter(
-		(key) => key !== "Stratagem: Warlord Trait" && key !== "Stratagem: Relic"
+		(key) => key !== "Stratagem: Warlord Trait" && key !== "Stratagem: Relic",
 	);
 	return (
 		<div
@@ -747,7 +757,7 @@ const WoundTracker = ({ woundTracker }) => {
 	if (!woundTracker || woundTracker.length === 0) return null;
 	const uniqueWoundTracker = woundTracker.filter((woundTrack, index) => {
 		const firstIndex = woundTracker.findIndex(
-			(woundTrack2) => woundTrack2.name === woundTrack.name
+			(woundTrack2) => woundTrack2.name === woundTrack.name,
 		);
 		return firstIndex === index;
 	});
@@ -913,6 +923,7 @@ const ForceRules = ({ rules, onePerPage }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "flex-end",
+					gap: 4,
 				}}
 			>
 				<input type="checkbox" onChange={() => setHide(!hide)} />

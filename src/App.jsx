@@ -7,11 +7,15 @@ import Demo0 from "./assets/Demo0.png";
 import Demo1 from "./assets/Demo1.png";
 import { Roster } from "./9th/Roster";
 import { Roster as Roster10th } from "./10th/Roster";
+import { useLocalStorage } from "./helpers/useLocalStorage";
+import { parseJSON, stringifyJSON } from "./helpers/json";
 
 function App() {
+	const [rosters, setRosters] = useLocalStorage("rosters", "[]");
+	const rostersJSON = parseJSON(rosters ?? "[]");
 	const [error, setError] = useState();
 	const [roster, setRoster] = useState();
-	const [edition, setEdition] = useState(9); // [9, 10]
+	const [edition, setEdition] = useState(10); // [9, 10]
 	const [onePerPage, setOnePerPage] = useState(false);
 	const [primaryColor, setPrimaryColor] = useState("#536766");
 	const uploadRef = useRef();
@@ -27,7 +31,7 @@ function App() {
 			reader.onloadend = async () => {
 				const content = reader.result;
 				const xmldata = await unzip(content);
-				parseXML(xmldata);
+				parseXML(xmldata, true);
 			};
 			reader.readAsBinaryString(files[0]);
 		} else {
@@ -54,9 +58,20 @@ function App() {
 			// Create a new Blob object from the zip file contents
 			const zipBlob = new Blob([arrayBuffer], { type: "application/zip" });
 			const xmldata = await unzip(zipBlob);
-			parseXML(xmldata);
+			parseXML(xmldata, false);
 		}
 	}
+	const loadFromLocalStorage = (roster) => {
+		if (roster.gameType == "Warhammer 40,000 9th Edition") {
+			setRoster(roster);
+			setEdition(9);
+			setError("");
+		} else if (roster.gameType == "Warhammer 40,000 10th Edition") {
+			setRoster(roster);
+			setEdition(10);
+			setError("");
+		}
+	};
 
 	const unzip = async (file) => {
 		if (file?.charAt && file.charAt(0) !== "P") {
@@ -68,7 +83,7 @@ function App() {
 		}
 	};
 
-	function parseXML(xmldata) {
+	function parseXML(xmldata, addToLocalStorage) {
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(xmldata, "text/xml");
 		if (!doc) return;
@@ -85,17 +100,18 @@ function App() {
 			document.title = `FancyScribe ${rosterName}`;
 		}
 		console.log(doc);
+
+		let roster;
 		if (gameType == "Warhammer 40,000 9th Edition") {
-			const roster = Create40kRoster(doc);
-			console.log(roster);
+			roster = Create40kRoster(doc, gameType);
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
 				setEdition(9);
 				setError("");
 			}
 		} else if (gameType == "Warhammer 40,000 10th Edition") {
-			const roster = Create40kRoster10th(doc);
-			console.log(roster);
+			roster = Create40kRoster10th(doc, gameType);
+
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
 				setEdition(10);
@@ -103,6 +119,10 @@ function App() {
 			}
 		} else {
 			setError("No support for game type '" + gameType + "'.");
+		}
+		if (roster && addToLocalStorage) {
+			console.log(roster);
+			setRosters(stringifyJSON([roster, ...rostersJSON]));
 		}
 	}
 
@@ -130,6 +150,14 @@ function App() {
 		e.stopPropagation();
 	};
 
+	useEffect(() => {
+		if (edition === 9) {
+			document.body.style.minWidth = "600px";
+		} else {
+			document.body.style.minWidth = "";
+		}
+	}, [edition]);
+
 	return (
 		<div
 			className="App"
@@ -145,8 +173,7 @@ function App() {
 						color: "#fff",
 						fontWeight: 800,
 						display: "flex",
-						alignItems: "center",
-						gap: 6,
+						flexDirection: "column",
 					}}
 				>
 					FancyScribe{" "}
@@ -165,6 +192,60 @@ function App() {
 			</div>
 
 			<div className="body">
+				<div
+					className="print-display-none"
+					style={{
+						display: "flex",
+						flexDirection: roster ? "row" : "column",
+						alignItems: "center",
+						gap: 8,
+					}}
+				>
+					<div
+						className="print-display-none"
+						style={{
+							fontSize: "1.7rem",
+							display: rostersJSON.length > 0 ? "" : "none",
+						}}
+					>
+						Your rosters
+					</div>
+					<div
+						className="print-display-none"
+						style={{
+							gap: 8,
+							flexWrap: "wrap",
+							justifyContent: "center",
+							alignItems: "center",
+							display: "flex",
+						}}
+					>
+						{rostersJSON.map((r, index) => (
+							<div key={index} style={{ position: "relative" }}>
+								<button
+									className="print-display-none"
+									style={{ fontSize: roster ? "" : "1.2rem" }}
+									onClick={() => loadFromLocalStorage(r)}
+								>
+									{r.name}
+								</button>
+								<button
+									onClick={() =>
+										setRosters(
+											stringifyJSON(rostersJSON.filter((_, i) => i !== index)),
+										)
+									}
+									className="print-display-none absolute right-[-4px] top-[-4px] rounded-full border-0 bg-red-600 fill-white p-[2px] text-sm transition duration-150 ease-in-out hover:bg-red-600 hover:bg-red-800 focus:outline-none"
+								>
+									<svg height="16" viewBox="0 0 16 16" width="16">
+										<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+									</svg>
+								</button>
+							</div>
+						))}
+					</div>
+				</div>
+				<div className="print-display-none"></div>
 				<div
 					className="print-display-none"
 					style={{ display: "flex", width: "100%", gap: 8 }}
@@ -206,6 +287,7 @@ function App() {
 						Print roster
 					</button>
 				</div>
+
 				<div
 					className="print-display-none"
 					style={{ display: roster ? "flex" : "none", width: "100%", gap: 16 }}
@@ -221,6 +303,7 @@ function App() {
 						<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
 							<input
 								type="color"
+								className="rounded-sm border border-gray-400"
 								style={{ height: 24, width: 32, padding: "0 2px" }}
 								value={primaryColor}
 								onChange={(e) => {
@@ -254,9 +337,10 @@ function App() {
 				{edition === 10 && (
 					<Roster10th roster={roster} onePerPage={onePerPage} />
 				)}
+
 				<div
 					style={{
-						padding: "8px 0",
+						paddingTop: 8,
 						fontSize: "1.7rem",
 						display: roster ? "none" : "flex",
 					}}

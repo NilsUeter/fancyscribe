@@ -14,18 +14,24 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 							color: "#fff",
 						}}
 					>
-						<th style={{ width: 37 }}>
-							<div style={{ display: "flex" }}>
+						<th className="w-[2.2em]">
+							<div
+								style={{
+									display: "flex",
+									minWidth: ".7em",
+									justifyContent: "center",
+								}}
+							>
 								<img src={isMelee ? meleeIcon : rangedIcon} />
 							</div>
 						</th>
 						<th style={{ textAlign: "left" }}>{title}</th>
-						<th>RANGE</th>
-						<th>A</th>
-						<th>{isMelee ? "WS" : "BS"}</th>
-						<th>S</th>
-						<th>AP</th>
-						<th>D</th>
+						<th className="w-[5%]">RANGE</th>
+						<th className="w-[5%]">A</th>
+						<th className="w-[5%]">{isMelee ? "WS" : "BS"}</th>
+						<th className="w-[5%]">S</th>
+						<th className="w-[5%]">AP</th>
+						<th className="w-[5%]">D</th>
 					</tr>
 				</thead>
 			)}
@@ -44,7 +50,7 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 				))}
 				{weapons.length > 0 && (
 					<tr className="emptyRow">
-						<td style={{ width: 37, borderTop: "none" }}></td>
+						<td style={{ borderTop: "none" }}></td>
 						<td colSpan={7}></td>
 					</tr>
 				)}
@@ -102,7 +108,9 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 		<>
 			<tr className={className}>
 				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}>
-					{differentProfiles && Arrow}
+					{differentProfiles && (
+						<div className="flex justify-center">{Arrow}</div>
+					)}
 				</td>
 				<td style={{ textAlign: "left" }}>
 					<div
@@ -131,9 +139,9 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 						)}
 					</div>
 				</td>
-				<td>{range}</td>
-				<td>{attacks}</td>
-				<td>
+				<td className="align-middle">{range}</td>
+				<td className="align-middle">{attacks}</td>
+				<td className="align-middle">
 					{isMelee
 						? ws.join
 							? ws.join("|")
@@ -142,9 +150,9 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 						? bs.join("|")
 						: bs}
 				</td>
-				<td>{str}</td>
-				<td>{ap}</td>
-				<td>{damage}</td>
+				<td className="align-middle">{str}</td>
+				<td className="align-middle">{ap}</td>
+				<td className="align-middle">{damage}</td>
 			</tr>
 			{abilities && abilities !== "-" && (
 				<tr className={className + " noBorderTop"}>

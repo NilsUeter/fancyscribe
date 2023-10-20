@@ -190,7 +190,7 @@ export class Model extends BaseNotes {
 		for (const upgrade of [...this.weapons, ...this.upgrades]) {
 			if (
 				!deduped.some(
-					(e) => upgrade.getSelectionName() === e.getSelectionName()
+					(e) => upgrade.getSelectionName() === e.getSelectionName(),
 				)
 			) {
 				deduped.push(upgrade);
@@ -251,7 +251,7 @@ export class Unit extends BaseNotes {
 		for (const freeformCostType in this.cost.freeformValues) {
 			if (this.cost.freeformValues[freeformCostType] === 0) continue;
 			extraCosts.push(
-				`${this.cost.freeformValues[freeformCostType]}${freeformCostType}`
+				`${this.cost.freeformValues[freeformCostType]}${freeformCostType}`,
 			);
 		}
 		return extraCosts.length
@@ -334,7 +334,7 @@ export class Unit extends BaseNotes {
 
 		this.modelList = this.models.map(
 			(model) =>
-				(model.count > 1 ? `${model.count}x ` : "") + model.nameAndGear()
+				(model.count > 1 ? `${model.count}x ` : "") + model.nameAndGear(),
 		);
 		this.weapons = this.models
 			.map((m) => m.weapons)
@@ -345,13 +345,13 @@ export class Unit extends BaseNotes {
 		this.spells.push(
 			...this.models
 				.map((m) => m.psychicPowers)
-				.reduce((acc, val) => acc.concat(val), [])
+				.reduce((acc, val) => acc.concat(val), []),
 		);
 		this.psykers.push(...this.models.map((m) => m.psyker).filter((p) => p));
 		this.explosions.push(
 			...this.models
 				.map((m) => m.explosions)
-				.reduce((acc, val) => acc.concat(val), [])
+				.reduce((acc, val) => acc.concat(val), []),
 		);
 	}
 }
@@ -368,6 +368,7 @@ export class Force extends BaseNotes {
 export class Roster40k extends BaseNotes {
 	cost = new Costs();
 	forces = [];
+	gameType = "";
 }
 
 export class Costs {
@@ -401,12 +402,12 @@ export class Costs {
 	}
 }
 
-export function Create40kRoster(doc) {
+export function Create40kRoster(doc, gameType) {
 	// Determine roster type (game system).
 	let info = doc.querySelector("roster");
 	if (info) {
 		const roster = new Roster40k();
-
+		roster.gameType = gameType;
 		const name = info.getAttributeNode("name")?.nodeValue;
 		if (name) {
 			roster.name = name;
@@ -723,7 +724,7 @@ function ParseUnit(root) {
 
 	// First, find model stats. These have typeName=Unit.
 	const modelStatsProfiles = Array.from(
-		root.querySelectorAll('profile[typeName="Unit"],profile[typeName="Model"]')
+		root.querySelectorAll('profile[typeName="Unit"],profile[typeName="Model"]'),
 	);
 	ParseModelStatsProfiles(modelStatsProfiles, unit, unitName);
 	seenProfiles.push(...modelStatsProfiles);
@@ -746,7 +747,7 @@ function ParseUnit(root) {
 		// Some units are under a root selection with type="upgrade".
 		if (modelSelections.length === 0) {
 			modelSelections.push(
-				...Array.from(root.querySelectorAll('selection[type="model"]'))
+				...Array.from(root.querySelectorAll('selection[type="model"]')),
 			);
 		}
 		// Some single-model units have type="unit" or type="upgrade".
@@ -761,7 +762,7 @@ function ParseUnit(root) {
 	// Now, parse the model -- profiles for stats, and selections for upgrades.
 	for (const modelSelection of modelSelections) {
 		const profiles = Array.from(
-			modelSelection.querySelectorAll("profiles>profile")
+			modelSelection.querySelectorAll("profiles>profile"),
 		);
 		const unseenProfiles = profiles.filter((e) => !seenProfiles.includes(e));
 		seenProfiles.push(...unseenProfiles);
@@ -777,13 +778,13 @@ function ParseUnit(root) {
 		// Find all upgrades on the model. This may include weapons that were
 		// parsed from profiles (above), so dedupe those in nameAndGear().
 		for (const upgradeSelection of modelSelection.querySelectorAll(
-			'selections>selection[type="upgrade"]'
+			'selections>selection[type="upgrade"]',
 		)) {
 			// Ignore selections without abilities but with sub-selection upgrades,
 			// since those sub-selections will be picked up individually.
 			if (
 				upgradeSelection.querySelector(
-					'selections>selection[type="upgrade"]'
+					'selections>selection[type="upgrade"]',
 				) &&
 				!HasImmediateProfileWithTypeName(upgradeSelection, "Abilities")
 			)
@@ -965,7 +966,7 @@ function ParseModelProfiles(profiles, model, unit) {
 				profile,
 				profileName,
 				typeName,
-				unit.abilities.Abilities
+				unit.abilities.Abilities,
 			);
 		}
 	}
