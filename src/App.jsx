@@ -204,7 +204,8 @@ function App() {
 					<div
 						className="print-display-none"
 						style={{
-							fontSize: "1.7rem",
+							fontSize: roster ? "1rem" : "1.7rem",
+							fontWeight: roster ? 600 : "",
 							display: rostersJSON.length > 0 ? "" : "none",
 						}}
 					>
