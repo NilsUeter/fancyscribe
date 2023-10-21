@@ -132,6 +132,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 									fontWeight: 700,
 									color: "var(--primary-color)",
 									textTransform: "uppercase",
+									lineHeight: 1,
 								}}
 							>
 								[{type}]

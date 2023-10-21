@@ -302,6 +302,9 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 								className="print-display-none"
 								accept=".jpg,.png,.jpeg,.gif,.bmp,.tif,.tiff,.webp,.svg,.jfif,.pjpeg,.pjp,.avif,.apng,.ico,.cur,.ani"
 								onChange={(e) => {
+									posthog?.capture?.("user_uploaded_image", {
+										unit_name: name,
+									});
 									if (e.target.files && e.target.files[0]) {
 										let reader = new FileReader();
 										reader.onload = function (ev) {
@@ -535,7 +538,7 @@ const Keywords = ({ keywords }) => {
 			<span style={{ fontSize: "1.1em" }}>KEYWORDS:</span>
 			<span
 				style={{
-					fontSize: joinedKeywords.length > 80 ? ".8em" : "1em",
+					fontSize: joinedKeywords.length > 70 ? ".8em" : "1em",
 					fontWeight: 800,
 				}}
 			>

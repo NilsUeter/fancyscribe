@@ -53,12 +53,14 @@ function App() {
 					break;
 			}
 			// load example
-
+			posthog?.capture?.("user_loaded_example", {
+				roster_faction: event,
+			});
 			const arrayBuffer = await example.arrayBuffer();
 			// Create a new Blob object from the zip file contents
 			const zipBlob = new Blob([arrayBuffer], { type: "application/zip" });
 			const xmldata = await unzip(zipBlob);
-			parseXML(xmldata, false);
+			parseXML(xmldata, false, true);
 		}
 	}
 	const loadFromLocalStorage = (roster) => {
@@ -71,6 +73,10 @@ function App() {
 			setEdition(10);
 			setError("");
 		}
+		posthog?.capture?.("user_loaded_roster_from_localstorage", {
+			roster_faction: roster.forces[0].catalog,
+			roster_type: roster.gameType,
+		});
 	};
 
 	const unzip = async (file) => {
@@ -83,7 +89,7 @@ function App() {
 		}
 	};
 
-	function parseXML(xmldata, addToLocalStorage) {
+	function parseXML(xmldata, addToLocalStorage, isExample = false) {
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(xmldata, "text/xml");
 		if (!doc) return;
@@ -111,7 +117,6 @@ function App() {
 			}
 		} else if (gameType == "Warhammer 40,000 10th Edition") {
 			roster = Create40kRoster10th(doc, gameType);
-
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
 				setEdition(10);
@@ -120,8 +125,15 @@ function App() {
 		} else {
 			setError("No support for game type '" + gameType + "'.");
 		}
-		if (roster && addToLocalStorage) {
+		if (!roster) {
+			return;
+		}
+		if (addToLocalStorage) {
 			console.log(roster);
+			posthog?.capture?.("user_uploaded_roster", {
+				roster_faction: roster.forces[0].catalog,
+				roster_type: gameType,
+			});
 			setRosters(stringifyJSON([roster, ...rostersJSON]));
 		}
 	}
@@ -283,7 +295,13 @@ function App() {
 
 					<button
 						style={{ display: roster ? "" : "none" }}
-						onClick={() => window.print()}
+						onClick={() => {
+							posthog?.capture?.("user_printed_roster", {
+								roster_faction: roster.forces[0].catalog,
+								roster_type: roster.gameType,
+							});
+							window.print();
+						}}
 					>
 						Print roster
 					</button>
@@ -395,9 +413,10 @@ function App() {
 						<a href="https://www.battlescribe.net/" target="_blank">
 							BattleScribe
 						</a>{" "}
-						roster files in an opinionated format inspired by the new 10th
-						edition datacards. Additional inspiration and large parts of the
-						parsing logic come from the{" "}
+						or <a href="https://www.newrecruit.eu/">New Recruit</a> roster files
+						in an opinionated format inspired by the new 10th edition datacards.
+						Additional inspiration and large parts of the parsing logic come
+						from the{" "}
 						<a href="https://rweyrauch.github.io/PrettyScribe" target="_blank">
 							PrettyScribe
 						</a>{" "}
@@ -420,7 +439,7 @@ function App() {
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>
 						Output Examples
 					</div>
-					<img src={Demo0} style={{ width: "100%" }} />
+					<img src={Demo0} className="pb-4" style={{ width: "100%" }} />
 					<img src={Demo1} style={{ width: "100%" }} />
 				</div>
 			</div>
