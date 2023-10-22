@@ -114,6 +114,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 				</td>
 				<td style={{ textAlign: "left" }}>
 					<div
+						className="min-w-[24vw]"
 						style={{
 							display: "flex",
 							alignItems: "center",

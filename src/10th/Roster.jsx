@@ -185,6 +185,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 						padding: "4px 16px",
 						color: "#fff",
 						position: "relative",
+						marginLeft: "1.3rem",
 					}}
 				>
 					<div
@@ -347,6 +348,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				}}
 			>
 				<div
+					className="pt-5"
 					style={{
 						flex: "1",
 						borderRight: "2px solid var(--primary-color)",
@@ -412,11 +414,11 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 
 					<Keywords keywords={keywords} />
 				</div>
-				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] print:p-[20px] sm:p-2 sm:pb-[50px] sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:print:p-[20px] md:print:pb-[50px]">
+				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:print:p-[20px] md:print:pb-[50px]">
 					<div
 						style={{
 							fontSize: "1.1em",
-							padding: "1px 8px",
+							padding: "1px 6px",
 							backgroundColor: "var(--primary-color)",
 							color: "#fff",
 							fontWeight: 600,
@@ -445,6 +447,13 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 		wounds = "/";
 	}
 
+	if (modelList.length === 1) {
+		modelList[0] = modelList[0]
+			.replace(name, "")
+			.replace("(", "")
+			.replace(")", "");
+	}
+
 	const showWeapons = index === 0;
 	return (
 		<div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
@@ -471,6 +480,7 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 							marginTop: 16,
 							fontSize: "0.7em",
 							paddingLeft: showName ? 8 : 0,
+							backgroundColor: "var(--primary-color-transparent)",
 						}}
 					>
 						{modelList.map((model, index) => (

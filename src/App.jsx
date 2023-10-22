@@ -205,7 +205,7 @@ function App() {
 
 			<div className="body">
 				<div
-					className="print-display-none"
+					className="print-display-none max-w-[95vw]"
 					style={{
 						display: "flex",
 						flexDirection: roster ? "row" : "column",
@@ -260,7 +260,7 @@ function App() {
 				</div>
 				<div className="print-display-none"></div>
 				<div
-					className="print-display-none"
+					className="print-display-none max-w-[95vw]"
 					style={{ display: "flex", width: "100%", gap: 8 }}
 				>
 					<input
@@ -308,7 +308,7 @@ function App() {
 				</div>
 
 				<div
-					className="print-display-none"
+					className="print-display-none max-w-[95vw]"
 					style={{ display: roster ? "flex" : "none", width: "100%", gap: 16 }}
 				>
 					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -358,6 +358,7 @@ function App() {
 				)}
 
 				<div
+					className="max-w-[95vw]"
 					style={{
 						paddingTop: 8,
 						fontSize: "1.7rem",
@@ -367,6 +368,7 @@ function App() {
 					Examples
 				</div>
 				<div
+					className="max-w-[95vw]"
 					style={{
 						gap: 8,
 						flexWrap: "wrap",
@@ -404,7 +406,7 @@ function App() {
 					</button>
 				</div>
 				<div
-					className="print-display-none"
+					className="print-display-none max-w-[95vw]"
 					style={{ display: roster ? "none" : "" }}
 				>
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>About</div>
