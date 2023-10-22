@@ -140,6 +140,13 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 	if (areAllModelsTheSame(modelStats)) {
 		modelStats = [modelStats[0]];
 	}
+	if (modelList.length === 1) {
+		modelList[0] = modelList[0]
+			.replace(name, "")
+			.replace("(", "")
+			.replace(")", "");
+	}
+
 	return (
 		<div
 			className={
@@ -170,13 +177,13 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				<span className="print-display-none">Don't print this card.</span>
 			</label>
 			<div
+				className="min-h-[16rem]"
 				style={{
 					padding: "24px 0",
 					paddingBottom: 24,
 					background:
 						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
 					color: "#fff",
-					minHeight: 200,
 					position: "relative",
 				}}
 			>
@@ -248,9 +255,9 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							{cost.points}pts
 						</span>
 					</div>
+
 					<div
 						style={{
-							width: "100%",
 							display: "flex",
 							flexDirection: "column",
 							gap: 6,
@@ -447,40 +454,24 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 		wounds = "/";
 	}
 
-	if (modelList.length === 1) {
-		modelList[0] = modelList[0]
-			.replace(name, "")
-			.replace("(", "")
-			.replace(")", "");
-	}
-
 	const showWeapons = index === 0;
 	return (
-		<div style={{ display: "flex", gap: "1.2rem", flexWrap: "wrap" }}>
+		<div style={{ display: "flex", gap: "1.2rem" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
 			<Characteristic title="T" characteristic={toughness} index={index} />
 			<Characteristic title="SV" characteristic={save} index={index} />
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			<Characteristic title="OC" characteristic={oc} index={index} />
-			<div style={{ display: "flex", alignItems: "center" }}>
-				{showName && (
-					<div
-						style={{
-							marginTop: index === 0 ? 16 : 0,
-							whiteSpace: "nowrap",
-						}}
-					>
-						{name}
-					</div>
-				)}
+			<div
+				className="flex flex-wrap items-center gap-2"
+				style={{ marginTop: index === 0 ? 16 : 0 }}
+			>
+				{showName && <div style={{ whiteSpace: "nowrap" }}>{name}</div>}
 				{showWeapons && (
 					<div
 						style={{
-							marginTop: 16,
 							fontSize: "0.7em",
-							paddingLeft: showName ? 8 : 0,
-							backgroundColor: "var(--primary-color-transparent)",
 						}}
 					>
 						{modelList.map((model, index) => (
