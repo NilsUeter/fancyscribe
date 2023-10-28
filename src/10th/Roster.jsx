@@ -177,7 +177,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				<span className="print-display-none">Don't print this card.</span>
 			</label>
 			<div
-				className="min-h-[16rem]"
+				className="min-h-[15rem]"
 				style={{
 					padding: "24px 0",
 					paddingBottom: 24,
@@ -421,7 +421,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 
 					<Keywords keywords={keywords} />
 				</div>
-				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:print:p-[20px] md:print:pb-[50px]">
+				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:pt-5 sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:pt-5 md:print:p-[20px] md:print:pb-[50px]">
 					<div
 						style={{
 							fontSize: "1.1em",

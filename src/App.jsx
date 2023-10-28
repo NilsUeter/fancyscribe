@@ -133,6 +133,7 @@ function App() {
 			posthog?.capture?.("user_uploaded_roster", {
 				roster_faction: roster.forces[0].catalog,
 				roster_type: gameType,
+				name: rosterName,
 			});
 			setRosters(stringifyJSON([roster, ...rostersJSON]));
 		}
