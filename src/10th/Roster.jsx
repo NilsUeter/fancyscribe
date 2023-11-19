@@ -465,7 +465,10 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 			<Characteristic title="OC" characteristic={oc} index={index} />
 			<div
 				className="flex flex-wrap items-center gap-2"
-				style={{ marginTop: index === 0 ? 16 : 0 }}
+				style={{
+					marginTop: index === 0 ? 16 : 0,
+					textShadow: "0px 0px 5px rgb(0 0 0)",
+				}}
 			>
 				{showName && <div style={{ whiteSpace: "nowrap" }}>{name}</div>}
 				{showWeapons && (
