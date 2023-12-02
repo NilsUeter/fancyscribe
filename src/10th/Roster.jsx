@@ -660,8 +660,9 @@ const FancyBox = ({ children }) => {
 			style={{
 				color: "var(--primary-color)",
 				padding: 2,
-				background:
-					"linear-gradient(-45deg, transparent 4px, var(--primary-color) 0)",
+				background: "var(--primary-color)",
+				clipPath:
+					"polygon(12% 0, 100% 0, 100% 20%, 100% 88%, 88% 100%, 20% 100%, 0 100%, 0 12%)",
 			}}
 		>
 			<div
@@ -671,7 +672,9 @@ const FancyBox = ({ children }) => {
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "center",
-					background: "linear-gradient(315deg, transparent 3px, #E8EDE7 0)",
+					background: "#E8EDE7",
+					clipPath:
+						"polygon(10% 0, 100% 0, 100% 20%, 100% 90%, 90% 100%, 20% 100%, 0 100%, 0 10%)",
 					padding: 3,
 					fontSize: "1.6em",
 					fontWeight: 800,
