@@ -119,7 +119,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 							alignItems: "center",
 							flexWrap: "wrap",
 							gap: "0 4px",
-							lineHeight: 1.2,
+							lineHeight: 1.05,
 						}}
 					>
 						{differentProfiles && selectionName + " - "}
@@ -133,7 +133,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 									fontWeight: 700,
 									color: "var(--primary-color)",
 									textTransform: "uppercase",
-									lineHeight: 1,
+									lineHeight: 1.05,
 								}}
 							>
 								[{type}]
