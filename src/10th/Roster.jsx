@@ -355,9 +355,8 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				}}
 			>
 				<div
-					className="pt-5"
+					className="flex-[1.2] pt-5"
 					style={{
-						flex: "1",
 						borderRight: "2px solid var(--primary-color)",
 						position: "relative",
 						paddingBottom: 40,
