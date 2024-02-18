@@ -347,10 +347,10 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				</div>
 			</div>
 			<div
+				// hide border left and right when width smaller than 600px
+				className="border-b-2 border-t-0 border-[var(--primary-color)] sm:border-l-2 sm:border-r-2"
 				style={{
 					display: "flex",
-					border: "2px solid var(--primary-color)",
-					borderTop: "none",
 					backgroundColor: "#DFE0E2",
 				}}
 			>

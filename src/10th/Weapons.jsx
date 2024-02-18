@@ -14,7 +14,7 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 							color: "#fff",
 						}}
 					>
-						<th className="w-[2.2em]">
+						<th className="w-[2em]">
 							<div
 								style={{
 									display: "flex",
@@ -119,6 +119,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 							alignItems: "center",
 							flexWrap: "wrap",
 							gap: "0 4px",
+							lineHeight: 1.2,
 						}}
 					>
 						{differentProfiles && selectionName + " - "}
