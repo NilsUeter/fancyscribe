@@ -143,7 +143,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 				</td>
 				<td className="align-middle">{range}</td>
 				<td className="align-middle">{attacks}</td>
-				<td className="align-middle">
+				<td className="whitespace-nowrap align-middle">
 					{isMelee
 						? ws.join
 							? ws.join("|")
