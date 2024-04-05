@@ -8,8 +8,7 @@ export function useLocalStorage(key, initValue) {
 		}
 
 		if (initValue) {
-			localStorage.setItem(key, initValue);
-			window.dispatchEvent(new Event("storage"));
+			trySettingLocalStorage(key, initValue, setState);
 		}
 		return initValue;
 	});
@@ -18,9 +17,8 @@ export function useLocalStorage(key, initValue) {
 		if (!state || state === "undefined") {
 			localStorage.removeItem(key);
 		} else {
-			localStorage.setItem(key, state);
+			trySettingLocalStorage(key, state, setState);
 		}
-		window.dispatchEvent(new Event("storage"));
 	}, [key, state]);
 
 	useEffect(() => {
@@ -32,8 +30,7 @@ export function useLocalStorage(key, initValue) {
 				}
 
 				if (initValue) {
-					localStorage.setItem(key, initValue);
-					window.dispatchEvent(new Event("storage"));
+					trySettingLocalStorage(key, initValue, setState);
 				}
 				return initValue;
 			});
@@ -44,3 +41,13 @@ export function useLocalStorage(key, initValue) {
 
 	return [state, setState];
 }
+
+const trySettingLocalStorage = (key, value, setState) => {
+	try {
+		localStorage.setItem(key, value);
+		window.dispatchEvent(new Event("storage"));
+	} catch (e) {
+		console.error(e);
+		setState(value);
+	}
+};
