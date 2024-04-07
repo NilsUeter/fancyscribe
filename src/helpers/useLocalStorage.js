@@ -8,7 +8,7 @@ export function useLocalStorage(key, initValue) {
 		}
 
 		if (initValue) {
-			trySettingLocalStorage(key, initValue, setState);
+			trySettingLocalStorage(key, initValue, () => {});
 		}
 		return initValue;
 	});
