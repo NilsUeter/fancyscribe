@@ -190,6 +190,7 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 				<div
 					style={{
 						padding: "4px 16px",
+						paddingBottom: 0,
 						color: "#fff",
 						position: "relative",
 						marginLeft: "1.3rem",
@@ -255,26 +256,39 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 							{cost.points}pts
 						</span>
 					</div>
-
-					<div
-						style={{
-							display: "flex",
-							flexDirection: "column",
-							gap: 6,
-							zIndex: 1,
-							position: "relative",
-						}}
-					>
-						{modelStats.map((model, index) => (
-							<ModelStats
-								key={index}
-								modelStats={modelStats}
-								modelStat={model}
-								modelList={modelList}
-								index={index}
-								showName={modelStats.length > 1}
-							/>
-						))}
+					<div className="relative z-10 flex gap-4">
+						<div
+							style={{
+								display: "flex",
+								flexDirection: "column",
+								gap: 6,
+							}}
+						>
+							{modelStats.map((model, index) => (
+								<ModelStats
+									key={index}
+									modelStats={modelStats}
+									modelStat={model}
+									modelList={modelList}
+									index={index}
+									showName={modelStats.length > 1}
+								/>
+							))}
+						</div>
+						{modelStats?.[0] && (
+							<div
+								className={`mt-[17px] ${
+									modelStats.length > 1 ? "" : "self-center"
+								}`}
+								style={{
+									fontSize: "0.7em",
+								}}
+							>
+								{modelList.map((model, index) => (
+									<div key={model}>{model}</div>
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 				<div
@@ -453,7 +467,6 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 		wounds = "/";
 	}
 
-	const showWeapons = index === 0;
 	return (
 		<div style={{ display: "flex", gap: "1.2rem" }}>
 			<Characteristic title="M" characteristic={move} index={index} />
@@ -462,26 +475,17 @@ const ModelStats = ({ modelStat, index, showName, modelList }) => {
 			<Characteristic title="W" characteristic={wounds} index={index} />
 			<Characteristic title="LD" characteristic={leadership} index={index} />
 			<Characteristic title="OC" characteristic={oc} index={index} />
-			<div
-				className="flex flex-wrap items-center gap-2"
-				style={{
-					marginTop: index === 0 ? 16 : 0,
-					textShadow: "0px 0px 5px rgb(0 0 0)",
-				}}
-			>
-				{showName && <div style={{ whiteSpace: "nowrap" }}>{name}</div>}
-				{showWeapons && (
-					<div
-						style={{
-							fontSize: "0.7em",
-						}}
-					>
-						{modelList.map((model, index) => (
-							<div key={model}>{model}</div>
-						))}
-					</div>
-				)}
-			</div>
+			{showName && (
+				<div
+					className="flex flex-wrap items-center gap-2"
+					style={{
+						marginTop: index === 0 ? 16 : 0,
+						textShadow: "0px 0px 5px rgb(0 0 0)",
+					}}
+				>
+					<div style={{ whiteSpace: "nowrap" }}>{name}</div>
+				</div>
+			)}
 		</div>
 	);
 };
