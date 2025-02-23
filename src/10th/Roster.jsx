@@ -5,7 +5,7 @@ import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useLocalStorage } from "../helpers/useLocalStorage";
 
-export const Roster = ({ roster, onePerPage }) => {
+export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
 	if (!roster) {
 		return null;
 	}
@@ -31,13 +31,18 @@ export const Roster = ({ roster, onePerPage }) => {
 				{name} [{cost.commandPoints} CP, {cost.points} pts]
 			</div>
 			{forces.map((force, index) => (
-				<Force key={index} force={force} onePerPage={onePerPage} />
+				<Force
+					key={index}
+					force={force}
+					onePerPage={onePerPage}
+					colorUserChoice={colorUserChoice}
+				/>
 			))}
 		</div>
 	);
 };
 
-const Force = ({ force, onePerPage }) => {
+const Force = ({ force, onePerPage, colorUserChoice }) => {
 	const { units, factionRules, rules, catalog } = force;
 	var mergedRules = new Map([...factionRules, ...rules]);
 	return (
@@ -54,6 +59,7 @@ const Force = ({ force, onePerPage }) => {
 					catalog={catalog}
 					onePerPage={onePerPage}
 					forceRules={rules}
+					colorUserChoice={colorUserChoice}
 				/>
 			))}
 			<ForceRules rules={mergedRules} onePerPage={onePerPage} />
@@ -61,7 +67,14 @@ const Force = ({ force, onePerPage }) => {
 	);
 };
 
-const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
+const Unit = ({
+	unit,
+	index,
+	catalog,
+	onePerPage,
+	forceRules,
+	colorUserChoice,
+}) => {
 	const [hide, setHide] = useState(false);
 	const uploadRef = useRef();
 	let {
@@ -105,7 +118,9 @@ const Unit = ({ unit, index, catalog, onePerPage, forceRules }) => {
 		);
 	});
 
-	const overridePrimary = getOverridePrimary(factions, keywords);
+	const overridePrimary = colorUserChoice
+		? ""
+		: getOverridePrimary(factions, keywords);
 
 	useEffect(() => {
 		// Check if the browser is Safari, and if so, remove the accept attribute

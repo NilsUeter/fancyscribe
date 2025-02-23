@@ -18,6 +18,7 @@ function App() {
 	const [edition, setEdition] = useState(10); // [9, 10]
 	const [onePerPage, setOnePerPage] = useState(false);
 	const [primaryColor, setPrimaryColor] = useState("#536766");
+	const [colorUserChoice, setColorUserChoice] = useState(false);
 	const uploadRef = useRef();
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
@@ -155,6 +156,7 @@ function App() {
 	useEffect(() => {
 		if (roster) {
 			setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
+			setColorUserChoice(false);
 		}
 	}, [roster]);
 
@@ -328,6 +330,7 @@ function App() {
 								value={primaryColor}
 								onChange={(e) => {
 									setPrimaryColor(e.target.value);
+									setColorUserChoice(true);
 								}}
 							></input>
 							<span> Custom Color</span>
@@ -336,9 +339,10 @@ function App() {
 						{roster &&
 							primaryColor !== getPrimaryColor(roster.forces[0].catalog) && (
 								<button
-									onClick={() =>
-										setPrimaryColor(getPrimaryColor(roster.forces[0].catalog))
-									}
+									onClick={() => {
+										setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
+										setColorUserChoice(false);
+									}}
 									style={{
 										padding: "2px 4px",
 										borderRadius: 4,
@@ -355,7 +359,11 @@ function App() {
 				</div>
 				{edition === 9 && <Roster roster={roster} onePerPage={onePerPage} />}
 				{edition === 10 && (
-					<Roster10th roster={roster} onePerPage={onePerPage} />
+					<Roster10th
+						roster={roster}
+						onePerPage={onePerPage}
+						colorUserChoice={colorUserChoice}
+					/>
 				)}
 
 				<div
