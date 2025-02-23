@@ -314,7 +314,14 @@ function App() {
 					className="print-display-none max-w-[95vw]"
 					style={{ display: roster ? "flex" : "none", width: "100%", gap: 16 }}
 				>
-					<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
+					<label
+						style={{
+							display: "flex",
+							alignItems: "center",
+							gap: 4,
+							minHeight: 26,
+						}}
+					>
 						<input
 							type="checkbox"
 							onChange={(e) => setOnePerPage(e.target.checked)}

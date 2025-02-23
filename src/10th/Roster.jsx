@@ -76,6 +76,7 @@ const Unit = ({
 	colorUserChoice,
 }) => {
 	const [hide, setHide] = useState(false);
+	const [hideModelCount, setHideModelCount] = useState(false);
 	const uploadRef = useRef();
 	let {
 		name,
@@ -179,23 +180,42 @@ const Unit = ({
 					: "",
 			}}
 		>
-			<label
-				className="print-display-none"
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "flex-end",
-					gap: 4,
-				}}
-			>
-				<input type="checkbox" onChange={() => setHide(!hide)} />
-				<span className="print-display-none">Don't print this card.</span>
-			</label>
+			<div className="flex justify-end gap-3">
+				<label
+					className="print-display-none"
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "flex-end",
+						gap: 4,
+						userSelect: "none",
+					}}
+				>
+					<input
+						type="checkbox"
+						onChange={(e) => setHideModelCount(e.target.checked)}
+					/>
+					<span className="print-display-none">Hide model selection</span>
+				</label>
+				<label
+					className="print-display-none"
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "flex-end",
+						gap: 4,
+						userSelect: "none",
+					}}
+				>
+					<input type="checkbox" onChange={() => setHide(!hide)} />
+					<span className="print-display-none">Don't print this card.</span>
+				</label>
+			</div>
 			<div
 				className="min-h-[15rem]"
 				style={{
-					padding: "24px 0",
-					paddingBottom: 24,
+					paddingTop: 24,
+					paddingBottom: 4,
 					background:
 						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
 					color: "#fff",
@@ -287,10 +307,11 @@ const Unit = ({
 									modelList={modelList}
 									index={index}
 									showName={modelStats.length > 1}
+									abilities={abilities.Abilities}
 								/>
 							))}
 						</div>
-						{modelStats?.[0] && (
+						{!hideModelCount && modelStats?.[0] && (
 							<div
 								className={`mt-[17px] ${
 									modelStats.length > 1 ? "" : "self-center"
@@ -449,7 +470,7 @@ const Unit = ({
 
 					<Keywords keywords={keywords} />
 				</div>
-				<div className=" relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:pt-5 sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:pt-5 md:print:p-[20px] md:print:pb-[50px]">
+				<div className="relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:pt-5 sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:pt-5 md:print:p-[20px] md:print:pb-[50px]">
 					<div
 						style={{
 							fontSize: "1.1em",
@@ -475,32 +496,173 @@ const Unit = ({
 	);
 };
 
-const ModelStats = ({ modelStat, index, showName, modelList }) => {
+const checkAbilitiesForInvul = (abilitiesMap, name) => {
+	const abilities = [...abilitiesMap.keys()];
+	for (let ability of abilities) {
+		if (ability.includes(":")) {
+			// if : then only match if the name is the same
+			if (
+				!name
+					.trim()
+					.toLowerCase()
+					.includes(ability.split(":")[1].trim().toLowerCase())
+			) {
+				continue;
+			}
+		}
+		switch (abilitiesMap.get(ability)?.trim()?.toLowerCase()) {
+			case "2+":
+				if (ability?.toLowerCase().includes("invulnerable save")) return "2+";
+				break;
+			case "3+":
+				if (ability?.toLowerCase().includes("invulnerable save")) return "3+";
+				break;
+			case "4+":
+				if (ability?.toLowerCase().includes("invulnerable save")) return "4+";
+				break;
+			case "5+":
+				if (ability?.toLowerCase().includes("invulnerable save")) return "5+";
+				break;
+			case "6+":
+				if (ability?.toLowerCase().includes("invulnerable save")) return "6+";
+				break;
+
+			case "this model has a 2+ invulnerable save.":
+				return "2+";
+			case "this model has a 3+ invulnerable save.":
+				return "3+";
+			case "this model has a 4+ invulnerable save.":
+				return "4+";
+			case "this model has a 5+ invulnerable save.":
+				return "5+";
+			case "this model has a 6+ invulnerable save.":
+				return "6+";
+
+			case "models in this unit have a 2+ invulnerable save.":
+				return "2+";
+			case "models in this unit have a 3+ invulnerable save.":
+				return "3+";
+			case "models in this unit have a 4+ invulnerable save.":
+				return "4+";
+			case "models in this unit have a 5+ invulnerable save.":
+				return "5+";
+			case "models in this unit have a 6+ invulnerable save.":
+				return "6+";
+
+			case "models in this unit have a 2+ invulnerable save against ranged weapons.":
+				return "2+*";
+			case "models in this unit have a 3+ invulnerable save against ranged weapons.":
+				return "3+*";
+			case "models in this unit have a 4+ invulnerable save against ranged weapons.":
+				return "4+*";
+			case "models in this unit have a 5+ invulnerable save against ranged weapons.":
+				return "5+*";
+			case "models in this unit have a 6+ invulnerable save against ranged weapons.":
+				return "6+*";
+
+			case "while this model is leading a unit, models in that unit have a 2+ invulnerable save.":
+				return "2+*";
+			case "while this model is leading a unit, models in that unit have a 3+ invulnerable save.":
+				return "3+*";
+			case "while this model is leading a unit, models in that unit have a 4+ invulnerable save.":
+				return "4+*";
+			case "while this model is leading a unit, models in that unit have a 5+ invulnerable save.":
+				return "5+*";
+			case "while this model is leading a unit, models in that unit have a 6+ invulnerable save.":
+				return "6+*";
+
+			case "while this model is leading a unit, models in that unit have a 2+ invulnerable save against ranged attacks.":
+				return "2+*";
+			case "while this model is leading a unit, models in that unit have a 3+ invulnerable save against ranged attacks.":
+				return "3+*";
+			case "while this model is leading a unit, models in that unit have a 4+ invulnerable save against ranged attacks.":
+				return "4+*";
+			case "while this model is leading a unit, models in that unit have a 5+ invulnerable save against ranged attacks.":
+				return "5+*";
+			case "while this model is leading a unit, models in that unit have a 6+ invulnerable save against ranged attacks.":
+				return "6+*";
+
+			case "this model has a 2+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+				return "2+*";
+			case "this model has a 3+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+				return "3+*";
+			case "this model has a 4+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+				return "4+*";
+			case "this model has a 5+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+				return "5+*";
+			case "this model has a 6+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+				return "6+*";
+		}
+	}
+	return false;
+};
+
+const ModelStats = ({ modelStat, index, showName, abilities }) => {
 	let { move, toughness, save, wounds, leadership, name, oc, bs, ws, attacks } =
 		modelStat;
 	if (!wounds) {
 		wounds = "/";
 	}
 
+	const hasInvul = checkAbilitiesForInvul(abilities, name);
 	return (
-		<div style={{ display: "flex", gap: "1.2rem" }}>
-			<Characteristic title="M" characteristic={move} index={index} />
-			<Characteristic title="T" characteristic={toughness} index={index} />
-			<Characteristic title="SV" characteristic={save} index={index} />
-			<Characteristic title="W" characteristic={wounds} index={index} />
-			<Characteristic title="LD" characteristic={leadership} index={index} />
-			<Characteristic title="OC" characteristic={oc} index={index} />
-			{showName && (
-				<div
-					className="flex flex-wrap items-center gap-2"
-					style={{
-						marginTop: index === 0 ? 16 : 0,
-						textShadow: "0px 0px 5px rgb(0 0 0)",
-					}}
-				>
-					<div style={{ whiteSpace: "nowrap" }}>{name}</div>
-				</div>
-			)}
+		<div className="flex flex-col">
+			<div style={{ display: "flex", gap: "1.2rem" }}>
+				<Characteristic title="M" characteristic={move} index={index} />
+				<Characteristic title="T" characteristic={toughness} index={index} />
+				<Characteristic title="SV" characteristic={save} index={index} />
+				<Characteristic title="W" characteristic={wounds} index={index} />
+				<Characteristic title="LD" characteristic={leadership} index={index} />
+				<Characteristic title="OC" characteristic={oc} index={index} />
+				{showName && (
+					<div
+						className="flex flex-wrap items-center gap-2"
+						style={{
+							marginTop: index === 0 ? 16 : 0,
+							marginLeft: "-0.2rem",
+							textShadow: "0px 0px 5px rgb(0 0 0)",
+						}}
+					>
+						<div style={{ whiteSpace: "nowrap" }}>{name}</div>
+					</div>
+				)}
+			</div>
+			<InvulRow hasInvul={hasInvul} />
+		</div>
+	);
+};
+
+const InvulRow = ({ hasInvul }) => {
+	if (!hasInvul) return null;
+
+	const isSpecialInvul = hasInvul.includes("*");
+	const invulWithoutSpecial = hasInvul.replace("*", "");
+	return (
+		<div
+			className="relative flex gap-6 py-1.5 pb-1"
+			style={{
+				display: "flex",
+				alignItems: "center",
+			}}
+		>
+			<div className="flex" style={{ gap: "1.2rem", left: 0, top: -16 }}>
+				<FancyBox className={"invisible"}></FancyBox>
+				<FancyBox className={"invisible"}></FancyBox>
+				<FancyShield>{invulWithoutSpecial}</FancyShield>
+			</div>
+			<span
+				className="font-semibold uppercase"
+				style={{
+					marginLeft: "-6rem",
+					paddingLeft: "6.4rem",
+					paddingRight: "1.2rem",
+					paddingTop: 2,
+					paddingBottom: 1,
+					backgroundColor: "var(--primary-color)",
+				}}
+			>
+				INVULNERABLE SAVE{isSpecialInvul ? "*" : ""}
+			</span>
 		</div>
 	);
 };
@@ -672,15 +834,17 @@ const Characteristic = ({ title, characteristic, index }) => {
 	);
 };
 
-const FancyBox = ({ children }) => {
+const FancyBox = ({ children, className, style }) => {
 	return (
 		<div
+			className={className}
 			style={{
 				color: "var(--primary-color)",
 				padding: 2,
 				background: "var(--primary-color)",
 				clipPath:
 					"polygon(12% 0, 100% 0, 100% 20%, 100% 88%, 88% 100%, 20% 100%, 0 100%, 0 12%)",
+				...style,
 			}}
 		>
 			<div
@@ -693,12 +857,48 @@ const FancyBox = ({ children }) => {
 					background: "#E8EDE7",
 					clipPath:
 						"polygon(10% 0, 100% 0, 100% 20%, 100% 90%, 90% 100%, 20% 100%, 0 100%, 0 10%)",
-					padding: 3,
+					padding: "3px 1px",
 					fontSize: "1.6em",
 					fontWeight: 800,
 				}}
 			>
 				{children}
+			</div>
+		</div>
+	);
+};
+
+const FancyShield = ({ children, className, style }) => {
+	return (
+		<div
+			className={className}
+			style={{
+				color: "var(--primary-color)",
+				background: "var(--primary-color)",
+				clipPath:
+					"polygon(0% 0%, 100% 0%, 100% 41.42%, 99.13% 49.08%, 96.48% 58.58%, 90.13% 69.72%, 81.6% 79.45%, 72.02% 87.52%, 50% 100%, 28.68% 87.52%, 18.31% 79.45%, 9.46% 69.72%, 3.65% 58.58%, 1.13% 49.08%, 0% 41.42%)",
+				...style,
+			}}
+		>
+			<div
+				style={{
+					margin: 2,
+					minWidth: "calc(3rem - 1px)",
+					minHeight: "3.6rem",
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					background: "#E8EDE7",
+					clipPath:
+						"polygon(0% 0%, 100% 0%, 100% 41.42%, 99.13% 49.08%, 96.48% 58.58%, 90.13% 69.72%, 81.6% 79.45%, 72.02% 87.52%, 50% 100%, 28.68% 87.52%, 18.31% 79.45%, 9.46% 69.72%, 3.65% 58.58%, 1.13% 49.08%, 0% 41.42%)",
+
+					fontSize: "1.6em",
+					fontWeight: 800,
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				<div style={{ marginTop: -4 }}>{children}</div>
 			</div>
 		</div>
 	);
