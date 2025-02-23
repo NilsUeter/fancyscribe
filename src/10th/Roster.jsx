@@ -895,7 +895,6 @@ const FancyShield = ({ children, className, style }) => {
 					fontSize: "1.6em",
 					fontWeight: 800,
 					alignItems: "center",
-					justifyContent: "center",
 				}}
 			>
 				<div style={{ marginTop: -4 }}>{children}</div>
