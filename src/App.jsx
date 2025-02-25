@@ -106,7 +106,6 @@ function App() {
 		if (rosterName) {
 			document.title = `FancyScribe ${rosterName}`;
 		}
-		console.log(doc);
 
 		let roster;
 		if (gameType == "Warhammer 40,000 9th Edition") {

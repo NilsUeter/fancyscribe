@@ -550,14 +550,29 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 				return "6+";
 
 			case "models in this unit have a 2+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 2+ invulnerable save against ranged attacks.":
+			case "this model has a 2+ invulnerable save against ranged weapons.":
+			case "this model has a 2+ invulnerable save against ranged attacks.":
 				return "2+*";
 			case "models in this unit have a 3+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 3+ invulnerable save against ranged attacks.":
+			case "this model has a 3+ invulnerable save against ranged attacks.":
+			case "this model has a 3+ invulnerable save against ranged weapons.":
 				return "3+*";
 			case "models in this unit have a 4+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 4+ invulnerable save against ranged attacks.":
+			case "this model has a 4+ invulnerable save against ranged attacks.":
+			case "this model has a 4+ invulnerable save against ranged weapons.":
 				return "4+*";
 			case "models in this unit have a 5+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 5+ invulnerable save against ranged attacks.":
+			case "this model has a 5+ invulnerable save against ranged attacks.":
+			case "this model has a 5+ invulnerable save against ranged weapons.":
 				return "5+*";
 			case "models in this unit have a 6+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 6+ invulnerable save against ranged attacks.":
+			case "this model has a 6+ invulnerable save against ranged attacks.":
+			case "this model has a 6+ invulnerable save against ranged weapons.":
 				return "6+*";
 
 			case "while this model is leading a unit, models in that unit have a 2+ invulnerable save.":
@@ -653,6 +668,7 @@ const InvulRow = ({ hasInvul }) => {
 			<span
 				className="font-semibold uppercase"
 				style={{
+					marginTop: -2,
 					marginLeft: "-6rem",
 					paddingLeft: "6.4rem",
 					paddingRight: "1.2rem",
@@ -894,10 +910,9 @@ const FancyShield = ({ children, className, style }) => {
 
 					fontSize: "1.6em",
 					fontWeight: 800,
-					alignItems: "center",
 				}}
 			>
-				<div style={{ marginTop: -4 }}>{children}</div>
+				<div style={{ marginTop: -5 }}>{children}</div>
 			</div>
 		</div>
 	);

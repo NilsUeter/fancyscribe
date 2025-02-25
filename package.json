@@ -10,18 +10,18 @@
 	},
 	"dependencies": {
 		"jszip": "^3.10.1",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
 	},
 	"devDependencies": {
-		"@types/react": "^18.2.31",
-		"@types/react-dom": "^18.2.14",
-		"@vitejs/plugin-react": "^4.1.0",
-		"autoprefixer": "^10.4.16",
-		"postcss": "^8.4.31",
-		"prettier": "^3.0.3",
-		"prettier-plugin-tailwindcss": "^0.5.6",
-		"tailwindcss": "^3.3.3",
+		"@types/react": "^18.3.18",
+		"@types/react-dom": "^18.3.5",
+		"@vitejs/plugin-react": "^4.3.4",
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.5.3",
+		"prettier": "^3.5.2",
+		"prettier-plugin-tailwindcss": "^0.6.11",
+		"tailwindcss": "^3.4.17",
 		"vite": "^4.5.0"
 	},
 	"prettier": {
