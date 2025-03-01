@@ -470,7 +470,7 @@ const Unit = ({
 
 					<Keywords keywords={keywords} />
 				</div>
-				<div className="relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 print:p-[20px] sm:p-2 sm:pb-[50px] sm:pt-5 sm:print:p-[20px] sm:print:pb-[50px] md:p-[20px] md:pb-[50px] md:pt-5 md:print:p-[20px] md:print:pb-[50px]">
+				<div className="relative max-w-[400px] flex-1 p-1 pb-[50px] pt-5 sm:p-2 sm:pb-[50px] sm:pt-5 md:p-[20px] md:pb-[50px] md:pt-5 print:p-[20px] sm:print:p-[20px] sm:print:pb-[50px] md:print:p-[20px] md:print:pb-[50px]">
 					<div
 						style={{
 							fontSize: "1.1em",
@@ -573,28 +573,6 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 			case "models in this unit have a 6+ invulnerable save against ranged attacks.":
 			case "this model has a 6+ invulnerable save against ranged attacks.":
 			case "this model has a 6+ invulnerable save against ranged weapons.":
-				return "6+*";
-
-			case "while this model is leading a unit, models in that unit have a 2+ invulnerable save.":
-				return "2+*";
-			case "while this model is leading a unit, models in that unit have a 3+ invulnerable save.":
-				return "3+*";
-			case "while this model is leading a unit, models in that unit have a 4+ invulnerable save.":
-				return "4+*";
-			case "while this model is leading a unit, models in that unit have a 5+ invulnerable save.":
-				return "5+*";
-			case "while this model is leading a unit, models in that unit have a 6+ invulnerable save.":
-				return "6+*";
-
-			case "while this model is leading a unit, models in that unit have a 2+ invulnerable save against ranged attacks.":
-				return "2+*";
-			case "while this model is leading a unit, models in that unit have a 3+ invulnerable save against ranged attacks.":
-				return "3+*";
-			case "while this model is leading a unit, models in that unit have a 4+ invulnerable save against ranged attacks.":
-				return "4+*";
-			case "while this model is leading a unit, models in that unit have a 5+ invulnerable save against ranged attacks.":
-				return "5+*";
-			case "while this model is leading a unit, models in that unit have a 6+ invulnerable save against ranged attacks.":
 				return "6+*";
 
 			case "this model has a 2+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
@@ -806,9 +784,54 @@ const Rules = ({ rules }) => {
 	);
 };
 
+const removeInvulnsWithoutSpecialRules = (abilities) => {
+	const filteredAbilities = new Map();
+	for (let [key, value] of abilities) {
+		switch (value?.trim()?.toLowerCase()) {
+			case "2+":
+				if (!key?.toLowerCase().includes("invulnerable save"))
+					filteredAbilities.set(key, value);
+				break;
+			case "3+":
+				if (!key?.toLowerCase().includes("invulnerable save"))
+					filteredAbilities.set(key, value);
+				break;
+			case "4+":
+				if (!key?.toLowerCase().includes("invulnerable save"))
+					filteredAbilities.set(key, value);
+				break;
+			case "5+":
+				if (!key?.toLowerCase().includes("invulnerable save"))
+					filteredAbilities.set(key, value);
+				break;
+			case "6+":
+				if (!key?.toLowerCase().includes("invulnerable save"))
+					filteredAbilities.set(key, value);
+				break;
+
+			case "models in this unit have a 2+ invulnerable save.":
+			case "models in this unit have a 3+ invulnerable save.":
+			case "models in this unit have a 4+ invulnerable save.":
+			case "models in this unit have a 5+ invulnerable save.":
+			case "models in this unit have a 6+ invulnerable save.":
+			case "this model has a 2+ invulnerable save.":
+			case "this model has a 3+ invulnerable save.":
+			case "this model has a 4+ invulnerable save.":
+			case "this model has a 5+ invulnerable save.":
+			case "this model has a 6+ invulnerable save.":
+				break;
+			default:
+				filteredAbilities.set(key, value);
+		}
+	}
+	return filteredAbilities;
+};
+
 const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
-	let keys = [...abilities.keys()];
+	const filteredAbilities = removeInvulnsWithoutSpecialRules(abilities);
+
+	let keys = [...filteredAbilities.keys()];
 
 	return (
 		<div
@@ -820,7 +843,7 @@ const Abilities = ({ abilities }) => {
 				borderBottom: "1px dotted rgb(158, 159, 161)",
 			}}
 		>
-			{abilities &&
+			{filteredAbilities &&
 				keys.map((ability) => (
 					<div
 						key={ability}
@@ -830,7 +853,7 @@ const Abilities = ({ abilities }) => {
 						}}
 					>
 						<span style={{ fontWeight: 700 }}>{ability}:</span>{" "}
-						{abilities.get(ability)}
+						{filteredAbilities.get(ability)}
 					</div>
 				))}
 		</div>
