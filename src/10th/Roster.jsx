@@ -389,9 +389,25 @@ const Unit = ({
 									setImage(resultUrl);
 									setBgRemoved(true);
 								}}
+								title="Very basic background removal. Use a proper online tool for better results."
 							>
 								Remove white from image
 							</button>
+						)}
+						{!hasImage && (
+							<a
+								className="button print-display-none"
+								style={{
+									border: "1px solid #999",
+									padding: "1px 4px",
+									fontSize: "0.8rem",
+									backgroundColor: "#f0f0f0",
+								}}
+								href={`https://www.google.com/search?udm=2&q=${name}+warhammer+40k+miniature`}
+								target="_blank"
+							>
+								Search for image
+							</a>
 						)}
 						<label
 							className="button print-display-none"
