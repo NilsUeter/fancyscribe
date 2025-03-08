@@ -4,6 +4,7 @@ import adeptusAstartesIcon from "../assets/adeptusAstartesIcon.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useLocalStorage } from "../helpers/useLocalStorage";
+import { ImgEditor } from "./ImgEditor";
 
 export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
 	if (!roster) {
@@ -220,6 +221,7 @@ const Unit = ({
 					}}
 				>
 					<input
+						className="hide-model-selection"
 						type="checkbox"
 						onChange={(e) => setHideModelCount(e.target.checked)}
 					/>
@@ -319,7 +321,7 @@ const Unit = ({
 							{cost.points}pts
 						</span>
 					</div>
-					<div className="relative z-10 flex gap-4">
+					<div className="relative flex gap-4">
 						<div
 							style={{
 								display: "flex",
@@ -341,11 +343,12 @@ const Unit = ({
 						</div>
 						{!hideModelCount && modelStats?.[0] && (
 							<div
-								className={`mt-[17px] ${
+								className={`pointer-events-none mt-[17px] ${
 									modelStats.length > 1 ? "" : "self-center"
 								}`}
 								style={{
 									fontSize: "0.7em",
+									zIndex: 101,
 								}}
 							>
 								{modelList.map((model, index) => (
@@ -362,16 +365,12 @@ const Unit = ({
 						top: 0,
 						height: "100%",
 						bottom: 0,
-						width: "45%",
+						width: "50%",
+						zIndex: 100,
+						overflow: "hidden",
 					}}
 				>
-					{hasImage && (
-						<img
-							src={image}
-							alt=""
-							style={{ width: "100%", height: "100%", objectFit: "contain" }}
-						/>
-					)}
+					{hasImage && <ImgEditor image={image} name={name} />}
 					<div className="absolute right-[1px] top-[2px] flex gap-1">
 						{hasImage && !bgRemoved && (
 							<button

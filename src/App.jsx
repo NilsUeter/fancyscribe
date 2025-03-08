@@ -19,7 +19,20 @@ function App() {
 	const [onePerPage, setOnePerPage] = useState(false);
 	const [primaryColor, setPrimaryColor] = useState("#536766");
 	const [colorUserChoice, setColorUserChoice] = useState(false);
+	const [hideModelSelections, setHideModelSelections] = useState(false);
 	const uploadRef = useRef();
+
+	const toggleHideModelSelections = (hide) => {
+		const checkboxes = document.querySelectorAll(
+			'input[type="checkbox"].hide-model-selection',
+		);
+		checkboxes.forEach((checkbox) => {
+			if (checkbox.checked !== hide) {
+				checkbox.click();
+			}
+		});
+	};
+
 	async function handleFileSelect(event) {
 		const files = event?.target?.files;
 
@@ -250,7 +263,7 @@ function App() {
 											stringifyJSON(rostersJSON.filter((_, i) => i !== index)),
 										)
 									}
-									className="print-display-none absolute right-[-4px] top-[-4px] rounded-full border-0 bg-red-600 fill-white p-[2px] text-sm transition duration-150 ease-in-out  hover:bg-red-800 focus:outline-none"
+									className="print-display-none absolute right-[-4px] top-[-4px] rounded-full border-0 bg-red-600 fill-white p-[2px] text-sm transition duration-150 ease-in-out hover:bg-red-800 focus:outline-none"
 								>
 									<svg height="16" viewBox="0 0 16 16" width="16">
 										<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
@@ -325,8 +338,34 @@ function App() {
 							type="checkbox"
 							onChange={(e) => setOnePerPage(e.target.checked)}
 						/>
-						<span>One Datacard per Page when Printing</span>
+						<span className="select-none">
+							One Datacard per Page when Printing
+						</span>
 					</label>
+					{
+						// only show when 10th edition
+						edition === 10 && (
+							<label
+								style={{
+									display: "flex",
+									alignItems: "center",
+									gap: 4,
+									minHeight: 26,
+								}}
+							>
+								<input
+									type="checkbox"
+									value={hideModelSelections}
+									onChange={(e) => {
+										setHideModelSelections(e.target.checked);
+										toggleHideModelSelections(e.target.checked);
+									}}
+									className="hide-model-selection"
+								/>
+								<span className="select-none">Hide all model selections</span>
+							</label>
+						)
+					}
 					<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
 						<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
 							<input
