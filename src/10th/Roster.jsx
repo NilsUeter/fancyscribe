@@ -593,14 +593,24 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 				break;
 
 			case "this model has a 2+ invulnerable save.":
+			case "this unit has a 2+ invulnerable save":
+			case "this unit has a 2+ invulnerable save.":
 				return "2+";
 			case "this model has a 3+ invulnerable save.":
+			case "this unit has a 3+ invulnerable save":
+			case "this unit has a 3+ invulnerable save.":
 				return "3+";
 			case "this model has a 4+ invulnerable save.":
+			case "this unit has a 4+ invulnerable save":
+			case "this unit has a 4+ invulnerable save.":
 				return "4+";
 			case "this model has a 5+ invulnerable save.":
+			case "this unit has a 5+ invulnerable save":
+			case "this unit has a 5+ invulnerable save.":
 				return "5+";
 			case "this model has a 6+ invulnerable save.":
+			case "this unit has a 6+ invulnerable save":
+			case "this unit has a 6+ invulnerable save.":
 				return "6+";
 
 			case "models in this unit have a 2+ invulnerable save.":
@@ -884,6 +894,16 @@ const removeInvulnsWithoutSpecialRules = (abilities) => {
 			case "this model has a 4+ invulnerable save.":
 			case "this model has a 5+ invulnerable save.":
 			case "this model has a 6+ invulnerable save.":
+			case "this unit has a 2+ invulnerable save":
+			case "this unit has a 3+ invulnerable save":
+			case "this unit has a 4+ invulnerable save":
+			case "this unit has a 5+ invulnerable save":
+			case "this unit has a 6+ invulnerable save":
+			case "this unit has a 2+ invulnerable save.":
+			case "this unit has a 3+ invulnerable save.":
+			case "this unit has a 4+ invulnerable save.":
+			case "this unit has a 5+ invulnerable save.":
+			case "this unit has a 6+ invulnerable save.":
 				break;
 			default:
 				filteredAbilities.set(key, value);
