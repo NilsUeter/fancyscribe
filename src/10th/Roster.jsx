@@ -3,7 +3,7 @@ import factionBackground from "../assets/factionBackground.png";
 import adeptusAstartesIcon from "../assets/adeptusAstartesIcon.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
-import { useLocalStorage } from "../helpers/useLocalStorage";
+import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
 import { ImgEditor } from "./ImgEditor";
 
 export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
@@ -91,7 +91,7 @@ const Unit = ({
 		modelList,
 		cost,
 	} = unit;
-	const [image, setImage] = useLocalStorage("image" + name);
+	const [image, setImage] = useIndexedDB("image" + name); // Use IndexedDB hook
 	const hasImage = image && image !== "undefined";
 	const [bgRemoved, setBgRemoved] = useState(false);
 
