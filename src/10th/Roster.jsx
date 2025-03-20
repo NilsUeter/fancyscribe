@@ -562,7 +562,7 @@ const Unit = ({
 };
 
 const checkAbilitiesForInvul = (abilitiesMap, name) => {
-	const abilities = [...abilitiesMap.keys()];
+	const abilities = [...(abilitiesMap?.keys?.() || [])];
 	for (let ability of abilities) {
 		if (ability.includes(":")) {
 			// if : then only match if the name is the same
