@@ -575,7 +575,7 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 				continue;
 			}
 		}
-		switch (abilitiesMap.get(ability)?.trim()?.toLowerCase()) {
+		switch (abilitiesMap.get(ability)?.trim()?.toLowerCase().replace(".", "")) {
 			case "2+":
 				if (ability?.toLowerCase().includes("invulnerable save")) return "2+";
 				break;
@@ -592,36 +592,40 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 				if (ability?.toLowerCase().includes("invulnerable save")) return "6+";
 				break;
 
-			case "this model has a 2+ invulnerable save.":
+			case "this model has a 2+ invulnerable save":
+			case "this model has an invulnerable save of 2+":
 			case "this unit has a 2+ invulnerable save":
-			case "this unit has a 2+ invulnerable save.":
-				return "2+";
-			case "this model has a 3+ invulnerable save.":
-			case "this unit has a 3+ invulnerable save":
-			case "this unit has a 3+ invulnerable save.":
-				return "3+";
-			case "this model has a 4+ invulnerable save.":
-			case "this unit has a 4+ invulnerable save":
-			case "this unit has a 4+ invulnerable save.":
-				return "4+";
-			case "this model has a 5+ invulnerable save.":
-			case "this unit has a 5+ invulnerable save":
-			case "this unit has a 5+ invulnerable save.":
-				return "5+";
-			case "this model has a 6+ invulnerable save.":
-			case "this unit has a 6+ invulnerable save":
-			case "this unit has a 6+ invulnerable save.":
-				return "6+";
-
 			case "models in this unit have a 2+ invulnerable save.":
+			case "models in this unit have an invulnerable save of 2+":
+			case "models in this units have an invulnerable save of 2+":
 				return "2+";
+			case "this model has a 3+ invulnerable save":
+			case "this model has an invulnerable save of 3+":
+			case "this unit has a 3+ invulnerable save":
 			case "models in this unit have a 3+ invulnerable save.":
+			case "models in this unit have an invulnerable save of 3+":
+			case "models in this units have an invulnerable save of 3+":
 				return "3+";
+			case "this model has a 4+ invulnerable save":
+			case "this model has an invulnerable save of 4+":
+			case "this unit has a 4+ invulnerable save":
 			case "models in this unit have a 4+ invulnerable save.":
+			case "models in this unit have an invulnerable save of 4+":
+			case "models in this units have an invulnerable save of 4+":
 				return "4+";
+			case "this model has a 5+ invulnerable save":
+			case "this model has an invulnerable save of 5+":
+			case "this unit has a 5+ invulnerable save":
 			case "models in this unit have a 5+ invulnerable save.":
+			case "models in this unit have an invulnerable save of 5+":
+			case "models in this units have an invulnerable save of 5+":
 				return "5+";
+			case "this model has a 6+ invulnerable save":
+			case "this model has an invulnerable save of 6+":
+			case "this unit has a 6+ invulnerable save":
 			case "models in this unit have a 6+ invulnerable save.":
+			case "models in this unit have an invulnerable save of 6+":
+			case "models in this units have an invulnerable save of 6+":
 				return "6+";
 
 			case "models in this unit have a 2+ invulnerable save against ranged weapons.":
@@ -862,7 +866,7 @@ const Rules = ({ rules }) => {
 const removeInvulnsWithoutSpecialRules = (abilities) => {
 	const filteredAbilities = new Map();
 	for (let [key, value] of abilities) {
-		switch (value?.trim()?.toLowerCase()) {
+		switch (value?.trim()?.toLowerCase().replace(".", "")) {
 			case "2+":
 				if (!key?.toLowerCase().includes("invulnerable save"))
 					filteredAbilities.set(key, value);
@@ -884,16 +888,31 @@ const removeInvulnsWithoutSpecialRules = (abilities) => {
 					filteredAbilities.set(key, value);
 				break;
 
-			case "models in this unit have a 2+ invulnerable save.":
-			case "models in this unit have a 3+ invulnerable save.":
-			case "models in this unit have a 4+ invulnerable save.":
-			case "models in this unit have a 5+ invulnerable save.":
-			case "models in this unit have a 6+ invulnerable save.":
-			case "this model has a 2+ invulnerable save.":
-			case "this model has a 3+ invulnerable save.":
-			case "this model has a 4+ invulnerable save.":
-			case "this model has a 5+ invulnerable save.":
-			case "this model has a 6+ invulnerable save.":
+			case "models in this unit have a 2+ invulnerable save":
+			case "models in this unit have a 3+ invulnerable save":
+			case "models in this unit have a 4+ invulnerable save":
+			case "models in this unit have a 5+ invulnerable save":
+			case "models in this unit have a 6+ invulnerable save":
+			case "models in this units have an invulnerable save of 2+":
+			case "models in this units have an invulnerable save of 3+":
+			case "models in this units have an invulnerable save of 4+":
+			case "models in this units have an invulnerable save of 5+":
+			case "models in this units have an invulnerable save of 6+":
+			case "models in this unit have an invulnerable save of 2+":
+			case "models in this unit have an invulnerable save of 3+":
+			case "models in this unit have an invulnerable save of 4+":
+			case "models in this unit have an invulnerable save of 5+":
+			case "models in this unit have an invulnerable save of 6+":
+			case "this model has a 2+ invulnerable save":
+			case "this model has a 3+ invulnerable save":
+			case "this model has a 4+ invulnerable save":
+			case "this model has a 5+ invulnerable save":
+			case "this model has a 6+ invulnerable save":
+			case "this model has an invulnerable save of 2+":
+			case "this model has an invulnerable save of 3+":
+			case "this model has an invulnerable save of 4+":
+			case "this model has an invulnerable save of 5+":
+			case "this model has an invulnerable save of 6+":
 			case "this unit has a 2+ invulnerable save":
 			case "this unit has a 3+ invulnerable save":
 			case "this unit has a 4+ invulnerable save":
