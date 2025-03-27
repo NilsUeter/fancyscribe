@@ -595,74 +595,74 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 			case "this model has a 2+ invulnerable save":
 			case "this model has an invulnerable save of 2+":
 			case "this unit has a 2+ invulnerable save":
-			case "models in this unit have a 2+ invulnerable save.":
+			case "models in this unit have a 2+ invulnerable save":
 			case "models in this unit have an invulnerable save of 2+":
 			case "models in this units have an invulnerable save of 2+":
 				return "2+";
 			case "this model has a 3+ invulnerable save":
 			case "this model has an invulnerable save of 3+":
 			case "this unit has a 3+ invulnerable save":
-			case "models in this unit have a 3+ invulnerable save.":
+			case "models in this unit have a 3+ invulnerable save":
 			case "models in this unit have an invulnerable save of 3+":
 			case "models in this units have an invulnerable save of 3+":
 				return "3+";
 			case "this model has a 4+ invulnerable save":
 			case "this model has an invulnerable save of 4+":
 			case "this unit has a 4+ invulnerable save":
-			case "models in this unit have a 4+ invulnerable save.":
+			case "models in this unit have a 4+ invulnerable save":
 			case "models in this unit have an invulnerable save of 4+":
 			case "models in this units have an invulnerable save of 4+":
 				return "4+";
 			case "this model has a 5+ invulnerable save":
 			case "this model has an invulnerable save of 5+":
 			case "this unit has a 5+ invulnerable save":
-			case "models in this unit have a 5+ invulnerable save.":
+			case "models in this unit have a 5+ invulnerable save":
 			case "models in this unit have an invulnerable save of 5+":
 			case "models in this units have an invulnerable save of 5+":
 				return "5+";
 			case "this model has a 6+ invulnerable save":
 			case "this model has an invulnerable save of 6+":
 			case "this unit has a 6+ invulnerable save":
-			case "models in this unit have a 6+ invulnerable save.":
+			case "models in this unit have a 6+ invulnerable save":
 			case "models in this unit have an invulnerable save of 6+":
 			case "models in this units have an invulnerable save of 6+":
 				return "6+";
 
-			case "models in this unit have a 2+ invulnerable save against ranged weapons.":
-			case "models in this unit have a 2+ invulnerable save against ranged attacks.":
-			case "this model has a 2+ invulnerable save against ranged weapons.":
-			case "this model has a 2+ invulnerable save against ranged attacks.":
+			case "models in this unit have a 2+ invulnerable save against ranged weapons":
+			case "models in this unit have a 2+ invulnerable save against ranged attacks":
+			case "this model has a 2+ invulnerable save against ranged weapons":
+			case "this model has a 2+ invulnerable save against ranged attacks":
 				return "2+*";
-			case "models in this unit have a 3+ invulnerable save against ranged weapons.":
-			case "models in this unit have a 3+ invulnerable save against ranged attacks.":
-			case "this model has a 3+ invulnerable save against ranged attacks.":
-			case "this model has a 3+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 3+ invulnerable save against ranged weapons":
+			case "models in this unit have a 3+ invulnerable save against ranged attacks":
+			case "this model has a 3+ invulnerable save against ranged attacks":
+			case "this model has a 3+ invulnerable save against ranged weapons":
 				return "3+*";
-			case "models in this unit have a 4+ invulnerable save against ranged weapons.":
-			case "models in this unit have a 4+ invulnerable save against ranged attacks.":
-			case "this model has a 4+ invulnerable save against ranged attacks.":
-			case "this model has a 4+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 4+ invulnerable save against ranged weapons":
+			case "models in this unit have a 4+ invulnerable save against ranged attacks":
+			case "this model has a 4+ invulnerable save against ranged attacks":
+			case "this model has a 4+ invulnerable save against ranged weapons":
 				return "4+*";
-			case "models in this unit have a 5+ invulnerable save against ranged weapons.":
-			case "models in this unit have a 5+ invulnerable save against ranged attacks.":
-			case "this model has a 5+ invulnerable save against ranged attacks.":
-			case "this model has a 5+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 5+ invulnerable save against ranged weapons":
+			case "models in this unit have a 5+ invulnerable save against ranged attacks":
+			case "this model has a 5+ invulnerable save against ranged attacks":
+			case "this model has a 5+ invulnerable save against ranged weapons":
 				return "5+*";
-			case "models in this unit have a 6+ invulnerable save against ranged weapons.":
-			case "models in this unit have a 6+ invulnerable save against ranged attacks.":
-			case "this model has a 6+ invulnerable save against ranged attacks.":
-			case "this model has a 6+ invulnerable save against ranged weapons.":
+			case "models in this unit have a 6+ invulnerable save against ranged weapons":
+			case "models in this unit have a 6+ invulnerable save against ranged attacks":
+			case "this model has a 6+ invulnerable save against ranged attacks":
+			case "this model has a 6+ invulnerable save against ranged weapons":
 				return "6+*";
 
-			case "this model has a 2+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+			case "this model has a 2+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
 				return "2+*";
-			case "this model has a 3+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+			case "this model has a 3+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
 				return "3+*";
-			case "this model has a 4+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+			case "this model has a 4+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
 				return "4+*";
-			case "this model has a 5+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+			case "this model has a 5+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
 				return "5+*";
-			case "this model has a 6+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model.":
+			case "this model has a 6+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
 				return "6+*";
 		}
 	}
@@ -918,11 +918,6 @@ const removeInvulnsWithoutSpecialRules = (abilities) => {
 			case "this unit has a 4+ invulnerable save":
 			case "this unit has a 5+ invulnerable save":
 			case "this unit has a 6+ invulnerable save":
-			case "this unit has a 2+ invulnerable save.":
-			case "this unit has a 3+ invulnerable save.":
-			case "this unit has a 4+ invulnerable save.":
-			case "this unit has a 5+ invulnerable save.":
-			case "this unit has a 6+ invulnerable save.":
 				break;
 			default:
 				filteredAbilities.set(key, value);
@@ -931,11 +926,68 @@ const removeInvulnsWithoutSpecialRules = (abilities) => {
 	return filteredAbilities;
 };
 
+const boldKeywords = [
+	"infantry",
+	"character",
+	"monster",
+	"vehicle",
+	"psyker",
+	"titanic",
+	"mounted",
+	"battleline",
+
+	"warlord",
+
+	"death guard",
+	"heretic astartes",
+	"adeptus astartes",
+	"adeptus mechanicus",
+	"tyranids",
+	"orks",
+];
+
+const weaponKeywords = [
+	"lethal hits",
+	"blast",
+	/* "assault", */
+	"heavy",
+	"torrent",
+	"indirect fire",
+	"sustained hits 1",
+	"sustained hits 2",
+];
+
 const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
 	const filteredAbilities = removeInvulnsWithoutSpecialRules(abilities);
 
 	let keys = [...filteredAbilities.keys()];
+
+	const replacedAbilities = new Map();
+	// in the value of the filtered abilites, make certain keywords bold
+	for (let [key, value] of filteredAbilities) {
+		let newValue = value;
+		for (let keyword of boldKeywords) {
+			newValue = newValue.replace(
+				new RegExp(`\\b${keyword}\\b`, "gi"),
+				`<strong>${keyword.toUpperCase()}</strong>`,
+			);
+		}
+
+		// weaponKeywords could be with [] or without
+		for (let keyword of weaponKeywords) {
+			newValue = newValue.replace(
+				new RegExp(`\\[${keyword}\\]`, "gi"),
+				`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">[${keyword.toUpperCase()}]</span>`,
+			);
+			newValue = newValue.replace(
+				new RegExp(`\\b${keyword}\\b`, "gi"),
+				`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">${keyword.toUpperCase()}</span>`,
+			);
+		}
+
+		replacedAbilities.set(key, newValue);
+	}
 
 	return (
 		<div
@@ -957,7 +1009,12 @@ const Abilities = ({ abilities }) => {
 						}}
 					>
 						<span style={{ fontWeight: 700 }}>{ability}:</span>{" "}
-						{filteredAbilities.get(ability)}
+						<span
+							className="whitespace-pre-line"
+							dangerouslySetInnerHTML={{
+								__html: replacedAbilities.get(ability),
+							}}
+						></span>
 					</div>
 				))}
 		</div>
