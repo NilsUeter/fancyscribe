@@ -10,6 +10,28 @@ import { Roster as Roster10th } from "./10th/Roster";
 import { useLocalStorage } from "./helpers/useLocalStorage";
 import { parseJSON, stringifyJSON } from "./helpers/json";
 
+const throttle = (func, limit) => {
+	let lastFunc;
+	let lastRan;
+	return function (...args) {
+		if (!lastRan) {
+			func(...args);
+			lastRan = Date.now();
+		} else {
+			clearTimeout(lastFunc);
+			lastFunc = setTimeout(
+				() => {
+					if (Date.now() - lastRan >= limit) {
+						func(...args);
+						lastRan = Date.now();
+					}
+				},
+				limit - (Date.now() - lastRan),
+			);
+		}
+	};
+};
+
 function App() {
 	const [rosters, setRosters] = useLocalStorage("rosters", "[]");
 	const rostersJSON = parseJSON(rosters ?? "[]");
@@ -21,6 +43,10 @@ function App() {
 	const [colorUserChoice, setColorUserChoice] = useState(false);
 	const [hideModelSelections, setHideModelSelections] = useState(false);
 	const uploadRef = useRef();
+
+	const throttledSetPrimaryColor = useRef(
+		throttle((color) => setPrimaryColor(color), 50),
+	).current;
 
 	const toggleHideModelSelections = (hide) => {
 		const checkboxes = document.querySelectorAll(
@@ -167,6 +193,7 @@ function App() {
 	}, []);
 	useEffect(() => {
 		if (roster) {
+			js_colorPicker.value = getPrimaryColor(roster.forces[0].catalog);
 			setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
 			setColorUserChoice(false);
 		}
@@ -369,34 +396,36 @@ function App() {
 					<div style={{ display: "flex", alignItems: "center", gap: 4 }}>
 						<label style={{ display: "flex", alignItems: "center", gap: 4 }}>
 							<input
+								id="js_colorPicker"
 								type="color"
 								className="rounded-sm border border-gray-400"
 								style={{ height: 24, width: 32, padding: "0 2px" }}
-								value={primaryColor}
 								onChange={(e) => {
-									setPrimaryColor(e.target.value);
 									setColorUserChoice(true);
+									throttledSetPrimaryColor(e.target.value);
 								}}
 							></input>
 							<span> Custom Color</span>
 						</label>
 
-						{roster &&
-							primaryColor !== getPrimaryColor(roster.forces[0].catalog) && (
-								<button
-									onClick={() => {
-										setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
-										setColorUserChoice(false);
-									}}
-									style={{
-										padding: "2px 4px",
-										borderRadius: 4,
-										borderWidth: 1,
-									}}
-								>
-									Reset color
-								</button>
-							)}
+						{roster && colorUserChoice && (
+							<button
+								onClick={() => {
+									setPrimaryColor(getPrimaryColor(roster.forces[0].catalog));
+									setColorUserChoice(false);
+									js_colorPicker.value = getPrimaryColor(
+										roster.forces[0].catalog,
+									);
+								}}
+								style={{
+									padding: "2px 4px",
+									borderRadius: 4,
+									borderWidth: 1,
+								}}
+							>
+								Reset color
+							</button>
+						)}
 					</div>
 				</div>
 				<div className="print-display-none" style={{ color: "red" }}>

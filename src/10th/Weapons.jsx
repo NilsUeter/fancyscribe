@@ -107,7 +107,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 	return (
 		<>
 			<tr className={className}>
-				<td style={{ borderTop: "none", backgroundColor: "#dfe0e2" }}>
+				<td style={{ borderTop: "none" }}>
 					{differentProfiles && (
 						<div className="flex justify-center">{Arrow}</div>
 					)}
@@ -149,8 +149,8 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 							? ws.join("|")
 							: ws
 						: bs.join
-						? bs.join("|")
-						: bs}
+							? bs.join("|")
+							: bs}
 				</td>
 				<td className="align-middle">{str}</td>
 				<td className="align-middle">{ap}</td>
