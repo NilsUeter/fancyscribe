@@ -42,12 +42,12 @@ export function useLocalStorage(key, initValue) {
 	return [state, setState];
 }
 
-const trySettingLocalStorage = (key, value, setState) => {
+export const trySettingLocalStorage = (key, value, setState) => {
 	try {
 		localStorage.setItem(key, value);
 		window.dispatchEvent(new Event("storage"));
 	} catch (e) {
 		console.error(e);
-		setState(value);
+		setState?.(value);
 	}
 };

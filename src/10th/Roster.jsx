@@ -3,10 +3,16 @@ import factionBackground from "../assets/factionBackground.png";
 import keywordsBackground from "../assets/keywordsBackground.png";
 import cardBackground from "../assets/cardBackground.png";
 import dgBackground from "../assets/dgBackground.png";
+import tauBackground from "../assets/tauBackground.png";
+import tyranidBackground from "../assets/tyranidBackground.png";
+import mechanicusBackground from "../assets/mechanicusBackground.png";
+import orkBackground from "../assets/orkBackground.png";
+import necronBackground from "../assets/necronBackground.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
 import { ImgEditor } from "./ImgEditor";
+import { trySettingLocalStorage } from "../helpers/useLocalStorage";
 
 export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
 	if (!roster) {
@@ -249,10 +255,7 @@ const Unit = ({
 					paddingBottom: 4,
 					background:
 						"linear-gradient(90deg, rgba(20,21,25,1) 0%, rgba(48,57,62,1) 45%, rgba(73,74,79,1) 100%)",
-					backgroundImage:
-						catalog === "Chaos - Death Guard"
-							? `url(${dgBackground})`
-							: `url(${factionBackground})`,
+					backgroundImage: `url(${backgrounds[catalog] ? backgrounds[catalog] : factionBackground})`,
 					backgroundSize: "cover",
 					color: "#fff",
 					position: "relative",
@@ -371,7 +374,7 @@ const Unit = ({
 						top: 0,
 						height: "100%",
 						bottom: 0,
-						width: "50%",
+						width: "60%",
 						zIndex: 100,
 						overflow: "hidden",
 					}}
@@ -437,6 +440,9 @@ const Unit = ({
 										reader.onload = function (ev) {
 											setImage(ev.target.result);
 											setBgRemoved(false);
+											// reset position of the image
+											trySettingLocalStorage(`positionX_${name}`, 0, () => {});
+											trySettingLocalStorage(`positionY_${name}`, 0, () => {});
 										}.bind(this);
 										reader.readAsDataURL(e.target.files[0]);
 									}
@@ -569,6 +575,15 @@ const Unit = ({
 	);
 };
 
+const backgrounds = {
+	"Imperium - Adeptus Mechanicus": mechanicusBackground,
+	"Chaos - Death Guard": dgBackground,
+	"Xenos - T'au Empire": tauBackground,
+	"Xenos - Tyranids": tyranidBackground,
+	"Xenos - Orks": orkBackground,
+	"Xenos - Necrons": necronBackground,
+};
+
 const checkAbilitiesForInvul = (abilitiesMap, name) => {
 	const abilities = [...(abilitiesMap?.keys?.() || [])];
 	for (let ability of abilities) {
@@ -583,7 +598,9 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 				continue;
 			}
 		}
-		switch (abilitiesMap.get(ability)?.trim()?.toLowerCase().replace(".", "")) {
+		switch (
+			abilitiesMap.get(ability)?.trim()?.toLowerCase().replaceAll(".", "")
+		) {
 			case "2+":
 				if (ability?.toLowerCase().includes("invulnerable save")) return "2+";
 				break;
@@ -662,15 +679,15 @@ const checkAbilitiesForInvul = (abilitiesMap, name) => {
 			case "this model has a 6+ invulnerable save against ranged weapons":
 				return "6+*";
 
-			case "this model has a 2+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
+			case "this model has a 2+ invulnerable save you cannot re-roll invulnerable saving throws made for this model":
 				return "2+*";
-			case "this model has a 3+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
+			case "this model has a 3+ invulnerable save you cannot re-roll invulnerable saving throws made for this model":
 				return "3+*";
-			case "this model has a 4+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
+			case "this model has a 4+ invulnerable save you cannot re-roll invulnerable saving throws made for this model":
 				return "4+*";
-			case "this model has a 5+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
+			case "this model has a 5+ invulnerable save you cannot re-roll invulnerable saving throws made for this model":
 				return "5+*";
-			case "this model has a 6+ invulnerable save. you cannot re-roll invulnerable saving throws made for this model":
+			case "this model has a 6+ invulnerable save you cannot re-roll invulnerable saving throws made for this model":
 				return "6+*";
 		}
 	}
@@ -696,14 +713,17 @@ const ModelStats = ({ modelStat, index, showName, abilities }) => {
 				<Characteristic title="OC" characteristic={oc} index={index} />
 				{showName && (
 					<div
-						className="flex flex-wrap items-center gap-2"
+						className="flex items-center text-nowrap uppercase"
 						style={{
 							marginTop: index === 0 ? 16 : 0,
-							marginLeft: "-0.2rem",
+							marginLeft: "-0.45rem",
 							textShadow: "0px 0px 5px rgb(0 0 0)",
+							letterSpacing: "-0.2px",
+							fontWeight: 500,
+							fontSize: "1.05em",
 						}}
 					>
-						<div style={{ whiteSpace: "nowrap" }}>{name}</div>
+						{name}
 					</div>
 				)}
 			</div>
@@ -749,6 +769,9 @@ const InvulRow = ({ hasInvul }) => {
 };
 
 const FactionIcon = ({ catalog }) => {
+	if (!factionIcons[catalog]) {
+		console.log(catalog);
+	}
 	return (
 		<div
 			style={{
@@ -875,6 +898,31 @@ const factionIcons = {
 			</g>
 		</svg>
 	),
+	"Xenos - Necrons": (
+		<svg
+			viewBox="0 0 511.48495 800"
+			width="50px"
+			height="50px"
+			className="-mt-px"
+		>
+			<g transform="matrix(0.83073728,0,0,0.83073728,-159.50156,-14.953271)">
+				<circle cx="499.79999" cy="387.39999" r="86.800003" />
+				<path d="M 618.2,18 H 381.4 L 192,324.3 354.6,981 H 645.1 L 807.7,324.3 Z M 697,562.8 660.2,599.6 560.6,500 c -11,5.9 -22.9,10.3 -35.5,12.8 V 903.7 H 473 V 512.4 c -12.1,-2.6 -23.6,-6.9 -34.2,-12.7 L 339,599.6 302.2,562.8 399,466 C 387,450.7 378.5,432.5 374.5,412.7 H 274.1 v -52.1 h 100.7 c 10.5,-49.1 49.1,-87.7 98.2,-98.2 v -42 C 415.3,208.1 372,156.8 372,95.4 h 41 c 0,48 38.9,86.8 86.8,86.8 47.9,0 86.8,-38.9 86.8,-86.8 h 41 c 0,62 -44.1,113.6 -102.6,125.4 V 262 c 49.8,10 89.2,48.9 99.8,98.5 h 105.5 v 52.1 H 625.2 c -4,19.9 -12.6,38.2 -24.7,53.6 z" />
+			</g>
+		</svg>
+	),
+	"Xenos - T'au Empire": (
+		<svg
+			viewBox="0 0 309.17 309.13"
+			width={44}
+			height={44}
+			className="rounded-full border border-[var(--primary-color)] p-px"
+		>
+			<path d="m82.86,63.76c0-23.78,11.57-44.81,29.38-57.86C47.44,24.3,0,83.9,0,154.6c0,83.79,66.66,151.97,149.82,154.53v-173.82c-37.39-2.49-66.95-33.57-66.95-71.55Z" />
+			<path d="m196.92,5.86c17.8,13.06,29.38,34.13,29.38,57.86,0,37.98-29.56,69.1-66.95,71.55v173.78c83.16-2.52,149.82-70.74,149.82-154.53,0-70.62-47.44-130.23-112.24-148.67Z" />
+			<circle cx="154.56" cy="63.76" r="63.76" />
+		</svg>
+	),
 };
 
 const Keywords = ({ keywords }) => {
@@ -972,7 +1020,7 @@ const Rules = ({ rules }) => {
 const removeInvulnsWithoutSpecialRules = (abilities) => {
 	const filteredAbilities = new Map();
 	for (let [key, value] of abilities) {
-		switch (value?.trim()?.toLowerCase().replace(".", "")) {
+		switch (value?.trim()?.toLowerCase().replaceAll(".", "")) {
 			case "2+":
 				if (!key?.toLowerCase().includes("invulnerable save"))
 					filteredAbilities.set(key, value);
@@ -1048,10 +1096,13 @@ const boldKeywords = [
 	"heretic astartes",
 	"adeptus astartes",
 	"adeptus mechanicus",
+	"halo override",
 	"adeptus custodes",
 	"adeptus sororitas",
 	"tyranids",
+	"termagants",
 	"orks",
+	"necrons",
 ];
 
 const weaponKeywords = [
@@ -1064,43 +1115,47 @@ const weaponKeywords = [
 	"indirect fire",
 	"sustained hits 1",
 	"sustained hits 2",
+	"sustained hits x",
 	"devastating wounds",
+	"precision",
+	"ignores cover",
 ];
 
 const Abilities = ({ abilities }) => {
 	if (!abilities) return null;
-	const filteredAbilities = removeInvulnsWithoutSpecialRules(abilities);
+	let filteredAbilities = removeInvulnsWithoutSpecialRules(abilities);
 
-	let keys = [...filteredAbilities.keys()];
+	// sort abilites so that "Leader" is always at the bottom, "Supreme Commander" also bottom but before "Leader", same for any invulnerable save
+	let abilitiesForEnd = new Map();
+	for (let [key, value] of filteredAbilities) {
+		if (key.toLowerCase().includes("invulnerable save")) {
+			filteredAbilities.delete(key);
+			abilitiesForEnd.set(key, value);
+		}
+		if (key.toLowerCase().includes("damaged: ")) {
+			filteredAbilities.delete(key);
+			abilitiesForEnd.set(key, value);
+		}
+	}
+	if (filteredAbilities.has("Supreme Commander")) {
+		const supremeCommander = filteredAbilities.get("Supreme Commander");
+		filteredAbilities.delete("Supreme Commander");
+		abilitiesForEnd.set("Supreme Commander", supremeCommander);
+	}
+	if (filteredAbilities.has("Leader")) {
+		const leader = filteredAbilities.get("Leader");
+		filteredAbilities.delete("Leader");
+		abilitiesForEnd.set("Leader", leader);
+	}
+	filteredAbilities = new Map([...filteredAbilities, ...abilitiesForEnd]);
 
 	const replacedAbilities = new Map();
 	// in the value of the filtered abilites, make certain keywords bold
 	for (let [key, value] of filteredAbilities) {
-		let newValue = value;
-		for (let keyword of boldKeywords) {
-			newValue = newValue.replace(
-				new RegExp(`\\b${keyword}\\b`, "gi"),
-				`<strong>${keyword.toUpperCase()}</strong>`,
-			);
-		}
-
-		// weaponKeywords could be with [] or without
-		for (let keyword of weaponKeywords) {
-			newValue = newValue.replace(
-				new RegExp(`\\[${keyword}\\]`, "gi"),
-				`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">[${keyword.toUpperCase()}]</span>`,
-			);
-			if (keyword !== "assault") {
-				newValue = newValue.replace(
-					new RegExp(`\\b${keyword}\\b`, "gi"),
-					`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">${keyword.toUpperCase()}</span>`,
-				);
-			}
-		}
-
-		replacedAbilities.set(key, newValue);
+		replacedAbilities.set(key, makeKeywordsBold(value));
 	}
 
+	let keys = [...filteredAbilities.keys()];
 	return (
 		<div
 			style={{
@@ -1131,6 +1186,33 @@ const Abilities = ({ abilities }) => {
 				))}
 		</div>
 	);
+};
+
+const makeKeywordsBold = (text) => {
+	let newValue = text;
+	for (let keyword of boldKeywords) {
+		newValue = newValue.replace(
+			new RegExp(`\\b${keyword}\\b`, "gi"),
+			`<strong>${keyword.toUpperCase()}</strong>`,
+		);
+	}
+
+	// weaponKeywords could be with [] or without
+	for (let keyword of weaponKeywords) {
+		newValue = newValue.replace(
+			new RegExp(`\\[${keyword}\\]`, "gi"),
+			`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">[${keyword.toUpperCase()}]</span>`,
+		);
+		if (keyword !== "assault") {
+			// replace without [] only if it is not "assault" and not already replaced
+			newValue = newValue.replace(
+				new RegExp(`(?<!\\[)\\b${keyword}\\b(?!\\])`, "gi"),
+				`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">[${keyword.toUpperCase()}]</span>`,
+			);
+		}
+	}
+	// replace two newlines with one but only if there are two newlines in a row
+	return newValue.replace(/\n\n+/g, "\n\n");
 };
 
 const Characteristic = ({ title, characteristic, index }) => {
@@ -1300,7 +1382,13 @@ const ForceRules = ({ rules, onePerPage }) => {
 							lineHeight: 1.4,
 						}}
 					>
-						<span style={{ fontWeight: 700 }}>{rule}:</span> {rules.get(rule)}
+						<span style={{ fontWeight: 700 }}>{rule}:</span>{" "}
+						<span
+							className="whitespace-pre-line"
+							dangerouslySetInnerHTML={{
+								__html: makeKeywordsBold(rules.get(rule)),
+							}}
+						></span>
 					</div>
 				))}
 			</div>
