@@ -19,6 +19,7 @@ ChartJS.register(
 	Legend,
 	Title,
 );
+
 export const ShortSummaryTable = ({ force, primaryColor }) => {
 	const { units, factionRules, rules, catalog } = force;
 
@@ -28,6 +29,16 @@ export const ShortSummaryTable = ({ force, primaryColor }) => {
 		if (a.cost.points > b.cost.points) return -1;
 		return a.name.localeCompare(b.name);
 	});
+
+	// Calculate total wound count
+	const totalWoundCount = units.reduce((sum, unit) => {
+		const modelCounts = unit.models?.map((model) => model.count) || [1];
+		const totalWounds = unit.modelStats?.reduce((woundSum, stat, index) => {
+			const count = modelCounts[index] || 1;
+			return woundSum + (stat.wounds || 0) * count;
+		}, 0);
+		return sum + totalWounds;
+	}, 0);
 
 	// Prepare data for the bar chart, group by toughness and sum points cost
 	const groupedByToughness = units.reduce((acc, unit) => {
@@ -71,9 +82,30 @@ export const ShortSummaryTable = ({ force, primaryColor }) => {
 		}))
 		.sort((a, b) => a.movement - b.movement);
 
+	// Prepare data for the bar chart, group by save and sum points cost
+	const groupedBySave = units.reduce((acc, unit) => {
+		const save = unit.modelStats?.[0]?.save || 0;
+		if (!acc[save]) {
+			acc[save] = { totalPoints: 0, unitNames: [] };
+		}
+		acc[save].totalPoints += unit.cost.points;
+		if (!acc[save].unitNames.includes(unit.name)) {
+			acc[save].unitNames.push(unit.name);
+		}
+		return acc;
+	}, {});
+
+	const groupedChartDataSave = Object.entries(groupedBySave)
+		.map(([save, { totalPoints, unitNames }]) => ({
+			save: parseInt(save, 10),
+			totalPoints,
+			unitNames,
+		}))
+		.sort((a, b) => a.save - b.save);
+
 	return (
 		<div
-			className="print-display-none my-4 -mt-4 flex flex-wrap border-2 border-[var(--primary-color)]"
+			className="print-display-none my-4 -mt-4 flex flex-wrap items-start border-2 border-[var(--primary-color)]"
 			style={{
 				background: `url(${cardBackground})`,
 				backgroundSize: "cover",
@@ -102,6 +134,16 @@ export const ShortSummaryTable = ({ force, primaryColor }) => {
 						>
 							Cost (pts)
 						</div>
+						<div
+							className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
+							style={{
+								fontSize: "1.1em",
+								color: "#fff",
+								fontWeight: 600,
+							}}
+						>
+							Wounds
+						</div>
 					</div>
 				</div>
 				<div className="table-row-group" style={{ lineHeight: 1.05 }}>
@@ -120,129 +162,136 @@ export const ShortSummaryTable = ({ force, primaryColor }) => {
 								<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 									{cost.points} pts
 								</div>
+								<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
+									{unit.modelStats?.reduce((sum, stat, index) => {
+										const count = unit.models?.[index]?.count || 1;
+										return sum + (stat.wounds || 0) * count;
+									}, 0)}
+								</div>
 							</div>
 						);
 					})}
+					<div className="table-row bg-[var(--primary-color)] font-bold text-white">
+						<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
+							Total
+						</div>
+						<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+							{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)} pts
+						</div>
+						<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+							{totalWoundCount}
+						</div>
+					</div>
 				</div>
 			</div>
 
 			<div className="flex w-full flex-col gap-2.5 border-[var(--primary-color)] p-4 md:w-[50%] md:flex-1 md:border-l-2">
-				<div className="relative w-full" style={{ height: "150px" }}>
-					<Bar
-						data={{
-							labels: groupedChartDataMovement.map(
-								(data) => data.movement + '"',
-							),
-							datasets: [
-								{
-									label: "Total Cost (pts)",
-									data: groupedChartDataMovement.map(
-										(data) => data.totalPoints,
-									),
-									backgroundColor: primaryColor,
-								},
-							],
-						}}
-						options={{
-							responsive: true,
-							maintainAspectRatio: false,
-							scales: {
-								y: {
-									beginAtZero: true,
-								},
+				<ChartComponent
+					data={{
+						labels: groupedChartDataMovement.map((data) => data.movement + '"'),
+						datasets: [
+							{
+								label: "Total Cost (pts)",
+								data: groupedChartDataMovement.map((data) => data.totalPoints),
+								backgroundColor: primaryColor,
+								unitNames: groupedChartDataMovement.map(
+									(data) => data.unitNames,
+								),
 							},
-							plugins: {
-								title: {
-									display: true,
-									text: "MOVEMENT OF YOUR UNITS",
-									font: {
-										size: 14,
-										weight: "bold",
-										family: "Noto Sans",
-									},
-									color: "#000",
-									align: "start",
-								},
-								legend: {
-									display: false,
-								},
-								tooltip: {
-									displayColors: false,
-									callbacks: {
-										title: function (context) {
-											return "";
-										},
-										label: function (context) {
-											const movement = context.label;
-											const unitNames = groupedChartDataMovement.find(
-												(data) => data.movement === parseInt(movement, 10),
-											)?.unitNames;
-											return unitNames;
-										},
-									},
-								},
-							},
-						}}
-					/>
-				</div>
+						],
+					}}
+					title="MOVEMENT OF YOUR UNITS"
+				/>
 
-				<div className="relative w-full" style={{ height: "150px" }}>
-					<Bar
-						data={{
-							labels: groupedChartDataToughness.map((data) => data.toughness),
-							datasets: [
-								{
-									label: "Total Cost (pts)",
-									data: groupedChartDataToughness.map(
-										(data) => data.totalPoints,
-									),
-									backgroundColor: primaryColor,
-								},
-							],
-						}}
-						options={{
-							responsive: true,
-							maintainAspectRatio: false,
-							scales: {
-								y: {
-									beginAtZero: true,
-								},
+				<ChartComponent
+					data={{
+						labels: groupedChartDataToughness.map(
+							(data) => data.toughness + "",
+						),
+						datasets: [
+							{
+								label: "Total Cost (pts)",
+								data: groupedChartDataToughness.map((data) => data.totalPoints),
+								backgroundColor: primaryColor,
+								unitNames: groupedChartDataToughness.map(
+									(data) => data.unitNames,
+								),
 							},
-							plugins: {
-								title: {
-									display: true,
-									text: "TOUGHNESS OF YOUR UNITS",
-									font: {
-										size: 14,
-										weight: "bold",
-										family: "Noto Sans",
-									},
-									color: "#000",
-									align: "start",
-								},
-								legend: {
-									display: false,
-								},
-								tooltip: {
-									displayColors: false,
-									callbacks: {
-										title: function (context) {
-											return "";
-										},
-										label: function (context) {
-											const toughness = context.label;
-											const unitNames = groupedChartDataToughness.find(
-												(data) => data.toughness === parseInt(toughness, 10),
-											)?.unitNames;
-											return unitNames;
-										},
-									},
-								},
+						],
+					}}
+					title="TOUGHNESS OF YOUR UNITS"
+				/>
+
+				<ChartComponent
+					data={{
+						labels: groupedChartDataSave.map((data) => data.save + "+"),
+						datasets: [
+							{
+								label: "Total Cost (pts)",
+								data: groupedChartDataSave.map((data) => data.totalPoints),
+								backgroundColor: primaryColor,
+								unitNames: groupedChartDataSave.map((data) => data.unitNames),
 							},
-						}}
-					/>
-				</div>
+						],
+					}}
+					title="SAVE CHARACTERISTIC OF YOUR UNITS"
+				/>
 			</div>
+		</div>
+	);
+};
+
+const ChartComponent = ({ data, title }) => {
+	return (
+		<div className="relative w-full" style={{ height: "150px" }}>
+			<Bar
+				data={data}
+				options={{
+					responsive: true,
+					maintainAspectRatio: false,
+					scales: {
+						y: {
+							beginAtZero: true,
+							ticks: {
+								color: "#000", // Set y-axis tick color
+							},
+						},
+						x: {
+							ticks: {
+								color: "#000", // Set x-axis tick color
+							},
+						},
+					},
+					plugins: {
+						title: {
+							display: true,
+							text: title,
+							font: {
+								size: 14,
+								weight: "bold",
+								family: "Noto Sans",
+							},
+							color: "#000",
+							align: "start",
+						},
+						legend: {
+							display: false,
+						},
+						tooltip: {
+							displayColors: false,
+							callbacks: {
+								title: function (context) {
+									return "";
+								},
+								label: function (context) {
+									// return unit names for the bar
+									return context.dataset.unitNames[context.dataIndex];
+								},
+							},
+						},
+					},
+				}}
+			/>
 		</div>
 	);
 };
