@@ -214,6 +214,7 @@ function App() {
 
 	return (
 		<div
+			id="js_app"
 			className="App"
 			style={{
 				"--primary-color": primaryColor,
@@ -437,6 +438,7 @@ function App() {
 						roster={roster}
 						onePerPage={onePerPage}
 						colorUserChoice={colorUserChoice}
+						primaryColor={primaryColor}
 					/>
 				)}
 

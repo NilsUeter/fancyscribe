@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, Fragment } from "react";
+import React, { useRef, useState, useEffect, Fragment } from "react";
 import factionBackground from "../assets/factionBackground.png";
 import keywordsBackground from "../assets/keywordsBackground.png";
 import cardBackground from "../assets/cardBackground.png";
@@ -13,8 +13,14 @@ import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
 import { ImgEditor } from "./ImgEditor";
 import { trySettingLocalStorage } from "../helpers/useLocalStorage";
+import { ShortSummaryTable } from "./ShortSummaryTable";
 
-export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
+export const Roster = ({
+	roster,
+	onePerPage,
+	colorUserChoice,
+	primaryColor,
+}) => {
 	if (!roster) {
 		return null;
 	}
@@ -26,7 +32,7 @@ export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
 			}}
 		>
 			<div
-				className="print-display-none"
+				className="print-display-none flex justify-between"
 				style={{
 					backgroundColor: "var(--primary-color)",
 					color: "#fff",
@@ -37,15 +43,19 @@ export const Roster = ({ roster, onePerPage, colorUserChoice }) => {
 					marginBottom: "12px",
 				}}
 			>
-				{name} [{cost.commandPoints} CP, {cost.points} pts]
+				<span>{name}</span>
+				<span>{cost.points} pts</span>
 			</div>
+
 			{forces.map((force, index) => (
-				<Force
-					key={index}
-					force={force}
-					onePerPage={onePerPage}
-					colorUserChoice={colorUserChoice}
-				/>
+				<React.Fragment key={index}>
+					<ShortSummaryTable force={force} primaryColor={primaryColor} />
+					<Force
+						force={force}
+						onePerPage={onePerPage}
+						colorUserChoice={colorUserChoice}
+					/>
+				</React.Fragment>
 			))}
 		</div>
 	);
