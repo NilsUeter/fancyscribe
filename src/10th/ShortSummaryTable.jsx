@@ -117,7 +117,11 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						userSelect: "none",
 					}}
 				>
-					<input type="checkbox" onChange={() => setHide(!hide)} />
+					<input
+						type="checkbox"
+						checked={hide}
+						onChange={() => setHide(!hide)}
+					/>
 					<span className="print-display-none">Don't print this card.</span>
 				</label>
 			</div>

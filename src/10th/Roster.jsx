@@ -1370,7 +1370,7 @@ const ForceRules = ({ rules, onePerPage }) => {
 					paddingBottom: 2,
 				}}
 			>
-				<input type="checkbox" onChange={() => setHide(!hide)} />
+				<input type="checkbox" checked={hide} onChange={() => setHide(!hide)} />
 				<span className="print-display-none">Don't print this card.</span>
 			</label>
 			<div
