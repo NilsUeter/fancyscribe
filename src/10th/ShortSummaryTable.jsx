@@ -181,7 +181,8 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						<div className="table-row-group" style={{ lineHeight: 1.05 }}>
 							{sortedUnits.map((unit, index) => {
 								let { name, cost, models } = unit;
-								const count = models?.[0]?.count || 1;
+								const count =
+									models?.length === 1 ? models?.[0]?.count || 1 : 1;
 								return (
 									<div
 										key={name + index}
@@ -193,8 +194,34 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{unit.modelStats?.reduce((sum, stat, index) => {
-												const count = unit.models?.[index]?.count || 1;
-												return sum + (stat.wounds || 0) * count;
+												const modelName = unit.models?.reduce(
+													(bestMatch, model) => {
+														const similarity = (str1, str2) => {
+															let matches = 0;
+															for (
+																let i = 0;
+																i < Math.min(str1.length, str2.length);
+																i++
+															) {
+																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
+															}
+															return matches;
+														};
+														const currentSimilarity = similarity(
+															stat.name,
+															model.name,
+														);
+
+														return currentSimilarity >
+															similarity(stat.name, bestMatch.name)
+															? model
+															: bestMatch;
+													},
+													unit.models[0],
+												);
+
+												const modelCount = modelName?.count || 1;
+												return sum + (stat.wounds || 0) * modelCount;
 											}, 0)}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">

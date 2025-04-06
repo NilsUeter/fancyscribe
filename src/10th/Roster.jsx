@@ -8,6 +8,7 @@ import tyranidBackground from "../assets/tyranidBackground.png";
 import mechanicusBackground from "../assets/mechanicusBackground.png";
 import orkBackground from "../assets/orkBackground.png";
 import necronBackground from "../assets/necronBackground.png";
+import custodesBackground from "../assets/custodesBackground.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
@@ -577,6 +578,7 @@ const Unit = ({
 
 const backgrounds = {
 	"Imperium - Adeptus Mechanicus": mechanicusBackground,
+	"Imperium - Adeptus Custodes": custodesBackground,
 	"Chaos - Death Guard": dgBackground,
 	"Xenos - T'au Empire": tauBackground,
 	"Xenos - Tyranids": tyranidBackground,
@@ -864,6 +866,14 @@ const factionIcons = {
 			</g>
 		</svg>
 	),
+	"Imperium - Adeptus Custodes": (
+		<svg viewBox="0 0 683.44213 800.00001" width="44px" height="44px">
+			<g id="g6" transform="scale(0.8032935)">
+				<path d="M 599.9,375.2 C 560.3,340.7 528.3,306.1 488.6,271.6 l -169.1,19.6 -5.5,28.4 c -2.3,0.5 -32.4,9.4 -53.4,36 -20.7,26.2 16.1,77 58.9,92.7 -6.5,-18.2 -3.2,-37.6 8.7,-50.2 9.5,-9.9 21.3,-12.4 26.2,-13.1 34.8,-2.3 60.7,-1.6 73.1,20.7 17.8,32.2 2.3,104.9 -65.4,134.2 64.6,23.4 135.5,10.5 183.2,-33.8 C 599.6,455.8 600,387 599.9,375.2 Z M 357.7,333.8 337,317.4 l 42.5,-8.7 z" />
+				<path d="m 562.3,923.8 c -25.2,-25.2 -23.7,-55 -23.2,-62.2 v 0 -261.1 c 33.3,-17.5 62.1,-42.5 84,-72.7 L 657.7,565 H 599.9 L 850.8,735.1 737.3,597.7 h 51.3 L 660.7,449.5 c 5.6,-20.6 8.7,-42.2 8.7,-64.5 0,-32.3 -6.3,-63.2 -17.8,-91.4 L 786.3,137.4 H 735 L 848.6,0 597.7,170.1 h 57.8 L 607,222.3 C 587.8,200.9 564.8,183 539.1,169.5 v -35.4 0 c -0.5,-7.2 -1.9,-37 23.2,-62.2 24.3,-24.3 64,-35.1 103.2,-28.4 V 0 H 428.3 424.2 186.8 v 43.6 c 39.2,-6.8 79,4 103.2,28.4 25.2,25.2 23.7,55 23.2,62.2 v 0 35.4 c -26.5,13.9 -50.2,32.6 -69.8,54.9 l -50.5,-54.3 h 57.8 L 0,0 113.4,137.4 H 62.2 L 199.6,296.6 C 188.8,324 183,353.8 183,385 c 0,22.5 3.1,44.3 8.8,65 L 64.4,597.7 h 51.3 L 2.2,735.1 253,565 h -57.8 l 34.3,-36.9 c 21.9,30.1 50.6,55 83.8,72.4 v 261.2 0 c 0.5,7.2 1.9,37 -23.2,62.2 -24.3,24.3 -64,35.1 -103.2,28.4 v 43.6 h 237.3 4.1 237.3 v -43.6 c -39.2,6.6 -79,-4.2 -103.3,-28.5 z M 426.2,577 c -106,0 -192,-85.9 -192,-192 0,-106.1 85.9,-192 192,-192 106.1,0 192,85.9 192,192 0,106.1 -86,192 -192,192 z" />
+			</g>
+		</svg>
+	),
 	"Chaos - Death Guard": (
 		<svg
 			viewBox="0 0 833.07203 800.00001"
@@ -951,6 +961,7 @@ const Keywords = ({ keywords }) => {
 				style={{
 					fontSize: joinedKeywords.length > 70 ? ".8em" : "1em",
 					fontWeight: 800,
+					marginTop: 1,
 				}}
 			>
 				{joinedKeywords}
