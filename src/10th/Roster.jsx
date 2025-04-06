@@ -31,25 +31,14 @@ export const Roster = ({
 				position: "relative",
 			}}
 		>
-			<div
-				className="print-display-none flex justify-between"
-				style={{
-					backgroundColor: "var(--primary-color)",
-					color: "#fff",
-					padding: "4px 16px",
-					fontSize: " 1.7em",
-					fontWeight: "800",
-					textTransform: "uppercase",
-					marginBottom: "12px",
-				}}
-			>
-				<span>{name}</span>
-				<span>{cost.points} pts</span>
-			</div>
-
 			{forces.map((force, index) => (
 				<React.Fragment key={index}>
-					<ShortSummaryTable force={force} primaryColor={primaryColor} />
+					<ShortSummaryTable
+						force={force}
+						name={name}
+						points={cost.points}
+						primaryColor={primaryColor}
+					/>
 					<Force
 						force={force}
 						onePerPage={onePerPage}
@@ -64,13 +53,22 @@ export const Roster = ({
 const Force = ({ force, onePerPage, colorUserChoice }) => {
 	const { units, factionRules, rules, catalog } = force;
 	var mergedRules = new Map([...factionRules, ...rules]);
+	// units with role "Character" are sorted to the top, then "Battleline", then "Other"
+	const sortedUnits = units.sort((a, b) => {
+		if (a.role === "Character" && b.role !== "Character") return -1;
+		if (a.role !== "Character" && b.role === "Character") return 1;
+		if (a.role === "Battleline" && b.role !== "Battleline") return -1;
+		if (a.role !== "Battleline" && b.role === "Battleline") return 1;
+		return a.name.localeCompare(b.name);
+	});
+
 	return (
 		<div
 			style={{
 				display: "contents",
 			}}
 		>
-			{units.map((unit, index) => (
+			{sortedUnits.map((unit, index) => (
 				<Unit
 					key={unit.name + index}
 					index={index}
@@ -226,7 +224,7 @@ const Unit = ({
 					: "",
 			}}
 		>
-			<div className="flex justify-end gap-3">
+			<div className="flex justify-end gap-3 pb-0.5">
 				<label
 					className="print-display-none"
 					style={{
@@ -390,15 +388,13 @@ const Unit = ({
 					}}
 				>
 					{hasImage && <ImgEditor image={image} name={name} />}
-					<div className="absolute right-[1px] top-[2px] flex gap-1">
+					<div className="absolute right-[1px] top-[3px] flex items-center gap-1.5">
 						{hasImage && !bgRemoved && (
 							<button
-								className="button print-display-none"
+								className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0]"
 								style={{
-									border: "1px solid #999",
 									padding: "1px 4px",
 									fontSize: "0.8rem",
-									backgroundColor: "#f0f0f0",
 								}}
 								onClick={async () => {
 									// reset uploadRef
@@ -414,12 +410,10 @@ const Unit = ({
 						)}
 						{!hasImage && (
 							<a
-								className="button print-display-none"
+								className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0] hover:text-[#111113]"
 								style={{
-									border: "1px solid #999",
 									padding: "1px 4px",
 									fontSize: "0.8rem",
-									backgroundColor: "#f0f0f0",
 								}}
 								href={`https://www.google.com/search?udm=2&q=${name}+warhammer+40k+miniature`}
 								target="_blank"
@@ -428,12 +422,10 @@ const Unit = ({
 							</a>
 						)}
 						<label
-							className="button print-display-none"
+							className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0]"
 							style={{
-								border: "1px solid #999",
 								padding: "1px 4px",
 								fontSize: "0.8rem",
-								backgroundColor: "#f0f0f0",
 							}}
 						>
 							<input
@@ -465,12 +457,10 @@ const Unit = ({
 						</label>
 						{hasImage && (
 							<button
-								className="button print-display-none"
+								className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0]"
 								style={{
-									border: "1px solid #999",
 									padding: "1px 4px",
 									fontSize: "0.8rem",
-									backgroundColor: "#f0f0f0",
 								}}
 								onClick={() => {
 									setImage(undefined);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
 	Chart as ChartJS,
@@ -20,7 +20,8 @@ ChartJS.register(
 	Title,
 );
 
-export const ShortSummaryTable = ({ force, primaryColor }) => {
+export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
+	const [hide, setHide] = useState(true);
 	const { units, factionRules, rules, catalog } = force;
 
 	const sortedUnits = units.sort((a, b) => {
@@ -104,140 +105,182 @@ export const ShortSummaryTable = ({ force, primaryColor }) => {
 		.sort((a, b) => a.save - b.save);
 
 	return (
-		<div
-			className="print-display-none my-4 -mt-4 flex flex-wrap items-start border-2 border-[var(--primary-color)]"
-			style={{
-				background: `url(${cardBackground})`,
-				backgroundSize: "cover",
-			}}
-		>
-			<div className="mt-4 table w-full border-collapse overflow-hidden md:w-[50%] md:flex-1">
-				<div className="table-header-group bg-[var(--primary-color)] font-bold uppercase text-white">
-					<div className="table-row">
-						<div
-							className="table-cell border border-[var(--primary-color)] px-4 py-1"
-							style={{
-								fontSize: "1.1em",
-								color: "#fff",
-								fontWeight: 600,
-							}}
-						>
-							Unit Name
-						</div>
-						<div
-							className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
-							style={{
-								fontSize: "1.1em",
-								color: "#fff",
-								fontWeight: 600,
-							}}
-						>
-							Cost (pts)
-						</div>
-						<div
-							className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
-							style={{
-								fontSize: "1.1em",
-								color: "#fff",
-								fontWeight: 600,
-							}}
-						>
-							Wounds
-						</div>
-					</div>
+		<>
+			<div className="flex justify-end gap-3">
+				<label
+					className="print-display-none"
+					style={{
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "flex-end",
+						gap: 4,
+						userSelect: "none",
+					}}
+				>
+					<input type="checkbox" onChange={() => setHide(!hide)} />
+					<span className="print-display-none">Don't print this card.</span>
+				</label>
+			</div>
+			<div className={"flex flex-col " + (hide ? "print-display-none" : "")}>
+				<div
+					className="flex justify-between"
+					style={{
+						backgroundColor: "var(--primary-color)",
+						color: "#fff",
+						padding: "4px 16px",
+						fontSize: " 1.7em",
+						fontWeight: "800",
+						textTransform: "uppercase",
+					}}
+				>
+					<span>{name}</span>
+					<span>{points} pts</span>
 				</div>
-				<div className="table-row-group" style={{ lineHeight: 1.05 }}>
-					{sortedUnits.map((unit, index) => {
-						let { name, cost, models } = unit;
-						const count = models?.[0]?.count || 1;
-						return (
-							<div
-								key={name + index}
-								className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
-							>
-								<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1">
-									{count > 1 ? count + "x " : ""}
-									{name}
+				<div
+					className="mb-4 flex flex-wrap items-start border-2 border-[var(--primary-color)] print:flex-nowrap"
+					style={{
+						background: `url(${cardBackground})`,
+						backgroundSize: "cover",
+					}}
+				>
+					<div className="mt-4 table w-full border-collapse overflow-hidden md:w-[50%] md:flex-1">
+						<div className="table-header-group bg-[var(--primary-color)] font-bold uppercase text-white">
+							<div className="table-row">
+								<div
+									className="table-cell border border-[var(--primary-color)] px-4 py-1"
+									style={{
+										fontSize: "1.1em",
+										color: "#fff",
+										fontWeight: 600,
+									}}
+								>
+									Unit Name
 								</div>
-								<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
-									{cost.points} pts
+								<div
+									className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
+									style={{
+										fontSize: "1.1em",
+										color: "#fff",
+										fontWeight: 600,
+									}}
+								>
+									Wounds
 								</div>
-								<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
-									{unit.modelStats?.reduce((sum, stat, index) => {
-										const count = unit.models?.[index]?.count || 1;
-										return sum + (stat.wounds || 0) * count;
-									}, 0)}
+								<div
+									className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
+									style={{
+										fontSize: "1.1em",
+										color: "#fff",
+										fontWeight: 600,
+									}}
+								>
+									Cost (pts)
 								</div>
 							</div>
-						);
-					})}
-					<div className="table-row bg-[var(--primary-color)] font-bold text-white">
-						<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
-							Total
 						</div>
-						<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
-							{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)} pts
+						<div className="table-row-group" style={{ lineHeight: 1.05 }}>
+							{sortedUnits.map((unit, index) => {
+								let { name, cost, models } = unit;
+								const count = models?.[0]?.count || 1;
+								return (
+									<div
+										key={name + index}
+										className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
+									>
+										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1">
+											{count > 1 ? count + "x " : ""}
+											{name}
+										</div>
+										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
+											{unit.modelStats?.reduce((sum, stat, index) => {
+												const count = unit.models?.[index]?.count || 1;
+												return sum + (stat.wounds || 0) * count;
+											}, 0)}
+										</div>
+										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
+											{cost.points} pts
+										</div>
+									</div>
+								);
+							})}
+							<div className="table-row bg-[var(--primary-color)] font-bold text-white">
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
+									Total
+								</div>
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+									{totalWoundCount}
+								</div>
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+									{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)}{" "}
+									pts
+								</div>
+							</div>
 						</div>
-						<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
-							{totalWoundCount}
-						</div>
+					</div>
+
+					<div className="flex w-full flex-col gap-2.5 border-[var(--primary-color)] p-4 pb-2 pt-3.5 md:w-[50%] md:flex-1 md:border-l-2 print:w-[100%]">
+						<ChartComponent
+							data={{
+								labels: groupedChartDataMovement.map(
+									(data) => data.movement + '"',
+								),
+								datasets: [
+									{
+										label: "Total Cost (pts)",
+										data: groupedChartDataMovement.map(
+											(data) => data.totalPoints,
+										),
+										backgroundColor: primaryColor,
+										unitNames: groupedChartDataMovement.map(
+											(data) => data.unitNames,
+										),
+									},
+								],
+							}}
+							title="MOVEMENT OF YOUR UNITS"
+						/>
+
+						<ChartComponent
+							data={{
+								labels: groupedChartDataToughness.map(
+									(data) => data.toughness + "",
+								),
+								datasets: [
+									{
+										label: "Total Cost (pts)",
+										data: groupedChartDataToughness.map(
+											(data) => data.totalPoints,
+										),
+										backgroundColor: primaryColor,
+										unitNames: groupedChartDataToughness.map(
+											(data) => data.unitNames,
+										),
+									},
+								],
+							}}
+							title="TOUGHNESS OF YOUR UNITS"
+						/>
+
+						<ChartComponent
+							data={{
+								labels: groupedChartDataSave.map((data) => data.save + "+"),
+								datasets: [
+									{
+										label: "Total Cost (pts)",
+										data: groupedChartDataSave.map((data) => data.totalPoints),
+										backgroundColor: primaryColor,
+										unitNames: groupedChartDataSave.map(
+											(data) => data.unitNames,
+										),
+									},
+								],
+							}}
+							title="SAVE CHARACTERISTIC OF YOUR UNITS"
+						/>
 					</div>
 				</div>
 			</div>
-
-			<div className="flex w-full flex-col gap-2.5 border-[var(--primary-color)] p-4 md:w-[50%] md:flex-1 md:border-l-2">
-				<ChartComponent
-					data={{
-						labels: groupedChartDataMovement.map((data) => data.movement + '"'),
-						datasets: [
-							{
-								label: "Total Cost (pts)",
-								data: groupedChartDataMovement.map((data) => data.totalPoints),
-								backgroundColor: primaryColor,
-								unitNames: groupedChartDataMovement.map(
-									(data) => data.unitNames,
-								),
-							},
-						],
-					}}
-					title="MOVEMENT OF YOUR UNITS"
-				/>
-
-				<ChartComponent
-					data={{
-						labels: groupedChartDataToughness.map(
-							(data) => data.toughness + "",
-						),
-						datasets: [
-							{
-								label: "Total Cost (pts)",
-								data: groupedChartDataToughness.map((data) => data.totalPoints),
-								backgroundColor: primaryColor,
-								unitNames: groupedChartDataToughness.map(
-									(data) => data.unitNames,
-								),
-							},
-						],
-					}}
-					title="TOUGHNESS OF YOUR UNITS"
-				/>
-
-				<ChartComponent
-					data={{
-						labels: groupedChartDataSave.map((data) => data.save + "+"),
-						datasets: [
-							{
-								label: "Total Cost (pts)",
-								data: groupedChartDataSave.map((data) => data.totalPoints),
-								backgroundColor: primaryColor,
-								unitNames: groupedChartDataSave.map((data) => data.unitNames),
-							},
-						],
-					}}
-					title="SAVE CHARACTERISTIC OF YOUR UNITS"
-				/>
-			</div>
-		</div>
+		</>
 	);
 };
 
