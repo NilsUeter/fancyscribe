@@ -9,6 +9,7 @@ import mechanicusBackground from "../assets/mechanicusBackground.png";
 import orkBackground from "../assets/orkBackground.png";
 import necronBackground from "../assets/necronBackground.png";
 import custodesBackground from "../assets/custodesBackground.png";
+import imperiumBackground from "../assets/imperiumBackground.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
@@ -577,6 +578,19 @@ const Unit = ({
 };
 
 const backgrounds = {
+	"Imperium - Adeptus Astartes - Dark Angels": imperiumBackground,
+	"Imperium - Adeptus Astartes - Space Wolves": imperiumBackground,
+	"Imperium - Adeptus Astartes - Blood Angels": imperiumBackground,
+	"Imperium - Adeptus Astartes - Black Templars": imperiumBackground,
+	"Imperium - Adeptus Astartes - White Scars": imperiumBackground,
+	"Imperium - Adeptus Astartes - Ultramarines": imperiumBackground,
+	"Imperium - Adeptus Astartes - Deathwatch": imperiumBackground,
+	"Imperium - Adeptus Astartes - Grey Knights": imperiumBackground,
+	"Imperium - Adeptus Astartes - Space Marines": imperiumBackground,
+	"Imperium - Adeptus Astartes - Iron Hands": imperiumBackground,
+	"Imperium - Adeptus Astartes - Salamanders": imperiumBackground,
+	"Imperium - Adeptus Astartes - Raven Guard": imperiumBackground,
+
 	"Imperium - Adeptus Mechanicus": mechanicusBackground,
 	"Imperium - Adeptus Custodes": custodesBackground,
 	"Chaos - Death Guard": dgBackground,
