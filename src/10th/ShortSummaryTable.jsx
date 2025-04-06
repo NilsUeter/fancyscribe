@@ -186,7 +186,9 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 							{sortedUnits.map((unit, index) => {
 								let { name, cost, models } = unit;
 								const count =
-									models?.length === 1 ? models?.[0]?.count || 1 : 1;
+									models?.filter((model) => model.count > 0)?.length === 1
+										? models?.[0]?.count || 1
+										: 1;
 								return (
 									<div
 										key={name + index}
