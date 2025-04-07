@@ -50,8 +50,8 @@ export const Weapons = ({ title, weapons, modelStats, forceRules }) => {
 				))}
 				{weapons.length > 0 && (
 					<tr className="emptyRow">
-						<td style={{ borderTop: "none" }}></td>
-						<td colSpan={7}></td>
+						<td style={{ borderTop: "none" }} />
+						<td colSpan={7} />
 					</tr>
 				)}
 			</tbody>
@@ -158,7 +158,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 			</tr>
 			{abilities && abilities !== "-" && (
 				<tr className={className + " noBorderTop"}>
-					<td style={{ backgroundColor: "#dfe0e2" }}></td>
+					<td style={{ backgroundColor: "#dfe0e2" }} />
 					<td
 						colSpan="7"
 						style={{
@@ -180,7 +180,7 @@ const Weapon = ({ weapon, previousWeapon, nextWeapon, isMelee, className }) => {
 const getWeaponClassNames = (weapons, index) => {
 	let differentColor = false;
 	for (let i = 1; i <= index; i++) {
-		let { selectionName } = weapons[i];
+		const { selectionName } = weapons[i];
 		if (!selectionName && !weapons[i - 1].selectionName) {
 			if (weapons[i].name !== weapons[i - 1].name) {
 				differentColor = !differentColor;

@@ -31,16 +31,6 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 		return a.name.localeCompare(b.name);
 	});
 
-	// Calculate total wound count
-	const totalWoundCount = units.reduce((sum, unit) => {
-		const modelCounts = unit.models?.map((model) => model.count) || [1];
-		const totalWounds = unit.modelStats?.reduce((woundSum, stat, index) => {
-			const count = modelCounts[index] || 1;
-			return woundSum + (stat.wounds || 0) * count;
-		}, 0);
-		return sum + totalWounds;
-	}, 0);
-
 	// Prepare data for the bar chart, group by toughness and sum points cost
 	const groupedByToughness = units.reduce((acc, unit) => {
 		const toughness = unit.modelStats?.[0]?.toughness || 0;
@@ -56,7 +46,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 
 	const groupedChartDataToughness = Object.entries(groupedByToughness)
 		.map(([toughness, { totalPoints, unitNames }]) => ({
-			toughness: parseInt(toughness, 10),
+			toughness: Number.parseInt(toughness, 10),
 			totalPoints,
 			unitNames,
 		}))
@@ -77,7 +67,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 
 	const groupedChartDataMovement = Object.entries(groupedByMovement)
 		.map(([movement, { totalPoints, unitNames }]) => ({
-			movement: parseInt(movement, 10),
+			movement: Number.parseInt(movement, 10),
 			totalPoints,
 			unitNames,
 		}))
@@ -98,7 +88,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 
 	const groupedChartDataSave = Object.entries(groupedBySave)
 		.map(([save, { totalPoints, unitNames }]) => ({
-			save: parseInt(save, 10),
+			save: Number.parseInt(save, 10),
 			totalPoints,
 			unitNames,
 		}))
@@ -125,7 +115,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 					<span className="print-display-none">Don't print this card.</span>
 				</label>
 			</div>
-			<div className={"flex flex-col " + (hide ? "print-display-none" : "")}>
+			<div className={`flex flex-col ${hide ? "print-display-none" : ""}`}>
 				<div
 					className="flex justify-between"
 					style={{
@@ -178,13 +168,23 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										fontWeight: 600,
 									}}
 								>
+									OC
+								</div>
+								<div
+									className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
+									style={{
+										fontSize: "1.1em",
+										color: "#fff",
+										fontWeight: 600,
+									}}
+								>
 									Cost (pts)
 								</div>
 							</div>
 						</div>
 						<div className="table-row-group" style={{ lineHeight: 1.05 }}>
 							{sortedUnits.map((unit, index) => {
-								let { name, cost, models } = unit;
+								const { name, cost, models } = unit;
 								const count =
 									models?.filter((model) => model.count > 0)?.length === 1
 										? models?.[0]?.count || 1
@@ -195,7 +195,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
 									>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1">
-											{count > 1 ? count + "x " : ""}
+											{count > 1 ? `${count}x ` : ""}
 											{name}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
@@ -226,8 +226,54 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 													unit.models[0],
 												);
 
-												const modelCount = modelName?.count || 1;
+												const modelCount =
+													unit.modelStats?.length === 1
+														? // sum of all counts of the models
+															models?.reduce(
+																(sum, model) => sum + model.count,
+																0,
+															) || 1
+														: modelName?.count || 1;
 												return sum + (stat.wounds || 0) * modelCount;
+											}, 0)}
+										</div>
+										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
+											{unit.modelStats?.reduce((sum, stat, index) => {
+												const modelName = unit.models?.reduce(
+													(bestMatch, model) => {
+														const similarity = (str1, str2) => {
+															let matches = 0;
+															for (
+																let i = 0;
+																i < Math.min(str1.length, str2.length);
+																i++
+															) {
+																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
+															}
+															return matches;
+														};
+														const currentSimilarity = similarity(
+															stat.name,
+															model.name,
+														);
+
+														return currentSimilarity >
+															similarity(stat.name, bestMatch.name)
+															? model
+															: bestMatch;
+													},
+													unit.models[0],
+												);
+
+												const modelCount =
+													unit.modelStats?.length === 1
+														? // sum of all counts of the models
+															models?.reduce(
+																(sum, model) => sum + model.count,
+																0,
+															) || 1
+														: modelName?.count || 1;
+												return sum + (stat.oc || 0) * modelCount;
 											}, 0)}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
@@ -241,7 +287,94 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 									Total
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
-									{totalWoundCount}
+									{/* Sum of all wound values */}
+									{sortedUnits.reduce((sum, unit) => {
+										return (
+											sum +
+											unit.modelStats?.reduce((woundSum, stat, index) => {
+												const modelName = unit.models?.reduce(
+													(bestMatch, model) => {
+														const similarity = (str1, str2) => {
+															let matches = 0;
+															for (
+																let i = 0;
+																i < Math.min(str1.length, str2.length);
+																i++
+															) {
+																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
+															}
+															return matches;
+														};
+														const currentSimilarity = similarity(
+															stat.name,
+															model.name,
+														);
+
+														return currentSimilarity >
+															similarity(stat.name, bestMatch.name)
+															? model
+															: bestMatch;
+													},
+													unit.models[0],
+												);
+
+												const modelCount =
+													unit.modelStats?.length === 1
+														? // sum of all counts of the models
+															unit?.models?.reduce(
+																(sum, model) => sum + model.count,
+																0,
+															) || 1
+														: modelName?.count || 1;
+												return woundSum + (stat.wounds || 0) * modelCount;
+											}, 0)
+										);
+									}, 0)}
+								</div>
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+									{/* Sum of all OC values */}
+									{sortedUnits.reduce((sum, unit) => {
+										return (
+											sum +
+											unit.modelStats?.reduce((ocSum, stat, index) => {
+												const modelName = unit.models?.reduce(
+													(bestMatch, model) => {
+														const similarity = (str1, str2) => {
+															let matches = 0;
+															for (
+																let i = 0;
+																i < Math.min(str1.length, str2.length);
+																i++
+															) {
+																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
+															}
+															return matches;
+														};
+														const currentSimilarity = similarity(
+															stat.name,
+															model.name,
+														);
+
+														return currentSimilarity >
+															similarity(stat.name, bestMatch.name)
+															? model
+															: bestMatch;
+													},
+													unit.models[0],
+												);
+
+												const modelCount =
+													unit.modelStats?.length === 1
+														? // sum of all counts of the models
+															unit?.models?.reduce(
+																(sum, model) => sum + model.count,
+																0,
+															) || 1
+														: modelName?.count || 1;
+												return ocSum + (stat.oc || 0) * modelCount;
+											}, 0)
+										);
+									}, 0)}
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
 									{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)}{" "}
@@ -255,7 +388,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						<ChartComponent
 							data={{
 								labels: groupedChartDataMovement.map(
-									(data) => data.movement + '"',
+									(data) => `${data.movement}"`,
 								),
 								datasets: [
 									{
@@ -276,7 +409,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						<ChartComponent
 							data={{
 								labels: groupedChartDataToughness.map(
-									(data) => data.toughness + "",
+									(data) => `${data.toughness}`,
 								),
 								datasets: [
 									{
@@ -296,7 +429,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 
 						<ChartComponent
 							data={{
-								labels: groupedChartDataSave.map((data) => data.save + "+"),
+								labels: groupedChartDataSave.map((data) => `${data.save}+`),
 								datasets: [
 									{
 										label: "Total Cost (pts)",
@@ -356,10 +489,8 @@ const ChartComponent = ({ data, title }) => {
 						tooltip: {
 							displayColors: false,
 							callbacks: {
-								title: function (context) {
-									return "";
-								},
-								label: function (context) {
+								title: (context) => "",
+								label: (context) => {
 									// return unit names for the bar
 									return context.dataset.unitNames[context.dataIndex];
 								},

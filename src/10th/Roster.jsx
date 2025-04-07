@@ -54,7 +54,7 @@ export const Roster = ({
 
 const Force = ({ force, onePerPage, colorUserChoice }) => {
 	const { units, factionRules, rules, catalog } = force;
-	var mergedRules = new Map([...factionRules, ...rules]);
+	const mergedRules = new Map([...factionRules, ...rules]);
 	// units with role "Character" are sorted to the top, then "Battleline", then "Other"
 	const sortedUnits = units.sort((a, b) => {
 		if (a.role === "Character" && b.role !== "Character") return -1;
@@ -295,7 +295,7 @@ const Unit = ({
 								height: 80,
 								minWidth: "33%",
 							}}
-						></div>
+						/>
 						<div
 							style={{
 								height: 80,
@@ -308,7 +308,7 @@ const Unit = ({
 									backgroundColor: "var(--primary-color-transparent)",
 									height: 40,
 								}}
-							></div>
+							/>
 							{wavyLine}
 						</div>
 						<div
@@ -317,7 +317,7 @@ const Unit = ({
 								backgroundColor: "var(--primary-color-transparent)",
 								height: 40,
 							}}
-						></div>
+						/>
 					</div>
 					<div
 						style={{
@@ -393,6 +393,7 @@ const Unit = ({
 					<div className="absolute right-[1px] top-[3px] flex items-center gap-1.5">
 						{hasImage && !bgRemoved && (
 							<button
+								type="button"
 								className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0]"
 								style={{
 									padding: "1px 4px",
@@ -419,6 +420,7 @@ const Unit = ({
 								}}
 								href={`https://www.google.com/search?udm=2&q=${name}+warhammer+40k+miniature`}
 								target="_blank"
+								rel="noreferrer"
 							>
 								Search for image
 							</a>
@@ -439,15 +441,15 @@ const Unit = ({
 									posthog?.capture?.("user_uploaded_image", {
 										unit_name: name,
 									});
-									if (e.target.files && e.target.files[0]) {
-										let reader = new FileReader();
-										reader.onload = function (ev) {
+									if (e.target.files?.[0]) {
+										const reader = new FileReader();
+										reader.onload = ((ev) => {
 											setImage(ev.target.result);
 											setBgRemoved(false);
 											// reset position of the image
 											trySettingLocalStorage(`positionX_${name}`, 0, () => {});
 											trySettingLocalStorage(`positionY_${name}`, 0, () => {});
-										}.bind(this);
+										}).bind(this);
 										reader.readAsDataURL(e.target.files[0]);
 									}
 								}}
@@ -459,6 +461,7 @@ const Unit = ({
 						</label>
 						{hasImage && (
 							<button
+								type="button"
 								className="button print-display-none border-none bg-[#f0f0f0e6] hover:bg-[#f0f0f0]"
 								style={{
 									padding: "1px 4px",
@@ -514,7 +517,7 @@ const Unit = ({
 						/>
 						<OtherAbilities abilities={abilities} />
 					</table>
-					<div style={{ flex: "1" }}></div>
+					<div style={{ flex: "1" }} />
 					<table
 						cellSpacing="0"
 						className="weapons-table"
@@ -602,7 +605,7 @@ const backgrounds = {
 
 const checkAbilitiesForInvul = (abilitiesMap, name) => {
 	const abilities = [...(abilitiesMap?.keys?.() || [])];
-	for (let ability of abilities) {
+	for (const ability of abilities) {
 		if (ability.includes(":")) {
 			// if : then only match if the name is the same
 			if (
@@ -762,8 +765,8 @@ const InvulRow = ({ hasInvul }) => {
 			}}
 		>
 			<div className="flex" style={{ gap: "1.2rem", left: 0, top: -16 }}>
-				<FancyBox className={"invisible"}></FancyBox>
-				<FancyBox className={"invisible"}></FancyBox>
+				<FancyBox className={"invisible"} />
+				<FancyBox className={"invisible"} />
 				<FancyShield>{invulWithoutSpecial}</FancyShield>
 			</div>
 			<span
@@ -817,7 +820,7 @@ const FactionIcon = ({ catalog }) => {
 				}}
 			>
 				{factionIcons[catalog] ||
-					(catalog.includes("Imperium") ? factionIcons["Imperium"] || "" : "")}
+					(catalog.includes("Imperium") ? factionIcons.Imperium || "" : "")}
 			</div>
 		</div>
 	);
@@ -1044,7 +1047,7 @@ const Rules = ({ rules }) => {
 
 const removeInvulnsWithoutSpecialRules = (abilities) => {
 	const filteredAbilities = new Map();
-	for (let [key, value] of abilities) {
+	for (const [key, value] of abilities) {
 		switch (value?.trim()?.toLowerCase().replaceAll(".", "")) {
 			case "2+":
 				if (!key?.toLowerCase().includes("invulnerable save"))
@@ -1151,8 +1154,8 @@ const Abilities = ({ abilities }) => {
 	let filteredAbilities = removeInvulnsWithoutSpecialRules(abilities);
 
 	// sort abilites so that "Leader" is always at the bottom, "Supreme Commander" also bottom but before "Leader", same for any invulnerable save
-	let abilitiesForEnd = new Map();
-	for (let [key, value] of filteredAbilities) {
+	const abilitiesForEnd = new Map();
+	for (const [key, value] of filteredAbilities) {
 		if (key.toLowerCase().includes("invulnerable save")) {
 			filteredAbilities.delete(key);
 			abilitiesForEnd.set(key, value);
@@ -1176,11 +1179,11 @@ const Abilities = ({ abilities }) => {
 
 	const replacedAbilities = new Map();
 	// in the value of the filtered abilites, make certain keywords bold
-	for (let [key, value] of filteredAbilities) {
+	for (const [key, value] of filteredAbilities) {
 		replacedAbilities.set(key, makeKeywordsBold(value));
 	}
 
-	let keys = [...filteredAbilities.keys()];
+	const keys = [...filteredAbilities.keys()];
 	return (
 		<div
 			style={{
@@ -1206,7 +1209,7 @@ const Abilities = ({ abilities }) => {
 							dangerouslySetInnerHTML={{
 								__html: replacedAbilities.get(ability),
 							}}
-						></span>
+						/>
 					</div>
 				))}
 		</div>
@@ -1215,7 +1218,7 @@ const Abilities = ({ abilities }) => {
 
 const makeKeywordsBold = (text) => {
 	let newValue = text;
-	for (let keyword of boldKeywords) {
+	for (const keyword of boldKeywords) {
 		newValue = newValue.replace(
 			new RegExp(`\\b${keyword}\\b`, "gi"),
 			`<strong>${keyword.toUpperCase()}</strong>`,
@@ -1223,7 +1226,7 @@ const makeKeywordsBold = (text) => {
 	}
 
 	// weaponKeywords could be with [] or without
-	for (let keyword of weaponKeywords) {
+	for (const keyword of weaponKeywords) {
 		newValue = newValue.replace(
 			new RegExp(`\\[${keyword}\\]`, "gi"),
 			`<span style="font-weight: 700; color: var(--primary-color); text-transform: uppercase; line-height: 1.05;">[${keyword.toUpperCase()}]</span>`,
@@ -1322,7 +1325,9 @@ const FancyShield = ({ children, className, style }) => {
 };
 
 const OtherAbilities = ({ abilities }) => {
-	let keys = [...Object.keys(abilities)?.filter((key) => key !== "Abilities")];
+	const keys = abilities
+		? [...Object.keys(abilities).filter((key) => key !== "Abilities")]
+		: [];
 	return keys.map((key) => {
 		return (
 			<Fragment key={key}>
@@ -1333,7 +1338,7 @@ const OtherAbilities = ({ abilities }) => {
 							color: "#fff",
 						}}
 					>
-						<th></th>
+						<th />
 						<th colSpan="7" style={{ textAlign: "left" }}>
 							{key}
 						</th>
@@ -1342,7 +1347,7 @@ const OtherAbilities = ({ abilities }) => {
 				<tbody>
 					{[...abilities[key]].map(([name, value]) => (
 						<tr key={name}>
-							<td></td>
+							<td />
 							<td
 								colSpan={7}
 								key={name}
@@ -1413,7 +1418,7 @@ const ForceRules = ({ rules, onePerPage }) => {
 							dangerouslySetInnerHTML={{
 								__html: makeKeywordsBold(rules.get(rule)),
 							}}
-						></span>
+						/>
 					</div>
 				))}
 			</div>

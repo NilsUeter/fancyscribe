@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"lint": "biome check ."
 	},
 	"dependencies": {
 		"chart.js": "^4.4.8",
@@ -26,7 +27,8 @@
 		"prettier": "^3.5.2",
 		"prettier-plugin-tailwindcss": "^0.6.11",
 		"tailwindcss": "^3.4.17",
-		"vite": "^6.2.5"
+		"vite": "^6.2.5",
+		"@biomejs/biome": "^1.9.4"
 	},
 	"prettier": {
 		"useTabs": true,
