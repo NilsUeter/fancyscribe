@@ -211,7 +211,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 											<div className="flex flex-wrap items-center gap-2 gap-y-1">
 												{count > 1 ? `${count}x ` : ""}
 												{name}
-												{abilities?.Abilities?.keys()?.some(
+												{abilities?.Abilities?.keys()?.some?.(
 													(key) => key === "Leader",
 												) && (
 													<span
