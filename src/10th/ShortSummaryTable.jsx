@@ -21,7 +21,7 @@ ChartJS.register(
 );
 
 export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
-	const [hide, setHide] = useState(true);
+	const [hide, setHide] = useState(false);
 	const { units, factionRules, rules, catalog } = force;
 
 	const sortedUnits = units.sort((a, b) => {
@@ -158,7 +158,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										fontWeight: 600,
 									}}
 								>
-									Wounds
+									W
 								</div>
 								<div
 									className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
@@ -184,19 +184,49 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						</div>
 						<div className="table-row-group" style={{ lineHeight: 1.05 }}>
 							{sortedUnits.map((unit, index) => {
-								const { name, cost, models } = unit;
-								const count =
+								const {
+									name,
+									cost,
+									models,
+									modelStats,
+									abilities,
+									rangedWeapons,
+									meleeWeapons,
+								} = unit;
+								let count =
 									models?.filter((model) => model.count > 0)?.length === 1
 										? models?.[0]?.count || 1
 										: 1;
+								if (modelStats?.length === 1) {
+									// sum of all counts of the models
+									count =
+										models?.reduce((sum, model) => sum + model.count, 0) || 1;
+								}
 								return (
 									<div
 										key={name + index}
 										className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
 									>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1">
-											{count > 1 ? `${count}x ` : ""}
-											{name}
+											<div className="flex flex-wrap items-center gap-2 gap-y-1">
+												{count > 1 ? `${count}x ` : ""}
+												{name}
+												{abilities?.Abilities?.keys()?.some(
+													(key) => key === "Leader",
+												) && (
+													<span
+														style={{
+															fontSize: ".8em",
+															fontWeight: 700,
+															color: "var(--primary-color)",
+															textTransform: "uppercase",
+															lineHeight: 1.05,
+														}}
+													>
+														[Leader]
+													</span>
+												)}
+											</div>
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{unit.modelStats?.reduce((sum, stat, index) => {
@@ -284,7 +314,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 							})}
 							<div className="table-row bg-[var(--primary-color)] font-bold text-white">
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
-									Total
+									{sortedUnits.length} Units
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
 									{/* Sum of all wound values */}

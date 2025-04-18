@@ -1239,6 +1239,10 @@ const makeKeywordsBold = (text) => {
 			);
 		}
 	}
+
+	// replace words wrapped in ^^ ^^ with <strong> tags
+	newValue = newValue.replace(/\^\^([^\^]+)\^\^/g, "<strong>$1</strong>");
+
 	// replace two newlines with one but only if there are two newlines in a row
 	return newValue.replace(/\n\n+/g, "\n\n");
 };
