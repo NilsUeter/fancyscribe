@@ -13,7 +13,7 @@ import { parseJSON, stringifyJSON } from "./helpers/json";
 const throttle = (func, limit) => {
 	let lastFunc;
 	let lastRan;
-	return function (...args) {
+	return (...args) => {
 		if (!lastRan) {
 			func(...args);
 			lastRan = Date.now();
@@ -294,14 +294,14 @@ function App() {
 									className="print-display-none absolute right-[-4px] top-[-4px] rounded-full border-0 bg-red-600 fill-white p-[2px] text-sm transition duration-150 ease-in-out hover:bg-red-800 focus:outline-none"
 								>
 									<svg height="16" viewBox="0 0 16 16" width="16">
-										<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"></path>
+										<path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" />
 									</svg>
 								</button>
 							</div>
 						))}
 					</div>
 				</div>
-				<div className="print-display-none"></div>
+				<div className="print-display-none" />
 				<div
 					className="print-display-none max-w-[95vw]"
 					style={{ display: "flex", width: "100%", gap: 8 }}
@@ -405,7 +405,7 @@ function App() {
 									setColorUserChoice(true);
 									throttledSetPrimaryColor(e.target.value);
 								}}
-							></input>
+							/>
 							<span> Custom Color</span>
 						</label>
 
@@ -497,21 +497,33 @@ function App() {
 					<div style={{ padding: "8px 0", fontSize: "1.7rem" }}>About</div>
 					<div style={{ fontSize: "1.2rem" }}>
 						FancyScribe is a website that renders{" "}
-						<a href="https://www.battlescribe.net/" target="_blank">
+						<a
+							href="https://www.battlescribe.net/"
+							target="_blank"
+							rel="noreferrer"
+						>
 							BattleScribe
 						</a>{" "}
 						or <a href="https://www.newrecruit.eu/">New Recruit</a> roster files
 						in an opinionated format inspired by the new 10th edition datacards.
 						Additional inspiration and large parts of the parsing logic come
 						from the{" "}
-						<a href="https://rweyrauch.github.io/PrettyScribe" target="_blank">
+						<a
+							href="https://rweyrauch.github.io/PrettyScribe"
+							target="_blank"
+							rel="noreferrer"
+						>
 							PrettyScribe
 						</a>{" "}
 						website.
 					</div>
 					<div style={{ fontSize: "1.2rem" }}>
 						FancyScribe is an open-source project and can be found on Github (
-						<a href="https://github.com/NilsUeter/fancyscribe" target="_blank">
+						<a
+							href="https://github.com/NilsUeter/fancyscribe"
+							target="_blank"
+							rel="noreferrer"
+						>
 							FancyScribe
 						</a>
 						).
@@ -577,7 +589,7 @@ const getPrimaryColor = (catalog) => {
 		case "Chaos - Death Guard":
 			return "#576011";
 		case "Chaos - Chaos Knights":
-			return "#513627";
+			return "#405c58";
 		case "Chaos - Thousand Sons":
 			return "#015d68";
 		case "Necrons":

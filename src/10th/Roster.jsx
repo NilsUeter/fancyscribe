@@ -10,6 +10,11 @@ import orkBackground from "../assets/orkBackground.png";
 import necronBackground from "../assets/necronBackground.png";
 import custodesBackground from "../assets/custodesBackground.png";
 import imperiumBackground from "../assets/imperiumBackground.png";
+import sistersBackground from "../assets/sistersBackground.png";
+import thousandBackground from "../assets/thousandBackground.png";
+import worldEatersBackground from "../assets/worldEatersBackground.png";
+import chaosKnightsBackground from "../assets/chaosKnightsBackground.png";
+import chaosMarinesBackground from "../assets/chaosMarinesBackground.png";
 import { Arrow, wavyLine } from "../assets/icons";
 import { Weapons, hasDifferentProfiles } from "./Weapons";
 import { useIndexedDB } from "../helpers/useIndexedDB"; // New hook for IndexedDB
@@ -596,7 +601,12 @@ const backgrounds = {
 
 	"Imperium - Adeptus Mechanicus": mechanicusBackground,
 	"Imperium - Adeptus Custodes": custodesBackground,
+	"Imperium - Adepta Sororitas": sistersBackground,
 	"Chaos - Death Guard": dgBackground,
+	"Chaos - Thousand Sons": thousandBackground,
+	"Chaos - World Eaters": worldEatersBackground,
+	"Chaos - Chaos Knights": chaosKnightsBackground,
+	"Chaos - Chaos Space Marines": chaosMarinesBackground,
 	"Xenos - T'au Empire": tauBackground,
 	"Xenos - Tyranids": tyranidBackground,
 	"Xenos - Orks": orkBackground,
@@ -889,6 +899,11 @@ const factionIcons = {
 				<path d="M 599.9,375.2 C 560.3,340.7 528.3,306.1 488.6,271.6 l -169.1,19.6 -5.5,28.4 c -2.3,0.5 -32.4,9.4 -53.4,36 -20.7,26.2 16.1,77 58.9,92.7 -6.5,-18.2 -3.2,-37.6 8.7,-50.2 9.5,-9.9 21.3,-12.4 26.2,-13.1 34.8,-2.3 60.7,-1.6 73.1,20.7 17.8,32.2 2.3,104.9 -65.4,134.2 64.6,23.4 135.5,10.5 183.2,-33.8 C 599.6,455.8 600,387 599.9,375.2 Z M 357.7,333.8 337,317.4 l 42.5,-8.7 z" />
 				<path d="m 562.3,923.8 c -25.2,-25.2 -23.7,-55 -23.2,-62.2 v 0 -261.1 c 33.3,-17.5 62.1,-42.5 84,-72.7 L 657.7,565 H 599.9 L 850.8,735.1 737.3,597.7 h 51.3 L 660.7,449.5 c 5.6,-20.6 8.7,-42.2 8.7,-64.5 0,-32.3 -6.3,-63.2 -17.8,-91.4 L 786.3,137.4 H 735 L 848.6,0 597.7,170.1 h 57.8 L 607,222.3 C 587.8,200.9 564.8,183 539.1,169.5 v -35.4 0 c -0.5,-7.2 -1.9,-37 23.2,-62.2 24.3,-24.3 64,-35.1 103.2,-28.4 V 0 H 428.3 424.2 186.8 v 43.6 c 39.2,-6.8 79,4 103.2,28.4 25.2,25.2 23.7,55 23.2,62.2 v 0 35.4 c -26.5,13.9 -50.2,32.6 -69.8,54.9 l -50.5,-54.3 h 57.8 L 0,0 113.4,137.4 H 62.2 L 199.6,296.6 C 188.8,324 183,353.8 183,385 c 0,22.5 3.1,44.3 8.8,65 L 64.4,597.7 h 51.3 L 2.2,735.1 253,565 h -57.8 l 34.3,-36.9 c 21.9,30.1 50.6,55 83.8,72.4 v 261.2 0 c 0.5,7.2 1.9,37 -23.2,62.2 -24.3,24.3 -64,35.1 -103.2,28.4 v 43.6 h 237.3 4.1 237.3 v -43.6 c -39.2,6.6 -79,-4.2 -103.3,-28.5 z M 426.2,577 c -106,0 -192,-85.9 -192,-192 0,-106.1 85.9,-192 192,-192 106.1,0 192,85.9 192,192 0,106.1 -86,192 -192,192 z" />
 			</g>
+		</svg>
+	),
+	"Imperium - Adepta Sororitas": (
+		<svg viewBox="0 0 504.04308 800" width="52px" height="52px">
+			<path d="m 503.81273,402.86592 c -9.41658,-56.66326 -44.21699,-82.53839 -90.97236,-85.15865 -28.33163,-1.55579 -65.50665,9.66223 -93.10133,33.81781 C 332.1853,320 357.7329,240.73695 333.33167,145.17912 314.49851,71.72979 274.94886,23.0911 253.33167,0 V 0 C 231.79636,23.0911 192.16483,71.72979 173.41355,145.17912 147.86596,244.913 176.93453,326.96008 188.56197,355.45548 160.55787,328.59775 121.00823,316.0696 91.202701,317.70727 44.447328,320.32753 9.6469185,346.20266 0.23033711,402.86592 -6.8935114,532.24156 153.59779,526.34596 152.94272,476.31525 c -82.538381,-6.46878 -5.24053,-70.174 17.52303,-10.39918 4.09417,13.18321 4.50358,38.81269 4.58547,43.97134 l -1.39202,6.71443 h -62.23132 v 51.99591 h 98.1781 c -0.40942,1.14636 -0.90072,2.4565 -1.31014,4.01228 -12.77379,44.87206 -84.01228,29.47799 -84.01228,29.47799 4.913,63.86899 55.68066,75.33266 84.01228,67.96316 1.14637,-0.32754 2.12897,-0.81884 3.11157,-1.4739 l 0.9826,3.4391 c 2.29273,19.89764 6.8782,44.1351 15.88536,70.91095 7.3695,21.86284 16.04913,40.45036 24.31935,55.68065 L 253.00414,800 c 8.27021,-15.2303 16.94984,-33.81781 24.31934,-55.68066 9.00716,-26.77584 13.59263,-51.09518 15.88536,-70.91095 l 0.65507,-2.53838 c 32.34391,6.55067 75.5783,-8.43398 80.24565,-68.78199 0,0 -71.23849,15.39407 -84.01228,-29.47799 -0.40942,-1.55578 -0.90072,-2.86592 -1.31014,-4.01228 h 106.5302 V 516.60184 H 328.7462 v -5.8956 c 0.16377,0.0819 0.24565,0.0819 0.24565,0.0819 0,0 0,-30.13306 4.58547,-44.87206 22.76356,-59.77482 100.06141,3.9304 17.52303,10.39918 -0.65507,50.03071 159.83623,55.92631 152.71238,-73.44933 z" />
 		</svg>
 	),
 	"Chaos - Death Guard": (
