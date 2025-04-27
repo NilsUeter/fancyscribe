@@ -24,7 +24,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 	const [hide, setHide] = useState(false);
 	const { units, factionRules, rules, catalog } = force;
 
-	const sortedUnits = units.sort((a, b) => {
+	const sortedUnits = units.slice().sort((a, b) => {
 		// sort by points cost desc first, then by name
 		if (a.cost.points < b.cost.points) return 1;
 		if (a.cost.points > b.cost.points) return -1;

@@ -60,14 +60,20 @@ export const Roster = ({
 const Force = ({ force, onePerPage, colorUserChoice }) => {
 	const { units, factionRules, rules, catalog } = force;
 	const mergedRules = new Map([...factionRules, ...rules]);
-	// units with role "Character" are sorted to the top, then "Battleline", then "Other"
-	const sortedUnits = units.sort((a, b) => {
-		if (a.role === "Character" && b.role !== "Character") return -1;
-		if (a.role !== "Character" && b.role === "Character") return 1;
-		if (a.role === "Battleline" && b.role !== "Battleline") return -1;
-		if (a.role !== "Battleline" && b.role === "Battleline") return 1;
-		return a.name.localeCompare(b.name);
-	});
+
+	// State to manage the order of units
+	const [unitOrder, setUnitOrder] = useState([]);
+
+	useEffect(() => {
+		const sortedUnits = units.sort((a, b) => {
+			if (a.role === "Character" && b.role !== "Character") return -1;
+			if (a.role !== "Character" && b.role === "Character") return 1;
+			if (a.role === "Battleline" && b.role !== "Battleline") return -1;
+			if (a.role !== "Battleline" && b.role === "Battleline") return 1;
+			return a.name.localeCompare(b.name);
+		});
+		setUnitOrder(sortedUnits);
+	}, [units]);
 
 	return (
 		<div
@@ -75,30 +81,87 @@ const Force = ({ force, onePerPage, colorUserChoice }) => {
 				display: "contents",
 			}}
 		>
-			{sortedUnits.map((unit, index) => (
-				<Unit
-					key={unit.name + index}
-					index={index}
-					unit={unit}
-					catalog={catalog}
-					onePerPage={onePerPage}
-					forceRules={rules}
-					colorUserChoice={colorUserChoice}
-				/>
+			{unitOrder.map((unit, index) => (
+				<div key={unit.name + index} className="relative">
+					<div className="flex items-center justify-start gap-1 absolute text-[13px] -top-2.5 z-10 print-display-none">
+						<button
+							disabled={index === 0}
+							type="button"
+							className="py-0.5  px-1.5 pl-1"
+							onClick={() =>
+								// move unit up in the order
+								setUnitOrder((prevOrder) => {
+									const newOrder = [...prevOrder];
+									const unitToMove = newOrder.splice(index, 1)[0];
+									newOrder.splice(index - 1, 0, unitToMove);
+									return newOrder;
+								})
+							}
+						>
+							<svg
+								viewBox="0 0 24 24"
+								width={16}
+								height={16}
+								fill="#111113"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M12 4V20M12 4L8 8M12 4L16 8"
+									stroke="#000000"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							Up
+						</button>
+						<button
+							disabled={index === unitOrder.length - 1}
+							type="button"
+							className="py-0.5 px-1.5 pl-1"
+							onClick={() =>
+								// move unit down in the order
+								setUnitOrder((prevOrder) => {
+									const newOrder = [...prevOrder];
+									const unitToMove = newOrder.splice(index, 1)[0];
+									newOrder.splice(index + 1, 0, unitToMove);
+									return newOrder;
+								})
+							}
+						>
+							<svg
+								viewBox="0 0 24 24"
+								width={16}
+								height={16}
+								fill="#111113"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M12 4V20M12 20L8 16M12 20L16 16"
+									stroke="#000000"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+							Down
+						</button>
+					</div>
+					<Unit
+						unit={unit}
+						catalog={catalog}
+						onePerPage={onePerPage}
+						forceRules={rules}
+						colorUserChoice={colorUserChoice}
+					/>
+				</div>
 			))}
 			<ForceRules rules={mergedRules} onePerPage={onePerPage} />
 		</div>
 	);
 };
 
-const Unit = ({
-	unit,
-	index,
-	catalog,
-	onePerPage,
-	forceRules,
-	colorUserChoice,
-}) => {
+const Unit = ({ unit, catalog, onePerPage, forceRules, colorUserChoice }) => {
 	const [hide, setHide] = useState(false);
 	const [hideModelCount, setHideModelCount] = useState(false);
 	const uploadRef = useRef();

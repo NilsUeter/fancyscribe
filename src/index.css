@@ -4,9 +4,8 @@
 
 @layer base {
 	:root {
-		font-family:
-			"Noto Sans", sans-serif, Inter, system-ui, Avenir, Helvetica, Arial,
-			sans-serif;
+		font-family: "Noto Sans", sans-serif, Inter, system-ui, Avenir, Helvetica,
+			Arial, sans-serif;
 		line-height: 1.5;
 		font-weight: 400;
 		font-size: 13px;
@@ -80,7 +79,7 @@
 		font-weight: 500;
 		font-family: inherit;
 		cursor: pointer;
-		transition: border-color 0.25s;
+		transition: border-color 0.15s;
 	}
 	button:hover,
 	.button:hover {
@@ -92,6 +91,13 @@
 	.button:focus,
 	.button:focus-visible {
 		outline: 4px auto -webkit-focus-ring-color;
+	}
+
+	button:disabled,
+	.button[disabled] {
+		background-color: #f0f0f0;
+		color: #999;
+		border-color: #999;
 	}
 
 	.body {
@@ -139,11 +145,8 @@
 		font-size: 1.5rem;
 		text-transform: uppercase;
 		cursor: pointer;
-		transition:
-			color 0.25s,
-			border 0.25s,
-			font-size 0.25s,
-			background-color 0.25s;
+		transition: color 0.15s, border 0.15s, font-size 0.15s, background-color
+			0.15s;
 	}
 
 	.rosterUpload:hover {
