@@ -108,9 +108,9 @@ const Force = ({ force, onePerPage, colorUserChoice }) => {
 								<path
 									d="M12 4V20M12 4L8 8M12 4L16 8"
 									stroke="#000000"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
 								/>
 							</svg>
 							Up
@@ -139,9 +139,9 @@ const Force = ({ force, onePerPage, colorUserChoice }) => {
 								<path
 									d="M12 4V20M12 20L8 16M12 20L16 16"
 									stroke="#000000"
-									stroke-width="2"
-									stroke-linecap="round"
-									stroke-linejoin="round"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
 								/>
 							</svg>
 							Down
