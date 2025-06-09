@@ -121,7 +121,11 @@ function App() {
 
 	const unzip = async (file) => {
 		if (file?.charAt && file.charAt(0) !== "P") {
-			return file;
+			console.log(file.replace(/\u00a0/g, " "));
+			return file
+				.replaceAll("Â", " ")
+				.replaceAll("â", "'")
+				.replaceAll("â", "■"); // Â is a common issue with UTF-8 encoding in XML files
 		} else {
 			const jszip = new JSZip();
 			const zip = await jszip.loadAsync(file);
