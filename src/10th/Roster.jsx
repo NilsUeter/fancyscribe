@@ -1256,7 +1256,7 @@ const Abilities = ({ abilities }) => {
 	filteredAbilities = new Map([...filteredAbilities, ...abilitiesForEnd]);
 
 	const replacedAbilities = new Map();
-	// in the value of the filtered abilites, make certain keywords bold
+	// in the value of the filtered abilites, make certain keywords bold and remove ** around keywords
 	for (const [key, value] of filteredAbilities) {
 		replacedAbilities.set(key, makeKeywordsBold(value));
 	}
@@ -1320,6 +1320,9 @@ const makeKeywordsBold = (text) => {
 
 	// replace words wrapped in ^^ ^^ with <strong> tags
 	newValue = newValue.replace(/\^\^([^\^]+)\^\^/g, "<strong>$1</strong>");
+
+	// replace words wrapped in ** ** with <strong> tags
+	newValue = newValue.replace(/\*\*([^\*]+)\*\*/g, "<strong>$1</strong>");
 
 	// replace two newlines with one but only if there are two newlines in a row
 	return newValue.replace(/\n\n+/g, "\n\n");
