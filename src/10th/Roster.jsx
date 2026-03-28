@@ -1030,8 +1030,15 @@ const factionIcons = {
 	),
 };
 
+const removeKeywordsSet = new Set([
+	"Melee Weapon",
+	"Ranged Weapon",
+	"Attacks Dx Weapon",
+	"Extra Attacks Weapon"
+]);
+
 const Keywords = ({ keywords }) => {
-	const joinedKeywords = [...keywords].join(", ");
+	const joinedKeywords = [...keywords].filter(key => !removeKeywordsSet.has(key)).join(", ")
 	return (
 		<div
 			style={{
