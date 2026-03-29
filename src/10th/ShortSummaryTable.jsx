@@ -94,6 +94,39 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 		}))
 		.sort((a, b) => a.save - b.save);
 
+	const totalArmyWounds = sortedUnits.reduce((sum, unit) => {
+		return (
+			sum +
+			(unit.modelStats?.reduce((wSum, stat) => {
+				const modelName = unit.models?.reduce(
+					(bestMatch, model) => {
+						const similarity = (str1, str2) => {
+							let matches = 0;
+							for (
+								let i = 0;
+								i < Math.min(str1.length, str2.length);
+								i++
+							) {
+								if (str1[i] === str2[i]) matches++;
+							}
+							return matches;
+						};
+						const currentSimilarity = similarity(stat.name, model.name);
+						return currentSimilarity > similarity(stat.name, bestMatch.name)
+							? model
+							: bestMatch;
+					},
+					unit.models[0],
+				);
+				const modelCount =
+					unit.modelStats?.length === 1
+						? unit?.models?.reduce((s, m) => s + m.count, 0) || 1
+						: modelName?.count || 1;
+				return wSum + (stat.wounds || 0) * modelCount;
+			}, 0) || 0)
+		);
+	}, 0);
+
 	return (
 		<>
 			<div className="flex justify-end gap-3">
@@ -178,7 +211,17 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										fontWeight: 600,
 									}}
 								>
-									Cost (pts)
+									Pts/W
+								</div>
+								<div
+									className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right"
+									style={{
+										fontSize: "1.1em",
+										color: "#fff",
+										fontWeight: 600,
+									}}
+								>
+									Pts
 								</div>
 							</div>
 						</div>
@@ -201,8 +244,40 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 									// sum of all counts of the models
 									count =
 										models?.reduce((sum, model) => sum + model.count, 0) || 1;
-								}
-								return (
+								}							const totalWounds = unit.modelStats?.reduce((sum, stat) => {
+								const modelName = unit.models?.reduce(
+									(bestMatch, model) => {
+										const similarity = (str1, str2) => {
+											let matches = 0;
+											for (
+												let i = 0;
+												i < Math.min(str1.length, str2.length);
+												i++
+											) {
+												if (str1[i] === str2[i]) matches++;
+											}
+											return matches;
+										};
+										const currentSimilarity = similarity(
+											stat.name,
+											model.name,
+										);
+										return currentSimilarity >
+											similarity(stat.name, bestMatch.name)
+											? model
+											: bestMatch;
+									},
+									unit.models[0],
+								);
+								const modelCount =
+									unit.modelStats?.length === 1
+										? models?.reduce(
+												(sum, model) => sum + model.count,
+												0,
+											) || 1
+										: modelName?.count || 1;
+								return sum + (stat.wounds || 0) * modelCount;
+							}, 0) || 0;								return (
 									<div
 										key={name + index}
 										className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
@@ -229,43 +304,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 											</div>
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
-											{unit.modelStats?.reduce((sum, stat, index) => {
-												const modelName = unit.models?.reduce(
-													(bestMatch, model) => {
-														const similarity = (str1, str2) => {
-															let matches = 0;
-															for (
-																let i = 0;
-																i < Math.min(str1.length, str2.length);
-																i++
-															) {
-																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
-															}
-															return matches;
-														};
-														const currentSimilarity = similarity(
-															stat.name,
-															model.name,
-														);
-
-														return currentSimilarity >
-															similarity(stat.name, bestMatch.name)
-															? model
-															: bestMatch;
-													},
-													unit.models[0],
-												);
-
-												const modelCount =
-													unit.modelStats?.length === 1
-														? // sum of all counts of the models
-															models?.reduce(
-																(sum, model) => sum + model.count,
-																0,
-															) || 1
-														: modelName?.count || 1;
-												return sum + (stat.wounds || 0) * modelCount;
-											}, 0)}
+											{totalWounds}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{unit.modelStats?.reduce((sum, stat, index) => {
@@ -307,11 +346,14 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 											}, 0)}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
+											{totalWounds > 0 ? (cost.points / totalWounds).toFixed(1) : "—"}
+										</div>
+										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{cost.points} pts
 										</div>
 									</div>
 								);
-							})}
+								})}
 							<div className="table-row bg-[var(--primary-color)] font-bold text-white">
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
 									{sortedUnits.length} Units
@@ -406,8 +448,14 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 										);
 									}, 0)}
 								</div>
-								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
-									{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)}{" "}
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">								{totalArmyWounds > 0
+									? (
+											sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0) /
+											totalArmyWounds
+										).toFixed(1)
+									: "—"}
+							</div>
+							<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">									{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)}{" "}
 									pts
 								</div>
 							</div>
