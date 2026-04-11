@@ -20,6 +20,104 @@ ChartJS.register(
 	Title,
 );
 
+const normalizeName = (value = "") =>
+	value
+		.toLowerCase()
+		.replace(/[^a-z0-9\s]/g, " ")
+		.replace(/\s+/g, " ")
+		.trim();
+
+const getNameMatchScore = (statName = "", modelName = "") => {
+	const normalizedStat = normalizeName(statName);
+	const normalizedModel = normalizeName(modelName);
+
+	if (!normalizedStat || !normalizedModel) {
+		return 0;
+	}
+
+	let score = 0;
+	if (normalizedStat === normalizedModel) {
+		score += 1000;
+	}
+	if (
+		normalizedStat.includes(normalizedModel) ||
+		normalizedModel.includes(normalizedStat)
+	) {
+		score += 300;
+	}
+
+	const statTokens = new Set(normalizedStat.split(" "));
+	const modelTokens = new Set(normalizedModel.split(" "));
+	for (const token of statTokens) {
+		if (token && modelTokens.has(token)) {
+			score += 30;
+		}
+	}
+
+	const statHasSergeant = statTokens.has("sergeant");
+	const modelHasSergeant = modelTokens.has("sergeant");
+	if (statHasSergeant && modelHasSergeant) {
+		score += 120;
+	}
+	if (statHasSergeant !== modelHasSergeant) {
+		score -= 80;
+	}
+	if (statTokens.has("squad") && modelHasSergeant) {
+		score -= 100;
+	}
+
+	let prefixMatches = 0;
+	const maxPrefixLength = Math.min(normalizedStat.length, normalizedModel.length);
+	for (let i = 0; i < maxPrefixLength; i++) {
+		if (normalizedStat[i] !== normalizedModel[i]) {
+			break;
+		}
+		prefixMatches++;
+	}
+
+	return score + prefixMatches;
+};
+
+const getModelCountForStat = (unit, stat) => {
+	const models = unit?.models || [];
+	const modelStats = unit?.modelStats || [];
+
+	if (!models.length) {
+		return 1;
+	}
+
+	if (modelStats.length <= 1) {
+		return models.reduce((sum, model) => sum + (model.count || 0), 0) || 1;
+	}
+
+	let bestModel = models[0];
+	let bestScore = getNameMatchScore(stat?.name, bestModel?.name);
+	for (const model of models.slice(1)) {
+		const score = getNameMatchScore(stat?.name, model?.name);
+		if (
+			score > bestScore ||
+			(score === bestScore && (model.count || 0) > (bestModel.count || 0))
+		) {
+			bestModel = model;
+			bestScore = score;
+		}
+	}
+
+	return bestModel?.count || 1;
+};
+
+const getUnitTotalWounds = (unit) =>
+	unit?.modelStats?.reduce(
+		(sum, stat) => sum + (stat.wounds || 0) * getModelCountForStat(unit, stat),
+		0,
+	) || 0;
+
+const getUnitTotalOc = (unit) =>
+	unit?.modelStats?.reduce(
+		(sum, stat) => sum + (stat.oc || 0) * getModelCountForStat(unit, stat),
+		0,
+	) || 0;
+
 export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 	const [hide, setHide] = useState(false);
 	const { units, factionRules, rules, catalog } = force;
@@ -94,38 +192,10 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 		}))
 		.sort((a, b) => a.save - b.save);
 
-	const totalArmyWounds = sortedUnits.reduce((sum, unit) => {
-		return (
-			sum +
-			(unit.modelStats?.reduce((wSum, stat) => {
-				const modelName = unit.models?.reduce(
-					(bestMatch, model) => {
-						const similarity = (str1, str2) => {
-							let matches = 0;
-							for (
-								let i = 0;
-								i < Math.min(str1.length, str2.length);
-								i++
-							) {
-								if (str1[i] === str2[i]) matches++;
-							}
-							return matches;
-						};
-						const currentSimilarity = similarity(stat.name, model.name);
-						return currentSimilarity > similarity(stat.name, bestMatch.name)
-							? model
-							: bestMatch;
-					},
-					unit.models[0],
-				);
-				const modelCount =
-					unit.modelStats?.length === 1
-						? unit?.models?.reduce((s, m) => s + m.count, 0) || 1
-						: modelName?.count || 1;
-				return wSum + (stat.wounds || 0) * modelCount;
-			}, 0) || 0)
-		);
-	}, 0);
+	const totalArmyWounds = sortedUnits.reduce(
+		(sum, unit) => sum + getUnitTotalWounds(unit),
+		0,
+	);
 
 	return (
 		<>
@@ -244,40 +314,9 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 									// sum of all counts of the models
 									count =
 										models?.reduce((sum, model) => sum + model.count, 0) || 1;
-								}							const totalWounds = unit.modelStats?.reduce((sum, stat) => {
-								const modelName = unit.models?.reduce(
-									(bestMatch, model) => {
-										const similarity = (str1, str2) => {
-											let matches = 0;
-											for (
-												let i = 0;
-												i < Math.min(str1.length, str2.length);
-												i++
-											) {
-												if (str1[i] === str2[i]) matches++;
-											}
-											return matches;
-										};
-										const currentSimilarity = similarity(
-											stat.name,
-											model.name,
-										);
-										return currentSimilarity >
-											similarity(stat.name, bestMatch.name)
-											? model
-											: bestMatch;
-									},
-									unit.models[0],
-								);
-								const modelCount =
-									unit.modelStats?.length === 1
-										? models?.reduce(
-												(sum, model) => sum + model.count,
-												0,
-											) || 1
-										: modelName?.count || 1;
-								return sum + (stat.wounds || 0) * modelCount;
-							}, 0) || 0;								return (
+								}
+								const totalWounds = getUnitTotalWounds(unit);
+								return (
 									<div
 										key={name + index}
 										className={`table-row ${index % 2 === 0 ? "" : "bg-[#c4c4c480]"}`}
@@ -307,43 +346,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 											{totalWounds}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
-											{unit.modelStats?.reduce((sum, stat, index) => {
-												const modelName = unit.models?.reduce(
-													(bestMatch, model) => {
-														const similarity = (str1, str2) => {
-															let matches = 0;
-															for (
-																let i = 0;
-																i < Math.min(str1.length, str2.length);
-																i++
-															) {
-																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
-															}
-															return matches;
-														};
-														const currentSimilarity = similarity(
-															stat.name,
-															model.name,
-														);
-
-														return currentSimilarity >
-															similarity(stat.name, bestMatch.name)
-															? model
-															: bestMatch;
-													},
-													unit.models[0],
-												);
-
-												const modelCount =
-													unit.modelStats?.length === 1
-														? // sum of all counts of the models
-															models?.reduce(
-																(sum, model) => sum + model.count,
-																0,
-															) || 1
-														: modelName?.count || 1;
-												return sum + (stat.oc || 0) * modelCount;
-											}, 0)}
+											{getUnitTotalOc(unit)}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{totalWounds > 0 ? (cost.points / totalWounds).toFixed(1) : "—"}
@@ -360,93 +363,14 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
 									{/* Sum of all wound values */}
-									{sortedUnits.reduce((sum, unit) => {
-										return (
-											sum +
-											unit.modelStats?.reduce((woundSum, stat, index) => {
-												const modelName = unit.models?.reduce(
-													(bestMatch, model) => {
-														const similarity = (str1, str2) => {
-															let matches = 0;
-															for (
-																let i = 0;
-																i < Math.min(str1.length, str2.length);
-																i++
-															) {
-																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
-															}
-															return matches;
-														};
-														const currentSimilarity = similarity(
-															stat.name,
-															model.name,
-														);
-
-														return currentSimilarity >
-															similarity(stat.name, bestMatch.name)
-															? model
-															: bestMatch;
-													},
-													unit.models[0],
-												);
-
-												const modelCount =
-													unit.modelStats?.length === 1
-														? // sum of all counts of the models
-															unit?.models?.reduce(
-																(sum, model) => sum + model.count,
-																0,
-															) || 1
-														: modelName?.count || 1;
-												return woundSum + (stat.wounds || 0) * modelCount;
-											}, 0)
-										);
-									}, 0)}
+									{sortedUnits.reduce(
+										(sum, unit) => sum + getUnitTotalWounds(unit),
+										0,
+									)}
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
 									{/* Sum of all OC values */}
-									{sortedUnits.reduce((sum, unit) => {
-										return (
-											sum +
-											unit.modelStats?.reduce((ocSum, stat, index) => {
-												const modelName = unit.models?.reduce(
-													(bestMatch, model) => {
-														const similarity = (str1, str2) => {
-															let matches = 0;
-															for (
-																let i = 0;
-																i < Math.min(str1.length, str2.length);
-																i++
-															) {
-																if (str1[i] === str2[i]) matches++; // Match only if characters are at the same position
-															}
-															return matches;
-														};
-														const currentSimilarity = similarity(
-															stat.name,
-															model.name,
-														);
-
-														return currentSimilarity >
-															similarity(stat.name, bestMatch.name)
-															? model
-															: bestMatch;
-													},
-													unit.models[0],
-												);
-
-												const modelCount =
-													unit.modelStats?.length === 1
-														? // sum of all counts of the models
-															unit?.models?.reduce(
-																(sum, model) => sum + model.count,
-																0,
-															) || 1
-														: modelName?.count || 1;
-												return ocSum + (stat.oc || 0) * modelCount;
-											}, 0)
-										);
-									}, 0)}
+									{sortedUnits.reduce((sum, unit) => sum + getUnitTotalOc(unit), 0)}
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">								{totalArmyWounds > 0
 									? (
