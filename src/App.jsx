@@ -394,7 +394,7 @@ function App() {
 									}}
 									className="hide-model-selection"
 								/>
-								<span className="select-none">Hide all model selections</span>
+								<span className="select-none">Hide all Unit Compositions</span>
 							</label>
 						)
 					}
