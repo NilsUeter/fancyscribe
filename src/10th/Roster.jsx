@@ -848,7 +848,7 @@ const InvulRow = ({ hasInvul }) => {
 					marginTop: -2,
 					marginLeft: "-6rem",
 					paddingLeft: "6.4rem",
-					paddingRight: "1.2rem",
+					paddingRight: "0.4rem",
 					paddingTop: 2,
 					paddingBottom: 1,
 					backgroundColor: "var(--primary-color)",
@@ -1038,7 +1038,7 @@ const removeKeywordsSet = new Set([
 ]);
 
 const Keywords = ({ keywords }) => {
-	const joinedKeywords = [...keywords].filter(key => !removeKeywordsSet.has(key)).join(", ")
+	const joinedKeywords = [...keywords].filter(key => !removeKeywordsSet.has(key)).join("; ")
 	return (
 		<div
 			style={{
@@ -1058,12 +1058,11 @@ const Keywords = ({ keywords }) => {
 				gap: 3,
 			}}
 		>
-			<span style={{ fontSize: "1.1em" }}>KEYWORDS:</span>
-			<span
+			<span className="font-normal" style={{ fontSize: "1em" }}>KEYWORDS:</span>
+			<span className="uppercase"
 				style={{
 					fontSize: joinedKeywords.length > 70 ? ".8em" : "1em",
 					fontWeight: 800,
-					marginTop: 1,
 				}}
 			>
 				{joinedKeywords}
@@ -1093,10 +1092,10 @@ const Factions = ({ factions }) => {
 				minHeight: 54,
 			}}
 		>
-			<span style={{ fontSize: ".9em", lineHeight: 1.3 }}>
+			<span className="font-normal" style={{ fontSize: ".9em", lineHeight: 1.3 }}>
 				FACTION KEYWORDS:
 			</span>
-			<span style={{ fontSize: ".9em", fontWeight: 600 }}>
+			<span className="uppercase" style={{ fontSize: ".9em", fontWeight: 600 }}>
 				{[...factions].join(", ")}
 			</span>
 		</div>
