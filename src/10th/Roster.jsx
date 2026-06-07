@@ -83,11 +83,11 @@ const Force = ({ force, onePerPage, colorUserChoice }) => {
 		>
 			{unitOrder.map((unit, index) => (
 				<div key={unit.name + index} className="relative">
-					<div className="flex items-center justify-start gap-1 absolute text-[13px] -top-2.5 z-10 print-display-none">
+					<div className="print-display-none absolute -top-2.5 z-10 flex items-center justify-start gap-1 text-[13px]">
 						<button
 							disabled={index === 0}
 							type="button"
-							className="py-0.5  px-1.5 pl-1"
+							className="px-1.5 py-0.5 pl-1"
 							onClick={() =>
 								// move unit up in the order
 								setUnitOrder((prevOrder) => {
@@ -118,7 +118,7 @@ const Force = ({ force, onePerPage, colorUserChoice }) => {
 						<button
 							disabled={index === unitOrder.length - 1}
 							type="button"
-							className="py-0.5 px-1.5 pl-1"
+							className="px-1.5 py-0.5 pl-1"
 							onClick={() =>
 								// move unit down in the order
 								setUnitOrder((prevOrder) => {
@@ -310,7 +310,7 @@ const Unit = ({ unit, catalog, onePerPage, forceRules, colorUserChoice }) => {
 						type="checkbox"
 						onChange={(e) => setHideModelCount(e.target.checked)}
 					/>
-					<span className="print-display-none">Hide model selection</span>
+					<span className="print-display-none">Hide Unit Composition</span>
 				</label>
 				<label
 					className="print-display-none"
@@ -428,21 +428,6 @@ const Unit = ({ unit, catalog, onePerPage, forceRules, colorUserChoice }) => {
 								/>
 							))}
 						</div>
-						{!hideModelCount && modelStats?.[0] && (
-							<div
-								className={`pointer-events-none mt-[17px] ${
-									modelStats.length > 1 ? "" : "self-center"
-								}`}
-								style={{
-									fontSize: "0.7em",
-									zIndex: 101,
-								}}
-							>
-								{modelList.map((model, index) => (
-									<div key={model}>{model}</div>
-								))}
-							</div>
-						)}
 					</div>
 				</div>
 				<div
@@ -584,6 +569,11 @@ const Unit = ({ unit, catalog, onePerPage, forceRules, colorUserChoice }) => {
 							forceRules={forceRules}
 						/>
 						<OtherAbilities abilities={abilities} />
+						<UnitComposition
+							hideModelCount={hideModelCount}
+							modelStats={modelStats}
+							modelList={modelList}
+						/>
 					</table>
 					<div style={{ flex: "1" }} />
 					<table
@@ -645,6 +635,45 @@ const Unit = ({ unit, catalog, onePerPage, forceRules, colorUserChoice }) => {
 				</div>
 			</div>
 		</div>
+	);
+};
+
+const UnitComposition = ({ hideModelCount, modelStats, modelList }) => {
+	return (
+		<>
+			{!hideModelCount && modelStats?.[0] && (
+				<>
+					<thead>
+						<tr
+							style={{
+								backgroundColor: "var(--primary-color)",
+								color: "#fff",
+							}}
+						>
+							<th></th>
+							<th className="text-left uppercase">Unit Composition</th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody style={{
+								fontSize: "0.7em",
+							}}>
+						
+							{modelList.map((model, index) => (
+								<tr key={model}>
+									<td></td>
+									<td style={{ textAlign: "left" }} colSpan={7} key={model}>{model}</td>
+								</tr>
+							))}
+					</tbody>
+				</>
+			)}
+		</>
 	);
 };
 
@@ -1034,11 +1063,13 @@ const removeKeywordsSet = new Set([
 	"Melee Weapon",
 	"Ranged Weapon",
 	"Attacks Dx Weapon",
-	"Extra Attacks Weapon"
+	"Extra Attacks Weapon",
 ]);
 
 const Keywords = ({ keywords }) => {
-	const joinedKeywords = [...keywords].filter(key => !removeKeywordsSet.has(key)).join("; ")
+	const joinedKeywords = [...keywords]
+		.filter((key) => !removeKeywordsSet.has(key))
+		.join("; ");
 	return (
 		<div
 			style={{
@@ -1058,8 +1089,11 @@ const Keywords = ({ keywords }) => {
 				gap: 3,
 			}}
 		>
-			<span className="font-normal" style={{ fontSize: "1em" }}>KEYWORDS:</span>
-			<span className="uppercase"
+			<span className="font-normal" style={{ fontSize: "1em" }}>
+				KEYWORDS:
+			</span>
+			<span
+				className="uppercase"
 				style={{
 					fontSize: joinedKeywords.length > 70 ? ".8em" : "1em",
 					fontWeight: 800,
@@ -1092,7 +1126,10 @@ const Factions = ({ factions }) => {
 				minHeight: 54,
 			}}
 		>
-			<span className="font-normal" style={{ fontSize: ".9em", lineHeight: 1.3 }}>
+			<span
+				className="font-normal"
+				style={{ fontSize: ".9em", lineHeight: 1.3 }}
+			>
 				FACTION KEYWORDS:
 			</span>
 			<span className="uppercase" style={{ fontSize: ".9em", fontWeight: 600 }}>
