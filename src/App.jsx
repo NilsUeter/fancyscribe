@@ -9,6 +9,7 @@ import { Roster } from "./9th/Roster";
 import { Roster as Roster10th } from "./10th/Roster";
 import { useLocalStorage } from "./helpers/useLocalStorage";
 import { parseJSON, stringifyJSON } from "./helpers/json";
+import { Create40kRoster11th } from "./roster40k-11th";
 
 const throttle = (func, limit) => {
 	let lastFunc;
@@ -170,7 +171,7 @@ function App() {
 				setError("");
 			}
 		} else if (gameType == "Warhammer 40,000 11th Edition") {
-			roster = Create40kRoster10th(doc, gameType);
+			roster = Create40kRoster11th(doc, gameType);
 			if (roster && roster.forces.length > 0) {
 				setRoster(roster);
 				setEdition(11);

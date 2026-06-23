@@ -388,7 +388,7 @@ export class Costs {
 	}
 }
 
-export function Create40kRoster10th(doc, gameType) {
+export function Create40kRoster11th(doc, gameType) {
 	// Determine roster type (game system).
 	let info = doc.querySelector("roster");
 	if (info) {

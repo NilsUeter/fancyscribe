@@ -822,7 +822,7 @@ const ModelStats = ({ modelStat, index, showName, abilities }) => {
 		wounds = "/";
 	}
 
-	const hasInvul = checkAbilitiesForInvul(abilities, name);
+	const hasInvul = modelStat.invulnerableSave || checkAbilitiesForInvul(abilities, name);
 	return (
 		<div className="flex flex-col">
 			<div style={{ display: "flex", gap: "1.2rem" }}>
