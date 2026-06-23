@@ -169,6 +169,13 @@ function App() {
 				setEdition(10);
 				setError("");
 			}
+		} else if (gameType == "Warhammer 40,000 11th Edition") {
+			roster = Create40kRoster10th(doc, gameType);
+			if (roster && roster.forces.length > 0) {
+				setRoster(roster);
+				setEdition(11);
+				setError("");
+			}
 		} else {
 			setError("No support for game type '" + gameType + "'.");
 		}
