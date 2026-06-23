@@ -345,6 +345,8 @@ export class Unit extends BaseNotes {
 export class Force extends BaseNotes {
 	catalog = "";
 	faction = "Unknown";
+	forceDisposition = "";
+	detachments = [];
 	factionRules = new Map();
 	configurations = [];
 	rules = new Map();
@@ -515,8 +517,20 @@ function ParseConfiguration(selection, force) {
 	const details = [];
 	let costs = GetSelectionCosts(selection);
 	for (const sel of subSelections) {
-		details.push(sel.getAttribute("name"));
-		costs.add(GetSelectionCosts(sel));
+		const detailName = sel.getAttribute("name");
+		details.push(detailName);
+		const selectionCosts = GetSelectionCosts(sel);
+		if (name === "Force Disposition" && detailName) {
+			force.forceDisposition = detailName;
+		}
+		if (name === "Detachment" && detailName) {
+			force.detachments.push({
+				name: detailName,
+				detachmentPoints:
+					selectionCosts.freeformValues?.["Detachment Points"] || 0,
+			});
+		}
+		costs.add(selectionCosts);
 	}
 
 	let configuration =

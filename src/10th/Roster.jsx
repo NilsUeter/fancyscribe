@@ -22,6 +22,25 @@ import { ImgEditor } from "./ImgEditor";
 import { trySettingLocalStorage } from "../helpers/useLocalStorage";
 import { ShortSummaryTable } from "./ShortSummaryTable";
 
+const getShortSummarySubtitle = (force) => {
+	const details = [];
+	if (force.forceDisposition) {
+		details.push(force.forceDisposition);
+	}
+	if (force.detachments?.length) {
+		details.push(
+			force.detachments
+				.map(
+					(detachment) =>
+						`${detachment.name} (${detachment.detachmentPoints} DP)`,
+				)
+				.join(", "),
+		);
+	}
+
+	return details.join(" - ");
+};
+
 export const Roster = ({
 	roster,
 	onePerPage,
@@ -43,6 +62,7 @@ export const Roster = ({
 					<ShortSummaryTable
 						force={force}
 						name={name}
+						subtitle={getShortSummarySubtitle(force)}
 						points={cost.points}
 						primaryColor={primaryColor}
 					/>

@@ -118,7 +118,7 @@ const getUnitTotalOc = (unit) =>
 		0,
 	) || 0;
 
-export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
+export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points }) => {
 	const [hide, setHide] = useState(false);
 	const { units, factionRules, rules, catalog } = force;
 
@@ -230,7 +230,23 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						textTransform: "uppercase",
 					}}
 				>
-					<span>{name}</span>
+					{subtitle ? (
+						<span className="flex flex-col leading-none">
+							<span>{name}</span>
+							<span
+								style={{
+									fontSize: ".55em",
+									fontWeight: 700,
+									lineHeight: 1.15,
+									marginTop: 2,
+								}}
+							>
+								{subtitle}
+							</span>
+						</span>
+					) : (
+						<span>{name}</span>
+					)}
 					<span>{points} pts</span>
 				</div>
 				<div
@@ -386,7 +402,7 @@ export const ShortSummaryTable = ({ force, primaryColor, name, points }) => {
 						</div>
 					</div>
 
-					<div className="flex w-full flex-col gap-2.5 border-[var(--primary-color)] p-4 pb-2 pt-3.5 md:w-[50%] md:flex-1 md:border-l-2 print:w-[100%]">
+					<div className="flex w-full self-stretch flex-col gap-2.5 border-[var(--primary-color)] p-4 pb-2 pt-3.5 md:w-[50%] md:flex-1 md:border-l-2 print:w-[100%]">
 						<ChartComponent
 							data={{
 								labels: groupedChartDataMovement.map(
