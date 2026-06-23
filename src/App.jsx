@@ -112,6 +112,10 @@ function App() {
 			setRoster(roster);
 			setEdition(10);
 			setError("");
+		} else if (roster.gameType == "Warhammer 40,000 11th Edition") {
+			setRoster(roster);
+			setEdition(11);
+			setError("");
 		}
 		posthog?.capture?.("user_loaded_roster_from_localstorage", {
 			roster_faction: roster.forces[0].catalog,
@@ -242,7 +246,7 @@ function App() {
 							fontWeight: 400,
 						}}
 					>
-						Now with 10th edition support!
+						Now with 11th edition support!
 					</span>
 				</a>
 				<div className="subheader">
@@ -375,8 +379,8 @@ function App() {
 						</span>
 					</label>
 					{
-						// only show when 10th edition
-						edition === 10 && (
+						// only show when 10th or 11th edition
+						(edition === 10 || edition === 11) && (
 							<label
 								style={{
 									display: "flex",
@@ -437,7 +441,7 @@ function App() {
 					{error}
 				</div>
 				{edition === 9 && <Roster roster={roster} onePerPage={onePerPage} />}
-				{edition === 10 && (
+				{(edition === 10 || edition === 11) && (
 					<Roster10th
 						roster={roster}
 						onePerPage={onePerPage}
