@@ -67,7 +67,10 @@ const getNameMatchScore = (statName = "", modelName = "") => {
 	}
 
 	let prefixMatches = 0;
-	const maxPrefixLength = Math.min(normalizedStat.length, normalizedModel.length);
+	const maxPrefixLength = Math.min(
+		normalizedStat.length,
+		normalizedModel.length,
+	);
 	for (let i = 0; i < maxPrefixLength; i++) {
 		if (normalizedStat[i] !== normalizedModel[i]) {
 			break;
@@ -118,8 +121,114 @@ const getUnitTotalOc = (unit) =>
 		0,
 	) || 0;
 
-export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points }) => {
+const getUnitTotalModels = (unit) =>
+	unit?.models?.reduce((sum, model) => sum + (model.count || 0), 0) || 1;
+
+const getUnitPointsPerModel = (unit) => {
+	const totalModels = getUnitTotalModels(unit);
+	return totalModels > 0 ? (unit?.cost?.points || 0) / totalModels : 0;
+};
+
+const getDefensiveProfile = (unit, stat = {}, modelCount = 1) => {
+	const toughness = stat.toughness || 0;
+	const wounds = stat.wounds || 0;
+	const save = stat.save || 0;
+	const pointsPerModel = getUnitPointsPerModel(unit);
+	const cheapBodies = pointsPerModel > 0 && pointsPerModel <= 10;
+	const cheapMultiWoundBodies = pointsPerModel > 0 && pointsPerModel <= 15;
+	const eliteCost = pointsPerModel >= 20;
+	const numerousBodies = modelCount >= 15 || (modelCount >= 10 && cheapBodies);
+	const hordeBodies =
+		(wounds <= 2 && cheapBodies && numerousBodies) ||
+		(toughness <= 4 && wounds <= 1);
+	const swarmBodies = toughness <= 4 && wounds >= 3 && cheapMultiWoundBodies;
+
+	if (toughness >= 10) {
+		return "Heavy vehicles / monsters";
+	}
+	if (toughness >= 7) {
+		return "Light vehicles / monsters";
+	}
+	if (hordeBodies || swarmBodies) {
+		return "Horde / Swarm";
+	}
+	if (toughness >= 6 || (eliteCost && wounds >= 3) || (save > 0 && save <= 3)) {
+		return "Elite bodies";
+	}
+	return "Mixed infantry";
+};
+
+const getSkewMeterData = (units) => {
+	const profileWeights = new Map();
+	let totalWeight = 0;
+	let totalModels = 0;
+
+	for (const unit of units) {
+		const modelStats = unit.modelStats?.length ? unit.modelStats : [{}];
+		totalModels += getUnitTotalModels(unit);
+		const weightedProfiles = modelStats.map((stat) => {
+			const modelCount = getModelCountForStat(unit, stat);
+			const woundShare = Math.max((stat.wounds || 1) * modelCount, modelCount);
+			return {
+				profile: getDefensiveProfile(unit, stat, modelCount),
+				woundShare,
+			};
+		});
+		const unitWoundShare = weightedProfiles.reduce(
+			(sum, profile) => sum + profile.woundShare,
+			0,
+		);
+
+		for (const { profile, woundShare } of weightedProfiles) {
+			const weight =
+				unitWoundShare > 0
+					? (unit.cost.points * woundShare) / unitWoundShare
+					: 0;
+
+			profileWeights.set(profile, (profileWeights.get(profile) || 0) + weight);
+			totalWeight += weight;
+		}
+	}
+
+	const profiles = Array.from(profileWeights, ([name, weight]) => ({
+		name,
+		weight,
+		share: totalWeight > 0 ? weight / totalWeight : 0,
+	})).sort((a, b) => b.weight - a.weight);
+	const dominantProfile = profiles[0] || { name: "No profile", share: 0 };
+	const score = Math.round(
+		Math.min(100, Math.max(0, ((dominantProfile.share - 0.35) / 0.55) * 100)),
+	);
+
+	let label = "Balanced";
+	if (score >= 80) {
+		label = "Oops, all stat-check";
+	} else if (score >= 50) {
+		label = "Oh Lawd He Skewin";
+	} else if (score >= 35) {
+		label = "Moderate skew";
+	} else if (score >= 20) {
+		label = "Light skew";
+	}
+
+	return {
+		score,
+		label,
+		dominantProfile,
+		profiles,
+		totalModels,
+	};
+};
+
+export const ShortSummaryTable = ({
+	force,
+	primaryColor,
+	name,
+	subtitle,
+	points,
+}) => {
 	const [hide, setHide] = useState(false);
+	const [hideSkewMeter, setHideSkewMeter] = useState(false);
 	const { units, factionRules, rules, catalog } = force;
 
 	const sortedUnits = units.slice().sort((a, b) => {
@@ -196,10 +305,36 @@ export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points 
 		(sum, unit) => sum + getUnitTotalWounds(unit),
 		0,
 	);
+	const totalArmyPoints = sortedUnits.reduce(
+		(sum, unit) => sum + unit.cost.points,
+		0,
+	);
+	const canShowSkewMeter = sortedUnits.length > 1 && totalArmyPoints >= 500;
+	const showSkewMeter = canShowSkewMeter && !hideSkewMeter;
+	const skewMeterData = showSkewMeter ? getSkewMeterData(sortedUnits) : null;
 
 	return (
 		<>
 			<div className="flex justify-end gap-3">
+				{canShowSkewMeter && (
+					<label
+						className="print-display-none"
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "flex-end",
+							gap: 4,
+							userSelect: "none",
+						}}
+					>
+						<input
+							type="checkbox"
+							checked={hideSkewMeter}
+							onChange={() => setHideSkewMeter(!hideSkewMeter)}
+						/>
+						<span className="print-display-none">Hide Skew-O-Meter</span>
+					</label>
+				)}
 				<label
 					className="print-display-none"
 					style={{
@@ -365,14 +500,16 @@ export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points 
 											{getUnitTotalOc(unit)}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
-											{totalWounds > 0 ? (cost.points / totalWounds).toFixed(1) : "—"}
+											{totalWounds > 0
+												? (cost.points / totalWounds).toFixed(1)
+												: "—"}
 										</div>
 										<div className="table-cell border border-dotted border-[#9e9fa1] px-4 py-1 text-right">
 											{cost.points} pts
 										</div>
 									</div>
 								);
-								})}
+							})}
 							<div className="table-row bg-[var(--primary-color)] font-bold text-white">
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1">
 									{sortedUnits.length} Units
@@ -386,23 +523,39 @@ export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points 
 								</div>
 								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
 									{/* Sum of all OC values */}
-									{sortedUnits.reduce((sum, unit) => sum + getUnitTotalOc(unit), 0)}
+									{sortedUnits.reduce(
+										(sum, unit) => sum + getUnitTotalOc(unit),
+										0,
+									)}
 								</div>
-								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">								{totalArmyWounds > 0
-									? (
-											sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0) /
-											totalArmyWounds
-										).toFixed(1)
-									: "—"}
-							</div>
-							<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">									{sortedUnits.reduce((sum, unit) => sum + unit.cost.points, 0)}{" "}
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+									{" "}
+									{totalArmyWounds > 0
+										? (
+												sortedUnits.reduce(
+													(sum, unit) => sum + unit.cost.points,
+													0,
+												) / totalArmyWounds
+											).toFixed(1)
+										: "—"}
+								</div>
+								<div className="table-cell border border-[var(--primary-color)] px-4 py-1 text-right">
+									{" "}
+									{sortedUnits.reduce(
+										(sum, unit) => sum + unit.cost.points,
+										0,
+									)}{" "}
 									pts
 								</div>
 							</div>
 						</div>
 					</div>
 
-					<div className="flex w-full self-stretch flex-col gap-2.5 border-[var(--primary-color)] p-4 pb-2 pt-3.5 md:w-[50%] md:flex-1 md:border-l-2 print:w-[100%]">
+					<div className="flex w-full flex-col gap-2.5 self-stretch border-[var(--primary-color)] p-4 pb-2 pt-3.5 md:w-[50%] md:flex-1 md:border-l-2 print:w-[100%]">
+						{showSkewMeter && (
+							<SkewMeter data={skewMeterData} primaryColor={primaryColor} />
+						)}
+
 						<ChartComponent
 							data={{
 								labels: groupedChartDataMovement.map(
@@ -465,6 +618,59 @@ export const ShortSummaryTable = ({ force, primaryColor, name, subtitle, points 
 				</div>
 			</div>
 		</>
+	);
+};
+
+const SkewMeter = ({ data, primaryColor }) => {
+	const topProfiles = data.profiles;
+
+	return (
+		<div className="w-full border-2 border-[var(--primary-color)] bg-white/80 p-3 text-black">
+			<div className="flex items-end justify-between gap-3">
+				<div>
+					<div className="text-[0.8em] font-bold uppercase leading-none text-[var(--primary-color)]">
+						Skew-O-Meter
+					</div>
+					<div className="text-[1.35em] font-extrabold uppercase leading-tight">
+						{data.label}
+					</div>
+				</div>
+				<div className="text-right text-[1.6em] font-extrabold leading-none">
+					{data.score}
+					<span className="text-[0.48em] font-bold">/100</span>
+				</div>
+			</div>
+
+			<div className="mt-2 h-3 overflow-hidden border border-[var(--primary-color)] bg-white">
+				<div
+					className="h-full"
+					style={{
+						width: `${data.score}%`,
+						backgroundColor: primaryColor,
+					}}
+				/>
+			</div>
+
+			<div className="mt-2 grid gap-1 text-[0.76em] font-semibold leading-tight">
+				{topProfiles.map((profile, index) => (
+					<div
+						key={profile.name}
+						className={`grid grid-cols-[1fr_3rem] items-center gap-2 ${index === 0 ? "font-extrabold uppercase" : ""}`}
+					>
+						<div className="flex items-center gap-1.5">
+							<span
+								className="inline-block h-2 w-2 shrink-0"
+								style={{ backgroundColor: primaryColor }}
+							/>
+							<span>{profile.name}</span>
+						</div>
+						<span className="text-right">
+							{Math.round(profile.share * 100)}%
+						</span>
+					</div>
+				))}
+			</div>
+		</div>
 	);
 };
 
