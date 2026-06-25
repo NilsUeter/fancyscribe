@@ -132,11 +132,11 @@ const getUnitPointsPerModel = (unit) => {
 const getDefensiveProfile = (unit, stat = {}, modelCount = 1) => {
 	const toughness = stat.toughness || 0;
 	const wounds = stat.wounds || 0;
-	const save = stat.save || 0;
+	const save = stat.save?.replace(/\+/g, "") || 0;
 	const pointsPerModel = getUnitPointsPerModel(unit);
 	const cheapBodies = pointsPerModel > 0 && pointsPerModel <= 10;
 	const cheapMultiWoundBodies = pointsPerModel > 0 && pointsPerModel <= 15;
-	const eliteCost = pointsPerModel >= 20;
+	const eliteCost = pointsPerModel >= 22;
 	const numerousBodies = modelCount >= 15 || (modelCount >= 10 && cheapBodies);
 	const hordeBodies =
 		(wounds <= 2 && cheapBodies && numerousBodies) ||
@@ -152,10 +152,14 @@ const getDefensiveProfile = (unit, stat = {}, modelCount = 1) => {
 	if (hordeBodies || swarmBodies) {
 		return "Horde / Swarm";
 	}
-	if (toughness >= 6 || (eliteCost && wounds >= 3) || (save > 0 && save <= 3)) {
+	if (
+		toughness >= 6 ||
+		(toughness >= 5 && save <= 2) ||
+		(eliteCost && wounds >= 3 && save <= 3) 
+	) {
 		return "Elite bodies";
 	}
-	return "Mixed infantry";
+	return "Standard bodies";
 };
 
 const getSkewMeterData = (units) => {
@@ -169,6 +173,9 @@ const getSkewMeterData = (units) => {
 		const weightedProfiles = modelStats.map((stat) => {
 			const modelCount = getModelCountForStat(unit, stat);
 			const woundShare = Math.max((stat.wounds || 1) * modelCount, modelCount);
+			console.log(
+				`Unit: ${unit.name}, Stat: ${stat.name || "N/A"}, Model Count: ${modelCount}, Wound Share: ${woundShare}, Profile: ${getDefensiveProfile(unit, stat, modelCount)}`,
+			);
 			return {
 				profile: getDefensiveProfile(unit, stat, modelCount),
 				woundShare,
