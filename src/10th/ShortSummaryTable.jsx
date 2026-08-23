@@ -208,9 +208,9 @@ const getSkewMeterData = (units) => {
 	);
 
 	let label = "Balanced";
-	if (score >= 80) {
+	if (score >= 85) {
 		label = "Oops, all stat-check";
-	} else if (score >= 50) {
+	} else if (score >= 65) {
 		label = "Oh Lawd He Skewin";
 	} else if (score >= 35) {
 		label = "Moderate skew";
