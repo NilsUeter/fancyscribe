@@ -212,9 +212,9 @@ const getSkewMeterData = (units) => {
 		label = "Oops, all stat-check";
 	} else if (score >= 65) {
 		label = "Oh Lawd He Skewin";
-	} else if (score >= 35) {
+	} else if (score >= 45) {
 		label = "Moderate skew";
-	} else if (score >= 20) {
+	} else if (score >= 30) {
 		label = "Light skew";
 	}
 
