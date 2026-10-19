@@ -162,6 +162,54 @@ const getDefensiveProfile = (unit, stat = {}, modelCount = 1) => {
 	return "Standard bodies";
 };
 
+// Share of [anti-tank, anti-elite, anti-horde] firepower each profile wants; rows sum to 1.
+const PROFILE_ANSWER_VECTORS = {
+	"Heavy vehicles / monsters": [1, 0, 0],
+	"Light vehicles / monsters": [0.75, 0.3, 0],
+	"Elite bodies": [0.15, 0.7, 0.15],
+	"Standard bodies": [0, 0.45, 0.55],
+	"Horde / Swarm": [0, 0, 1],
+};
+// How hard generalist weapons struggle against a profile; extremes are true stat-checks.
+const PROFILE_STAT_CHECK_FACTOR = {
+	"Heavy vehicles / monsters": 1,
+	"Light vehicles / monsters": 0.95,
+	"Elite bodies": 0.9,
+	"Standard bodies": 0.85,
+	"Horde / Swarm": 1,
+};
+
+const getProfileSimilarity = (a, b) => {
+	const va = PROFILE_ANSWER_VECTORS[a];
+	const vb = PROFILE_ANSWER_VECTORS[b];
+	if (!va || !vb) return a === b ? 1 : 0;
+	const l1 = va.reduce((sum, v, i) => sum + Math.abs(v - vb[i]), 0);
+	return (1 - l1 / 2) ** 3;
+};
+
+// Largest share of the army answered by the same weapons, weighted by how awkward those weapons are to bring.
+const getStatCheckPressure = (profiles) => {
+	let best = 0;
+	for (const target of Object.keys(PROFILE_ANSWER_VECTORS)) {
+		const coveredShare = profiles.reduce(
+			(sum, { name, share }) => sum + share * getProfileSimilarity(target, name),
+			0,
+		);
+		best = Math.max(best, coveredShare * PROFILE_STAT_CHECK_FACTOR[target]);
+	}
+	return best;
+};
+
+const BALANCED_PRESSURE = getStatCheckPressure(
+	Object.keys(PROFILE_ANSWER_VECTORS).map((name, _, names) => ({
+		name,
+		share: 1 / names.length,
+	})),
+);
+const MAX_PRESSURE = 0.85;
+// >1 keeps mildly lopsided lists low while still reaching 100 for mono-profile lists.
+const SCORE_CURVE = 1.3;
+
 const getSkewMeterData = (units) => {
 	const profileWeights = new Map();
 	let totalWeight = 0;
@@ -203,18 +251,24 @@ const getSkewMeterData = (units) => {
 		share: totalWeight > 0 ? weight / totalWeight : 0,
 	})).sort((a, b) => b.weight - a.weight);
 	const dominantProfile = profiles[0] || { name: "No profile", share: 0 };
-	const score = Math.round(
-		Math.min(100, Math.max(0, ((dominantProfile.share - 0.35) / 0.55) * 100)),
+	const pressure = getStatCheckPressure(profiles);
+	const normalizedPressure = Math.min(
+		1,
+		Math.max(
+			0,
+			(pressure - BALANCED_PRESSURE) / (MAX_PRESSURE - BALANCED_PRESSURE),
+		),
 	);
+	const score = Math.round(normalizedPressure ** SCORE_CURVE * 100);
 
 	let label = "Balanced";
-	if (score >= 85) {
+	if (score >= 90) {
 		label = "Oops, all stat-check";
-	} else if (score >= 65) {
+	} else if (score >= 75) {
 		label = "Oh Lawd He Skewin";
-	} else if (score >= 45) {
+	} else if (score >= 50) {
 		label = "Moderate skew";
-	} else if (score >= 30) {
+	} else if (score >= 35) {
 		label = "Light skew";
 	}
 
